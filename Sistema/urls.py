@@ -20,5 +20,9 @@ from Datos import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name = 'home'),
-    path('', views.ver_datos, name = 'ver_mas'),
+    path('guardar_datos_sensor/', views.guardar_datos_sensor, name='guardar_datos_sensor'),
+    path('detalle_dato/', views.detalle_dato, name='detalle_dato'),
+
+
+
 ]

@@ -130,7 +130,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <a href="{% url 'ver_mas' %}?dato=Temperatura" class="btn btn-primary btn-sm mt-3">Ver más</a>
+                            <a href="{% url 'detalle_dato' %}?dato=Temperatura" class="btn btn-primary btn-sm mt-3">Ver más</a>
                         </div>
                     </div>
                 </div>
@@ -162,7 +162,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                        <a href="{% url 'ver_mas' %}?dato=Humedad" class="btn btn-primary btn-sm mt-3">Ver más</a>
+                        <a href="{% url 'detalle_dato' %}?dato=Humedad" class="btn btn-primary btn-sm mt-3">Ver más</a>
                         </div>
                     </div>
                 </div>
@@ -173,7 +173,7 @@
     <footer>
         <div class="container text-center">
             <p>&copy; 2024 Universidad de Playa Ancha. Todos los derechos reservados.</p>
-            <img src="img/logoupla.png" alt="Logo UPLA" width="80">
+            <img src="{% static 'img/logoupla.png' %}" alt="Logo UPLA" width="80">
         </div>
     </footer>
 
