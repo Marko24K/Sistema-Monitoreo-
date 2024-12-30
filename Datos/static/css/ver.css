@@ -1,0 +1,85 @@
+
+.table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table thead {
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
+}
+
+.table th, .table td {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(0, 51, 102, 0.05);
+    transition: background-color var(--transition-speed);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: var(--light-text-color);
+    transition: background-color var(--transition-speed), border-color var(--transition-speed);
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+section h2 {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: var(--spacing-md);
+}
+
+#detailedChart {
+    max-width: 100% !important;
+    height: 400px !important;
+}
+
+@media (max-width: 768px) {
+    .table th, .table td {
+        padding: var(--spacing-xs) var(--spacing-xs);
+        font-size: 0.9rem;
+    }
+
+    .btn-secondary {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    section h2 {
+        font-size: 1.25rem;
+    }
+
+    .card-body {
+        padding: var(--spacing-sm);
+    }
+
+    #detailedChart {
+        height: 300px !important;
+    }
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 300px;
+    }
+}

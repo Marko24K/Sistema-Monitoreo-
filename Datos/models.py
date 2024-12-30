@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class Sensor(models.Model):
+class Sensor(models.Model): #tabla sensor
     nombre_sensor = models.CharField(max_length=50)
     tipo_sensor = models.CharField(max_length=50)
     ubicacion = models.TextField()
@@ -10,13 +10,13 @@ class Sensor(models.Model):
     def __str__(self):
         return self.nombre_sensor
     
-class Tipo_dato(models.Model):
+class Tipo_dato(models.Model): #tabla tipo de dato
     nombre_tipo_dato = models.CharField(max_length=50)
     unidad = models.CharField(max_length=20)
     def __str__(self):
         return self.nombre_tipo_dato
 
-class Datos_sensores(models.Model):
+class Datos_sensores(models.Model):#tabla datos de los sensores
     sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
     tipo_dato = models.ForeignKey(Tipo_dato, on_delete=models.CASCADE,null = False)
     valor = models.FloatField()
