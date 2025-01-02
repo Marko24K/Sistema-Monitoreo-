@@ -124,7 +124,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# Si esta en desarrollo, usa esta configuración para que Django sirva archivos estáticos.
+# Si esta en desarrollo, usar esta configuración para que Django sirva archivos estáticos.
 if DEBUG:
     STATICFILES_DIRS = [
         BASE_DIR / "static",  # Esto incluye la carpeta 'static' dentro del proyecto
@@ -134,3 +134,12 @@ if DEBUG:
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ruta par guardar los archivos
+ 
+import os
+
+# Directorio donde se guardarán los archivos
+MEDIA_URL = '/media/'  # URL para acceder a los archivos
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Carpeta en el servidor donde se almacenan los archivos

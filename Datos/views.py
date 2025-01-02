@@ -4,6 +4,10 @@ from django.http import Http404, JsonResponse
 from django.db.models import Avg, Max, Min
 import json
 from rest_framework.decorators import api_view
+import os
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+
 
 # Create your views here.
 
@@ -83,7 +87,7 @@ def guardar_datos_sensor(request):
                 tipo_dato=tipo_dato,
                 valor=valor
             )
-
+            
             return JsonResponse({'message': 'Datos insertados correctamente'}, status=200)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
@@ -138,3 +142,22 @@ def detalle_dato(request):
         'stats': stats,
         'recent_data': recent_data,
     })
+
+
+def guardar_archivo(archivo):
+    """
+    Guarda el archivo recibido en la ubicación configurada.
+    Retorna la URL del archivo guardado.
+    """
+    try:
+        # Crear un almacenamiento de archivos usando FileSystemStorage
+        fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'archivos_sensores'))
+        
+        # Guardar el archivo en la ubicación deseada
+        archivo_guardado = fs.save(archivo.name, archivo)
+        
+        # Retornar la URL del archivo guardado
+        return fs.url(archivo_guardado)
+    
+    except Exception as e:
+        raise Exception(f"Error al guardar el archivo: {str(e)}")

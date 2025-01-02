@@ -1,5 +1,4 @@
 from django.db import models
-
 # Create your models here.
 class Sensor(models.Model): #tabla sensor
     nombre_sensor = models.CharField(max_length=50)
