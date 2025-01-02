@@ -49,10 +49,30 @@ def home(request):
 
 def ver_datos(request):
     return render(request, 'ver_mas.html')
-#Guardar datos de un sensor desde un esp32
+#Guardar datos de un sensor desde un esp32 
+#guardar archivos
+
+def guardar_archivo(archivo):
+    """
+    Guarda el archivo recibido en la ubicación configurada.
+    Retorna la URL del archivo guardado.
+    """
+    try:
+        # Crear un almacenamiento de archivos usando FileSystemStorage
+        fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'archivos_sensores'))
+        
+        # Guardar el archivo en la ubicación deseada
+        archivo_guardado = fs.save(archivo.name, archivo)
+        
+        # Retornar la URL del archivo guardado
+        return fs.url(archivo_guardado)
+    
+    except Exception as e:
+        raise Exception(f"Error al guardar el archivo: {str(e)}")
+    
 @api_view(['POST'])
 def guardar_datos_sensor(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.FILES.get('archivo'):
         # Obtener los datos enviados
         try:
             data = json.loads(request.body)
@@ -76,6 +96,7 @@ def guardar_datos_sensor(request):
             except Tipo_dato.DoesNotExist:
                 return JsonResponse({'error': f'Tipo de dato "{tipo}" no encontrado'}, status=404)
             
+            
 
             # Buscar el sensor y tipo de dato correspondiente
             sensor = Sensor.objects.get(id=id_sensor)
@@ -87,6 +108,7 @@ def guardar_datos_sensor(request):
                 tipo_dato=tipo_dato,
                 valor=valor
             )
+            
             
             return JsonResponse({'message': 'Datos insertados correctamente'}, status=200)
         except Exception as e:
@@ -143,21 +165,28 @@ def detalle_dato(request):
         'recent_data': recent_data,
     })
 
+""" agregar para guardar datos
+from django.http import JsonResponse
+from .utils import guardar_archivo  # Asegúrate de importar la función que creamos
+from django.views.decorators.csrf import csrf_exempt
 
-def guardar_archivo(archivo):
-    """
-    Guarda el archivo recibido en la ubicación configurada.
-    Retorna la URL del archivo guardado.
-    """
-    try:
-        # Crear un almacenamiento de archivos usando FileSystemStorage
-        fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'archivos_sensores'))
-        
-        # Guardar el archivo en la ubicación deseada
-        archivo_guardado = fs.save(archivo.name, archivo)
-        
-        # Retornar la URL del archivo guardado
-        return fs.url(archivo_guardado)
-    
-    except Exception as e:
-        raise Exception(f"Error al guardar el archivo: {str(e)}")
+@csrf_exempt  # Usamos @csrf_exempt si no estás usando CSRF tokens en el ESP32
+def guardar_datos_sensor(request):
+    if request.method == 'POST' and request.FILES.get('archivo'):
+        try:
+            archivo = request.FILES['archivo']  # Obtener el archivo enviado
+
+            # Llamar a la función que guarda el archivo
+            archivo_url = guardar_archivo(archivo)
+
+            # Retornar la URL del archivo guardado
+            return JsonResponse({'message': 'Archivo guardado correctamente', 'archivo_url': archivo_url}, status=200)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    else:
+        return JsonResponse({'error': 'Método no permitido o archivo no enviado'}, status=405)
+
+
+
+"""
