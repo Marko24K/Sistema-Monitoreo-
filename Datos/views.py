@@ -72,7 +72,7 @@ def guardar_archivo(archivo):
     
 @api_view(['POST'])
 def guardar_datos_sensor(request):
-    if request.method == 'POST' and request.FILES.get('archivo'):
+    if request.method == 'POST':
         # Obtener los datos enviados
         try:
             data = json.loads(request.body)
@@ -165,28 +165,4 @@ def detalle_dato(request):
         'recent_data': recent_data,
     })
 
-""" agregar para guardar datos
-from django.http import JsonResponse
-from .utils import guardar_archivo  # Asegúrate de importar la función que creamos
-from django.views.decorators.csrf import csrf_exempt
 
-@csrf_exempt  # Usamos @csrf_exempt si no estás usando CSRF tokens en el ESP32
-def guardar_datos_sensor(request):
-    if request.method == 'POST' and request.FILES.get('archivo'):
-        try:
-            archivo = request.FILES['archivo']  # Obtener el archivo enviado
-
-            # Llamar a la función que guarda el archivo
-            archivo_url = guardar_archivo(archivo)
-
-            # Retornar la URL del archivo guardado
-            return JsonResponse({'message': 'Archivo guardado correctamente', 'archivo_url': archivo_url}, status=200)
-
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
-    else:
-        return JsonResponse({'error': 'Método no permitido o archivo no enviado'}, status=405)
-
-
-
-"""
