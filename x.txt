@@ -1,0 +1,107 @@
+def guardar_en_archivo_temporal(data):
+    """
+    Guarda los datos en un archivo de texto temporal en caso de error.
+    """
+    with open(TEMP_FILE, 'a') as f:
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        f.write(f"{timestamp} - {json.dumps(data)}\n")
+
+        import json
+import os
+from datetime import datetime
+from django.db import IntegrityError
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from .models import Sensor, Tipo_dato, Datos_sensores
+
+# Ruta del archivo temporal donde se guardarán los datos cuando la base de datos esté caída
+TEMP_FILE = "data_backup.txt"
+
+@api_view(['POST'])
+def guardar_datos_sensor(request):
+    if request.method == 'POST':
+        try:
+            # Obtener los datos enviados
+            data = json.loads(request.body)
+            id_sensor = data.get('id_sensor')
+            valor = data.get('valor')
+            tipo = data.get('tipo')
+
+            # Verificar que los datos están completos
+            if not all([id_sensor, valor, tipo]):
+                return JsonResponse({'error': 'Faltan parámetros'}, status=400)
+
+            # Verificar si el sensor existe
+            try:
+                sensor = Sensor.objects.get(id=id_sensor)
+            except Sensor.DoesNotExist:
+                return JsonResponse({'error': f'Sensor con id {id_sensor} no encontrado'}, status=404)
+
+            # Verificar si el tipo de dato existe
+            try:
+                tipo_dato = Tipo_dato.objects.get(nombre_tipo_dato=tipo)
+            except Tipo_dato.DoesNotExist:
+                return JsonResponse({'error': f'Tipo de dato "{tipo}" no encontrado'}, status=404)
+
+            # Intentar guardar los datos en la base de datos
+            try:
+                Datos_sensores.objects.create(
+                    sensor=sensor,
+                    tipo_dato=tipo_dato,
+                    valor=valor
+                )
+                return JsonResponse({'message': 'Datos insertados correctamente'}, status=200)
+            except IntegrityError as e:
+                # En caso de error al insertar en la base de datos, guardar los datos en el archivo temporal
+                guardar_en_archivo_temporal(data)
+                return JsonResponse({'error': 'Base de datos no disponible, datos guardados temporalmente'}, status=500)
+            
+        except Exception as e:
+            # Si hay cualquier otra excepción, guardar los datos en el archivo temporal
+            guardar_en_archivo_temporal(data)
+            return JsonResponse({'error': str(e)}, status=400)
+
+    else:
+        return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
+
+def procesar_datos_temporales():
+    """
+    Procesa los datos almacenados en el archivo temporal y los inserta en la base de datos.
+    """
+    if os.path.exists(TEMP_FILE):
+        with open(TEMP_FILE, 'r') as f:
+            lines = f.readlines()
+
+        for line in lines:
+            timestamp, data_json = line.split(" - ")
+            data = json.loads(data_json)
+
+            # Reintentar insertar los datos en la base de datos
+            try:
+                id_sensor = data.get('id_sensor')
+                valor = data.get('valor')
+                tipo = data.get('tipo')
+
+                sensor = Sensor.objects.get(id=id_sensor)
+                tipo_dato = Tipo_dato.objects.get(nombre_tipo_dato=tipo)
+
+                Datos_sensores.objects.create(
+                    sensor=sensor,
+                    tipo_dato=tipo_dato,
+                    valor=valor
+                )
+                
+                # Si la inserción es exitosa, eliminar el registro del archivo
+                with open(TEMP_FILE, 'w') as f:
+                    f.writelines(lines[1:])
+                    
+            except Exception as e:
+                # Si ocurre un error, podemos registrar que el intento falló
+                print(f"Error al procesar datos: {e}")
+Guardar en un archivo temporal: La función guardar_en_archivo_temporal toma los datos recibidos y los guarda en un archivo .txt. El archivo se puede abrir en modo de adición ('a'), por lo que se agregan los datos al final del archivo sin sobrescribir lo que ya está guardado.
+
+Detectar caída de la base de datos: Se utiliza un bloque try-except para intentar guardar los datos en la base de datos. Si ocurre un error, como la caída de la base de datos, el sistema guarda los datos en el archivo temporal.
+
+Registro con timestamp: Los datos se registran junto con una marca de tiempo (fecha y hora) para poder procesarlos después, en el momento en que la base de datos esté disponible.
