@@ -48,8 +48,7 @@ def home(request):
         'hum_recent': hum_recent
     })
 
-def ver_datos(request):
-    return render(request, 'ver_mas.html')
+
 #Guardar datos de un sensor desde un esp32 
 #guardar archivos
 
