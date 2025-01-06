@@ -31,8 +31,9 @@ def home(request):
     )
 
     # Obtener los datos recientes de temperatura y humedad
-    temp_recent = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Temperatura').order_by('-fecha_registro')[:5]
-    hum_recent = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Humedad').order_by('-fecha_registro')[:5]
+
+    temp_recent = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Temperatura').order_by('-fecha_registro')[:5].select_related('sensor')
+    hum_recent = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Humedad').order_by('-fecha_registro')[:5].select_related('sensor')
 
     return render(request, 'home.html', {
         'temp_data': temp_data,
@@ -52,23 +53,7 @@ def ver_datos(request):
 #Guardar datos de un sensor desde un esp32 
 #guardar archivos
 
-def guardar_archivo(archivo):
-    """
-    Guarda el archivo recibido en la ubicación configurada.
-    Retorna la URL del archivo guardado.
-    """
-    try:
-        # Crear un almacenamiento de archivos usando FileSystemStorage
-        fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'archivos_sensores'))
-        
-        # Guardar el archivo en la ubicación deseada
-        archivo_guardado = fs.save(archivo.name, archivo)
-        
-        # Retornar la URL del archivo guardado
-        return fs.url(archivo_guardado)
-    
-    except Exception as e:
-        raise Exception(f"Error al guardar el archivo: {str(e)}")
+
     
 @api_view(['POST'])
 def guardar_datos_sensor(request):
@@ -116,6 +101,23 @@ def guardar_datos_sensor(request):
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)
     
+
+@api_view(['GET'])
+#mostrar actualizados
+def datos_recientes(request):
+    # Obtener los datos de temperatura y humedad más recientes
+    temp_data = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Temperatura').order_by('-fecha_registro')[:10].select_related('sensor')
+    hum_data = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Humedad').order_by('-fecha_registro')[:10].select_related('sensor')
+
+    # Serializar los datos a un formato adecuado para JSON
+    temp_data_serialized = list(temp_data.values('valor', 'fecha_registro', 'sensor__nombre_sensor', 'tipo_dato__nombre_tipo_dato'))
+    hum_data_serialized = list(hum_data.values('valor', 'fecha_registro', 'sensor__nombre_sensor', 'tipo_dato__nombre_tipo_dato'))
+
+    # Devolver los datos en formato JSON
+    return JsonResponse({
+        'temperature': temp_data_serialized,
+        'humidity': hum_data_serialized
+    })
 
 
 #mostrar los datos segun el tipo de dato que se elija
@@ -166,3 +168,20 @@ def detalle_dato(request):
     })
 
 
+def guardar_archivo(archivo):
+    """
+    Guarda el archivo recibido en la ubicación configurada.
+    Retorna la URL del archivo guardado.
+    """
+    try:
+        # Crear un almacenamiento de archivos usando FileSystemStorage
+        fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'archivos_sensores'))
+        
+        # Guardar el archivo en la ubicación deseada
+        archivo_guardado = fs.save(archivo.name, archivo)
+        
+        # Retornar la URL del archivo guardado
+        return fs.url(archivo_guardado)
+    
+    except Exception as e:
+        raise Exception(f"Error al guardar el archivo: {str(e)}")

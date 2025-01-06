@@ -34,9 +34,7 @@ body {
     font-size: var(--body-font-size);
     line-height: 1.6;
 }
-p{
-    color:#ffffff
-}
+
 h1, h2, h3, h4, h5, h6 {
     color: var(--primary-color);
     margin-bottom: var(--spacing-sm);
