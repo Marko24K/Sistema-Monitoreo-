@@ -89,13 +89,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function fetchData() {
         const url = '/api/datos_recientes/'; // Cambié la URL a la que definimos en urls.py
-    
+        
         fetch(url)
             .then(response => response.json())
-            .then(data => processData(data))
+            .then(data => {
+                console.log("Datos recibidos:", data);  // Muestra los datos completos
+                processData(data);
+            })
             .catch(error => console.error('Error al obtener los datos:', error));
     }
-    
 
     function processData(data) {
         const temperatureData = data.temperature;  
@@ -163,20 +165,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 <tr>
                     <td>${parseFloat(item.valor).toFixed(2)} °C</td>
                     <td>${moment(item.fecha).format('DD/MM/YYYY HH:mm')}</td>
-                    <td>${item.nombre_sensor}</td>
+                    <td>${item.sensor ? item.sensor.nombre_sensor : 'Desconocido'}</td>
                 </tr>
             `).join('')
             : '<tr><td colspan="3">No hay datos disponibles.</td></tr>';
-
+    
         const recentHum = humData.slice(-10).reverse();
         humRecentTableBody.innerHTML = recentHum.length
             ? recentHum.map(item => `
                 <tr>
                     <td>${parseFloat(item.valor).toFixed(2)} %</td>
                     <td>${moment(item.fecha).format('DD/MM/YYYY HH:mm')}</td>
-                    <td>${item.nombre_sensor}</td>
+                    <td>${item.sensor ? item.sensor.nombre_sensor : 'Desconocido'}</td>
                 </tr>
             `).join('')
             : '<tr><td colspan="3">No hay datos disponibles.</td></tr>';
     }
+    
 });

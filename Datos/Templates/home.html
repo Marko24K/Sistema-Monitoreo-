@@ -119,7 +119,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for temp in recent_data %} <!--etiqueta de plantilla (template tag) utilizada para hacer un bucle sobre una lista o conjunto de objetos en el contexto de la plantilla-->
+                                        {% for temp in temp_recent %} <!--etiqueta de plantilla (template tag) utilizada para hacer un bucle sobre una lista o conjunto de objetos en el contexto de la plantilla-->
                                         <tr>
                                             <td>{{ temp.valor }}</td>
                                             <td>{{ temp.fecha_registro }}</td>
@@ -151,7 +151,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for hum in recent_data %}
+                                        {% for hum in hum_recent %}
                                         <tr>
                                             <td>{{ hum.valor }}</td>
                                             <td>{{ hum.fecha_registro }}</td>

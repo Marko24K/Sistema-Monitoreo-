@@ -7,6 +7,8 @@ from rest_framework.decorators import api_view
 import os
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+from .serializer import DatosSensoresSerializer
+from rest_framework.response import Response
 
 
 # Create your views here.
@@ -104,18 +106,18 @@ def guardar_datos_sensor(request):
 @api_view(['GET'])
 #mostrar actualizados
 def datos_recientes(request):
-    # Obtener los datos de temperatura y humedad más recientes
-    temp_data = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Temperatura').order_by('-fecha_registro')[:10].select_related('sensor')
-    hum_data = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Humedad').order_by('-fecha_registro')[:10].select_related('sensor')
+    # Obtener los últimos datos de temperatura y humedad
+    temperature_data = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Temperatura').order_by('-fecha_registro')[:10]
+    humidity_data = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Humedad').order_by('-fecha_registro')[:10]
 
-    # Serializar los datos a un formato adecuado para JSON
-    temp_data_serialized = list(temp_data.values('valor', 'fecha_registro', 'sensor__nombre_sensor', 'tipo_dato__nombre_tipo_dato'))
-    hum_data_serialized = list(hum_data.values('valor', 'fecha_registro', 'sensor__nombre_sensor', 'tipo_dato__nombre_tipo_dato'))
+    # Serializar los datos
+    temperature_serializer = DatosSensoresSerializer(temperature_data, many=True)
+    humidity_serializer = DatosSensoresSerializer(humidity_data, many=True)
 
-    # Devolver los datos en formato JSON
-    return JsonResponse({
-        'temperature': temp_data_serialized,
-        'humidity': hum_data_serialized
+    # Retornar la respuesta JSON con los datos serializados
+    return Response({
+        'temperature': temperature_serializer.data,
+        'humidity': humidity_serializer.data
     })
 
 
