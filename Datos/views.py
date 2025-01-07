@@ -1,3 +1,4 @@
+from django.db import connections
 from django.shortcuts import render, get_object_or_404
 from .models import Sensor, Tipo_dato, Datos_sensores
 from django.http import Http404, JsonResponse
@@ -12,7 +13,12 @@ from rest_framework.response import Response
 
 
 # Create your views here.
-
+def revisar_conexion(): #revisa si la base de datos esta funcionando o noi
+    try:
+        connections['default'].ensure_connection()
+        return True
+    except Exception:
+        return False
 def home(request):
     # Obtener los datos más recientes de temperatura y humedad
     temp_data = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Temperatura').order_by('-fecha_registro')[:1]
@@ -34,8 +40,8 @@ def home(request):
 
     # Obtener los datos recientes de temperatura y humedad
 
-    temp_recent = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Temperatura').order_by('-fecha_registro')[:5].select_related('sensor')
-    hum_recent = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Humedad').order_by('-fecha_registro')[:5].select_related('sensor')
+    temp_recent = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Temperatura').order_by('-fecha_registro')[:5]
+    hum_recent = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Humedad').order_by('-fecha_registro')[:5]
 
     return render(request, 'home.html', {
         'temp_data': temp_data,
@@ -128,7 +134,6 @@ def detalle_dato(request):
     if dato not in ['Temperatura', 'Humedad']:  # Verifica que sea uno de los tipos esperados
         return render(request, 'home.html', {'error': 'Tipo de dato inválido.'})
     
-    # Get the Tipo_dato object based on the 'dato' parameter
     tipo_dato = get_object_or_404(Tipo_dato, nombre_tipo_dato=dato)
 
     try:

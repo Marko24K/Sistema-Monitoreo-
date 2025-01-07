@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-q(%tm=1)sj=$)iknc_u&68ww(r^r*_^m@^_r3(j17jmm5q*060
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+]
 
 
 # Application definition
@@ -143,3 +144,4 @@ import os
 # Directorio donde se guardarán los archivos
 MEDIA_URL = '/media/'  # URL para acceder a los archivos
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Carpeta en el servidor donde se almacenan los archivos
+BACKUP_DIR = os.path.join(BASE_DIR, 'backups')  # Carpeta en el servidor para respaldo
