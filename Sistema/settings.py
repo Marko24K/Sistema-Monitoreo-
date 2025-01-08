@@ -25,13 +25,6 @@ SECRET_KEY = 'django-insecure-q(%tm=1)sj=$)iknc_u&68ww(r^r*_^m@^_r3(j17jmm5q*060
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['7930-200-14-226-170.ngrok-free.app','127.0.0.1']
-CSRF_TRUSTED_ORIGINS =[
-    'https://7930-200-14-226-170.ngrok-free.app'
-    'https://*.ngrok-free.app',
-]
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -116,11 +109,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-
+# Ajuste de zona horaria a Chile
+TIME_ZONE = 'America/Santiago'  
+USE_TZ = True  
 USE_I18N = True
 
-USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)
@@ -147,3 +141,4 @@ import os
 # Directorio donde se guardarán los archivos
 MEDIA_URL = '/media/'  # URL para acceder a los archivos
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Carpeta en el servidor donde se almacenan los archivos
+BACKUP_DIR = os.path.join(BASE_DIR, 'backups')  # Carpeta en el servidor para respaldo

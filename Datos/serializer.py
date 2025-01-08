@@ -11,6 +11,7 @@ class SensorSerializer(serializers.ModelSerializer):
 # Serializador para el modelo Datos_sensores
 class DatosSensoresSerializer(serializers.ModelSerializer):
     sensor = SensorSerializer()  # Relación con el serializador del Sensor
+    
 
     class Meta:
         model = Datos_sensores
