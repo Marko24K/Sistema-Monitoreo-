@@ -10,7 +10,6 @@ from django.conf import settings
 from .serializer import DatosSensoresSerializer
 from rest_framework.response import Response
 
-
 # Create your views here.
 
 def home(request):

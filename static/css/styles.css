@@ -304,3 +304,27 @@ footer img {
 .justify-content-around {
     justify-content: space-around !important;
 }
+
+#termometro {
+    width: 50px; /* Ancho fijo del contenedor */
+    height: 300px;
+    border: 2px solid black;
+    margin-top: 20px;
+    background-color: #ccc;
+    position: relative;
+    overflow: hidden; /* Recorta cualquier contenido que sobresalga */
+}
+
+#nivel {
+    width: 100%; /* Asegura que el nivel no se salga */
+    max-width: 100%; /* Limita el ancho al 100% del contenedor */
+    position: absolute;
+    bottom: 0; /* Empieza desde el fondo del contenedor */
+    transition: all 0.5s;
+}
+
+#valor {
+    margin-top: 10px;
+    font-size: 24px;
+}
+

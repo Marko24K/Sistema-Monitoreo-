@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('obtener_temperatura/', views.datos_recientes, name='datos_recientes'),
     path('', views.home, name = 'home'),
     path('guardar_datos_sensor/', views.guardar_datos_sensor, name='guardar_datos_sensor'),
     path('detalle_dato/', views.detalle_dato, name='detalle_dato'),

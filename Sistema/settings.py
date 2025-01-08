@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-q(%tm=1)sj=$)iknc_u&68ww(r^r*_^m@^_r3(j17jmm5q*060
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['7930-200-14-226-170.ngrok-free.app','127.0.0.1']
+CSRF_TRUSTED_ORIGINS =[
+    'https://7930-200-14-226-170.ngrok-free.app'
+    'https://*.ngrok-free.app',
+]
 
 
 # Application definition
@@ -78,7 +82,7 @@ WSGI_APPLICATION = 'Sistema.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Humedal',
+        'NAME': 'humedal',
         'USER':'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
