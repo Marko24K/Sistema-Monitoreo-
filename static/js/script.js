@@ -1,3 +1,5 @@
+
+
 document.addEventListener("DOMContentLoaded", () => {
     let temperatureChart, humidityChart;
     const latestTemperatureElement = document.getElementById('latest-temperature');
@@ -88,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function fetchData() {
-        const url = '/api/datos_recientes/'; // Cambié la URL a la que definimos en urls.py
+        const url = '/api/datos_recientes/'; 
         
         fetch(url)
             .then(response => response.json())
@@ -140,23 +142,27 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('hum-min').textContent = humStats.min !== '--' ? `${humStats.min} %` : '-- %';
         document.getElementById('hum-avg').textContent = humStats.avg !== '--' ? `${humStats.avg} %` : '-- %';
     }
+
+
     function updateCharts(tempData, humData) {
         console.log('Temperature Data:', tempData);  // Verifica que los datos lleguen correctamente
         console.log('Humidity Data:', humData);
     
+        // Ordenar los datos por fecha
         tempData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
         humData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
     
-        
+        // Actualizar el gráfico de temperatura
         temperatureChart.data.labels = tempData.map(row => moment(row.fecha).toDate());
         temperatureChart.data.datasets[0].data = tempData.map(row => parseFloat(row.valor));
         temperatureChart.update();
     
-       
+        // Actualizar el gráfico de humedad
         humidityChart.data.labels = humData.map(row => moment(row.fecha).toDate());
         humidityChart.data.datasets[0].data = humData.map(row => parseFloat(row.valor));
         humidityChart.update();
     }
+
 
     function updateRecentTables(tempData, humData) {
         const recentTemp = tempData.slice(-10).reverse();
@@ -169,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </tr>
             `).join('')
             : '<tr><td colspan="3">No hay datos disponibles.</td></tr>';
-    
+
         const recentHum = humData.slice(-10).reverse();
         humRecentTableBody.innerHTML = recentHum.length
             ? recentHum.map(item => `

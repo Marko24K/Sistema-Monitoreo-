@@ -56,6 +56,12 @@ const int id_sensor_2 = 5;  // Barra inferior Derecha
 const int id_sensor_3 = 6;  // Barra inferior Izquierda
 const int id_sensor_4 = 4;  // Barra Superior Izquierda
 
+/*
+ if (!SPIFFS.begin(true)) {
+    Serial.println("Error al montar SPIFFS");
+    return;
+}
+*/
 void setup() {
   Serial.begin(115200);
 
@@ -77,7 +83,14 @@ void setup() {
   Serial.print("Dirección IP: ");
   Serial.println(WiFi.localIP());
 }
+/*
+  Se genera el envio de los datos leidos en formato JSON, 
 
+  id_sensor: id
+  valor: {0-100}
+  tipo: {Humedad | humedad de suelo | Temperatura}
+
+*/
 void enviarDato(int id_sensor, float valor, String tipo) {
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
@@ -103,6 +116,35 @@ void enviarDato(int id_sensor, float valor, String tipo) {
     Serial.println("Wi-Fi no conectado");
   }
 }
+
+/*
+  Se realiza un registro de un txt. 
+  Este es el formato
+
+  Fecha - Id_sensor - Tipo - Valor:00
+  [02-01-2025 12:25; Id_sensor:3; Tipo: Temperatura; Valor:25];
+
+  importante guardar el archivo aqui
+
+  C:\Users\Sala409-04\Documents\IOT
+  
+*/
+
+/*
+void RegistrarDatos(int id_sensor, float valor, String tipo) {
+  File file = SPIFFS.open("/datos.txt", FILE_APPEND);
+  if (!file) {
+    Serial.println("Error al abrir el archivo para escribir.");
+    return;
+  }
+
+  String fecha = String(__DATE__) + " " + String(__TIME__);
+  String logEntry = "[" + fecha + "; Id_sensor:" + String(id_sensor) + "; Tipo: " + tipo + "; Valor:" + String(valor, 1) + "]\n";
+  file.print(logEntry);
+  file.close();
+}
+*/
+
 void loop() { 
  
   float temperatura1 = dht1.readTemperature(); 
@@ -188,22 +230,7 @@ void loop() {
  
   delay(10000);
 
-
-
-//                                         ||||||||||||||   |||           |||      |||||||||||||||||||    |||||||          |||||||||||||||||||    |||||||||||||||||||    ||||||||||||||                                           //
-//                                         ||||||||||||||   |||           |||      |||||||||||||||||||    |||||||||        |||||||||||||||||||    |||||||||||||||||||    ||||||||||||||                                           //
-//                                         ||||||||||||||   |||           |||      |||||||||||||||||||    |||      |||     |||||||||||||||||||    |||||||||||||||||||    ||||||||||||||                                           //
-//                                         ||               |||           |||      |||                    |||      |||     |||                    |||                    ||                                                       //
-//                                         ||               |||           |||      |||                    |||      |||     |||                    |||                    ||                                                       //
-//                                         ||||||||||||||   |||||||||||||||||      |||||||||||||||||||    |||      |||     |||||||||||||||||||    ||||||||||||||||||     ||||||||||||||                                           //
-//                                         ||||||||||||||   |||||||||||||||||      |||||||||||||||||||    |||      |||     |||||||||||||||||||    ||||||||||||||||||     ||||||||||||||                                           //
-//                                         ||||||||||||||   |||||||||||||||||      |||||||||||||||||||    |||      |||     |||||||||||||||||||    ||||||||||||||||||     ||||||||||||||                                           //
-//                                                     ||   |||           |||      |||                    |||      |||     |||                    |||                                ||                                           //
-//                                                     ||   |||           |||      |||                    |||      |||     |||                    |||                                ||                                           //
-//                                                     ||   |||           |||      |||                    |||      |||     |||                    |||                                ||                                           //
-//                                          |||||||||||||   |||           |||      |||||||||||||||||||    |||      |||     |||||||||||||||||||    |||||||||||||||||||     |||||||||||||                                           //
-//                                          |||||||||||||   |||           |||      |||||||||||||||||||    |||||||||        |||||||||||||||||||    |||||||||||||||||||     |||||||||||||                                           //
-//                                          |||||||||||||   |||           |||      |||||||||||||||||||    |||||||          |||||||||||||||||||    |||||||||||||||||||     |||||||||||||                                           //
-            
 } 
+
+
  
