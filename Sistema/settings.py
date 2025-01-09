@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'Sistema.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'humedal',
+        'NAME': 'Humedal',
         'USER':'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
@@ -138,7 +138,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
  
 import os
 
-# Directorio donde se guardarán los archivos
-MEDIA_URL = '/media/'  # URL para acceder a los archivos
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Carpeta en el servidor donde se almacenan los archivos
-BACKUP_DIR = os.path.join(BASE_DIR, 'backups')  # Carpeta en el servidor para respaldo
+# Directorio donde se guardara el archivo de respaldo
+BACKUP_DIR = os.path.join(BASE_DIR, 'backup')  # Carpeta en el servidor para respaldo

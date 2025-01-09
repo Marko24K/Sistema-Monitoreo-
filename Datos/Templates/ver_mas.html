@@ -136,7 +136,7 @@
                 }
             });
         
-            // Función para actualizar los datos del gráfico usando AJAX
+            // Función para actualizar los datos del gráfico y la tabla usando AJAX
             function updateChartData(dato) {
                 $.ajax({
                     url: "{% url 'detalle_dato' %}",
@@ -146,7 +146,7 @@
                         'X-Requested-With': 'XMLHttpRequest'  // Indicamos que es una solicitud AJAX
                     },
                     success: function (response) {
-                        // Procesar los datos recibidos
+                        // Procesar los datos recibidos para el gráfico
                         const newChartData = response.chart_data;
                         const newLabels = newChartData.map(item => item.fecha);
                         const newDataValues = newChartData.map(item => item.valor);
@@ -155,6 +155,22 @@
                         detailedChart.data.labels = newLabels;
                         detailedChart.data.datasets[0].data = newDataValues;
                         detailedChart.update();  // Redibujar el gráfico con los nuevos datos
+        
+                        // Actualizar la tabla con los nuevos datos (no manipulamos las fechas aquí)
+                        const tableBody = document.querySelector('#dataTable tbody');
+                        tableBody.innerHTML = '';  // Limpiar la tabla antes de agregar los nuevos datos
+        
+                        // Mostrar las fechas tal como vienen del backend sin modificar
+                        response.table_data.forEach(function(row) {
+                            const rowElement = document.createElement('tr');
+                            rowElement.innerHTML = `
+                                <td>${row.valor}</td>
+                                <td>${row.fecha}</td>  <!-- Mostrar la fecha tal como está -->
+                                <td>${row.sensor}</td>
+                                <td>${row.tipo_sensor}</td>
+                            `;
+                            tableBody.appendChild(rowElement);
+                        });
                     },
                     error: function (xhr, status, error) {
                         console.error("Error al actualizar los datos: " + error);
@@ -167,6 +183,7 @@
                 updateChartData('{{ dato }}');  // Actualiza con el tipo de dato actual
             }, 5000);  // 5000 ms = 5 segundos
         });
+        
     </script>
     
 </body>
