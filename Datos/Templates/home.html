@@ -29,29 +29,31 @@
     <main class="container my-4">
         <section class="mb-5">
             <div class="card shadow-sm p-4">
-                <div class="row align-items-center">
+                <div class="row" style="text-align: center">
                     <div class="col-6">
-                        <h1 class="text-danger" id="latest-temperature">
-                            <i class="fas fa-thermometer-half me-2"></i> Temperatura
-                            {{ temp_data.0.valor|default:"--" }} °C
+                        <h1 class="text-danger">
+                            <i class="fas fa-thermometer-half me-2"></i> Temperatura mas reciente
+                            <p id="latest-temperature"></p>
                         </h1>
                     </div>
 
                     <div class="col-6">
-                        <h1 class="text-primary" id="latest-humidity">
-                            <i class="fas fa-tint me-2"></i> Humedad
-                            {{ humidity_data.0.valor|default:"--" }} %
+                        <h1 class="text-primary">
+                            <i class="fas fa-tint me-2"></i> Humedad mas reciente
+                            <p class="text-primary" id="latest-humidity"></p>
                         </h1>
                     </div>
                 </div>
-                <div class="row align-items-center">
 
-                    <div class="col-2" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                        <div id="termometro" style="text-align: center;">
-                            <div id="nivel" style="height: 20%;"></div>
-                        </div>
-                        <div id="valor" style="text-align: center;">Temperatura: {{ temp_data.0.valor|default:"--" }} °C</div>
-                    </div>                 
+                <div class="row align-items-center">
+                    <div class="col-2" style="display: flex; flex-direction: column; justify-content: center; align-items: center;"> 
+                        <div id="img-termometro">
+                            <img src="{% static 'img/term.png'%}" alt="img_termometro">
+                            <div id="termometro">
+                                <div id="nivel"></div>
+                            </div>
+                        </div>                     
+                    </div>                    
 
                     <div class="col-4">
                         <div class="stat-card">
@@ -64,10 +66,6 @@
                         </div>
                     </div>
 
-                    <div class="col-2">
-                        recuadro 3
-                    </div>
-
                     <div class="col-4">
                         <div class="stat-card">
                             <h5 class="text-primary">
@@ -77,6 +75,10 @@
                             <p><strong>Mínimo:</strong> <span id="hum-min">{{ hum_min|default:"--" }} %</span></p>
                             <p><strong>Promedio:</strong> <span id="hum-avg">{{ hum_avg|default:"--" }} %</span></p>
                         </div>
+                    </div>
+
+                    <div class="col-2">
+                        recuadro 3
                     </div>
                 </div>
             </div>
@@ -143,6 +145,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
                         <div class="card-body">
@@ -190,6 +193,15 @@
     
     <script src="{% static 'js/script.js' %}"></script>
     <script src="{% static 'js/termometro.js' %}"></script>
+    <script>
+        // Valor predefinido de temperatura "x"
+        const temperaturaInicial = {{temp_data.0.valor}}; // Puedes cambiar este valor a lo que necesites
+
+        // Llamamos a la función automáticamente al cargar la página
+        window.onload = function() {
+            ajustarTermometro(temperaturaInicial);
+        };
+    </script>
 </body>
 
 </html>

@@ -1,5 +1,3 @@
-
-
 document.addEventListener("DOMContentLoaded", () => {
     let temperatureChart, humidityChart;
     const latestTemperatureElement = document.getElementById('latest-temperature');
@@ -7,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const tempRecentTableBody = document.querySelector('#temp-recent-table tbody');
     const humRecentTableBody = document.querySelector('#hum-recent-table tbody');
-
+    
     initializeCharts();
     fetchData();
     setInterval(fetchData, 10000); 

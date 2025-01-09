@@ -305,26 +305,41 @@ footer img {
     justify-content: space-around !important;
 }
 
-#termometro {
-    width: 50px; /* Ancho fijo del contenedor */
-    height: 300px;
-    border: 2px solid black;
-    margin-top: 20px;
-    background-color: #ccc;
+#img-termometro {
     position: relative;
-    overflow: hidden; /* Recorta cualquier contenido que sobresalga */
+    width: 160px;  /* Ajusta este valor según el tamaño de la imagen */
+    height: 320px; /* Ajusta este valor según el tamaño de la imagen */
+    overflow: hidden; /* Esto asegura que los elementos hijos no se salgan del contenedor */
+}
+
+#termometro {
+    position: absolute;
+    top: 40%;  /* Ajusta según el lugar donde quieras que aparezca el termómetro */
+    left: 50%; /* Alineación centrada */
+    transform: translate(-50%, -50%);
+    width: 25px; /* Ajusta el ancho del termómetro */
+    height: 220px; /* Ajusta la altura del termómetro */
+    background-color: #eee; /* Color de fondo del termómetro */
+    border-radius: 10px;
+    border: 2px solid #333; /* Bordes del termómetro */
 }
 
 #nivel {
-    width: 100%; /* Asegura que el nivel no se salga */
-    max-width: 100%; /* Limita el ancho al 100% del contenedor */
     position: absolute;
-    bottom: 0; /* Empieza desde el fondo del contenedor */
-    transition: all 0.5s;
+    bottom: 0;
+    width: 100%;
+    background-color: red; /* Color del nivel de temperatura */
+    height: 0; /* Esto se ajustará dinámicamente con JS */
+    transition: height 0.5s ease; /* Animación suave */
+}
+
+img {
+    width: 100%; /* La imagen ocupa todo el ancho del contenedor */
+    height: 100%; /* La imagen ocupa todo el alto del contenedor */
+    object-fit: cover; /* Asegura que la imagen cubra todo el espacio sin distorsionarse */
 }
 
 #valor {
     margin-top: 10px;
     font-size: 24px;
 }
-
