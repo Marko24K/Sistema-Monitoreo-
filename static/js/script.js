@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function fetchData() {
-        const url = '/api/datos_recientes/'; 
+        const url = 'api/datos_recientes/'; 
         
         fetch(url)
             .then(response => response.json())

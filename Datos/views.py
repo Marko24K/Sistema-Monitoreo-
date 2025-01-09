@@ -1,23 +1,23 @@
 import datetime
+import os
 from django.db import connections
 from django.shortcuts import render, get_object_or_404
-
+from django.utils import timezone
 from Sistema.settings import BACKUP_DIR
 from .models import Sensor, Tipo_dato, Datos_sensores
 from django.http import Http404, JsonResponse
 from django.db.models import Avg, Max, Min
 import json
 from rest_framework.decorators import api_view
-import os
-from django.core.files.storage import FileSystemStorage
+
 from django.conf import settings
 from .serializer import DatosSensoresSerializer
 from rest_framework.response import Response
 
 def home(request):
     # Obtener los datos más recientes de temperatura y humedad
-    temp_data = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Temperatura').order_by('-fecha_registro')[:1]
-    humidity_data = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Humedad').order_by('-fecha_registro')[:1]
+    temp_data = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Temperatura').order_by('-fecha_registro')[:10]
+    humidity_data = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Humedad').order_by('-fecha_registro')[:10]
 
     # Obtener las estadísticas para temperatura
     temp_stats = Datos_sensores.objects.filter(tipo_dato__nombre_tipo_dato='Temperatura').aggregate(
@@ -53,7 +53,6 @@ def home(request):
 
 
 #Guardar datos de un sensor desde un esp32 
-#guardar archivos
 @api_view(['POST'])
 def guardar_datos_sensor(request):
     if request.method == 'POST':
@@ -79,27 +78,64 @@ def guardar_datos_sensor(request):
                 tipo_dato = Tipo_dato.objects.get(nombre_tipo_dato=tipo)
             except Tipo_dato.DoesNotExist:
                 return JsonResponse({'error': f'Tipo de dato "{tipo}" no encontrado'}, status=404)
-            
-            
+
+             # Guardar los datos en un archivo de texto como respaldo primero
+            backup_data = {
+                'id_sensor': id_sensor,
+                'valor': valor,
+                'tipo': tipo,
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+
+            # Definir el archivo de respaldo único
+            BACKUP_DIR = os.path.join(settings.BASE_DIR, 'backup')  # Carpeta para respaldo
+            os.makedirs(BACKUP_DIR, exist_ok=True)  # Crear el directorio si no existe
+            backup_filename = os.path.join(BACKUP_DIR, 'backup_data.txt')  # Archivo único de respaldo
+
+            # Escribir los datos en el archivo de respaldo (en modo 'a' para anexar)
+            with open(backup_filename, 'a') as f:
+                # Si es la primera vez que se guarda en el archivo, escribir el encabezado
+                if f.tell() == 0:  # Si el archivo está vacío
+                    f.write('id_sensor\tvalor\ttipo\ttimestamp\n')  # Encabezado con tabuladores
+                # Escribir los datos de respaldo en formato de columnas
+                f.write(f"{backup_data['id_sensor']}\t{backup_data['valor']}\t{backup_data['tipo']}\t{backup_data['timestamp']}\n")
+
 
             # Buscar el sensor y tipo de dato correspondiente
             sensor = Sensor.objects.get(id=id_sensor)
             tipo_dato = Tipo_dato.objects.get(nombre_tipo_dato=tipo)
             
-            # Crear el objeto de datos del sensor
-            Datos_sensores.objects.create(
-                sensor=sensor,
-                tipo_dato=tipo_dato,
-                valor=valor
-            )
+            # Intentar insertar los datos en la base de datos
+            try:
+                # Verificar si el sensor existe
+                sensor = Sensor.objects.get(id=id_sensor)
+                
+                # Verificar si el tipo de dato existe
+                tipo_dato = Tipo_dato.objects.get(nombre_tipo_dato=tipo)
+
+                # Crear el objeto de datos del sensor en la base de datos
+                Datos_sensores.objects.create(
+                    sensor=sensor,
+                    tipo_dato=tipo_dato,
+                    valor=valor
+                )
+                
+                return JsonResponse({'message': 'Datos insertados correctamente en la base de datos y respaldo actualizado'}, status=200)
             
-            
-            return JsonResponse({'message': 'Datos insertados correctamente'}, status=200)
+            except Exception as db_error:
+                # Si ocurre un error con la base de datos, se maneja aquí
+                return JsonResponse({'error': f'Error al insertar en la base de datos: {str(db_error)}. Los datos se han guardado en el archivo de respaldo.'}, status=500)
+        
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)
     
+
+#guardar respaldo en un txt
+#
+
+
 
 @api_view(['GET'])
 #mostrar actualizados
@@ -120,23 +156,21 @@ def datos_recientes(request):
 
 
 #mostrar los datos segun el tipo de dato que se elija
-
-
 def detalle_dato(request):
     dato = request.GET.get('dato', None)
     if dato not in ['Temperatura', 'Humedad']:
         return JsonResponse({'error': 'Tipo de dato inválido.'})
 
     tipo_dato = get_object_or_404(Tipo_dato, nombre_tipo_dato=dato)
-    datos_sensores = Datos_sensores.objects.filter(tipo_dato=tipo_dato).order_by('-fecha_registro')
-
+    datos_sensores = Datos_sensores.objects.filter(tipo_dato=tipo_dato).order_by('-fecha_registro')[:10]
+     
     # Recolecta los datos para el gráfico
     chart_data = []
     for data_point in datos_sensores:
         chart_data.append({
-            'fecha': data_point.fecha_registro.strftime('%Y-%m-%d %H:%M:%S'),
-            'valor': data_point.valor,
-        })
+        'fecha': data_point.fecha_registro.strftime('%Y-%m-%d %H:%M:%S%z'),
+        'valor': data_point.valor,
+    })
 
     # Verificar si la solicitud es AJAX usando el header HTTP_X_REQUESTED_WITH
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
