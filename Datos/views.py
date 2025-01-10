@@ -132,11 +132,6 @@ def guardar_datos_sensor(request):
         return JsonResponse({'error': 'Método no permitido'}, status=405)
     
 
-#guardar respaldo en un txt
-#
-
-
-
 @api_view(['GET'])
 #mostrar actualizados
 def datos_recientes(request):
