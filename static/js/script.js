@@ -141,26 +141,24 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('hum-avg').textContent = humStats.avg !== '--' ? `${humStats.avg} %` : '-- %';
     }
 
-
     function updateCharts(tempData, humData) {
         console.log('Temperature Data:', tempData);  // Verifica que los datos lleguen correctamente
         console.log('Humidity Data:', humData);
-    
+        
         // Ordenar los datos por fecha
-        tempData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-        humData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+        tempData.sort((a, b) => new Date(a.fecha_registro) - new Date(b.fecha_registro));
+        humData.sort((a, b) => new Date(a.fecha_registro) - new Date(b.fecha_registro));
     
         // Actualizar el gráfico de temperatura
-        temperatureChart.data.labels = tempData.map(row => moment(row.fecha).toDate());
+        temperatureChart.data.labels = tempData.map(row => moment(row.fecha_registro).format('YYYY-MM-DD HH:mm:ss')); // Mostrar la fecha en formato legible
         temperatureChart.data.datasets[0].data = tempData.map(row => parseFloat(row.valor));
         temperatureChart.update();
     
         // Actualizar el gráfico de humedad
-        humidityChart.data.labels = humData.map(row => moment(row.fecha).toDate());
+        humidityChart.data.labels = humData.map(row => moment(row.fecha_registro).format('YYYY-MM-DD HH:mm:ss')); // Mostrar la fecha en formato legible
         humidityChart.data.datasets[0].data = humData.map(row => parseFloat(row.valor));
         humidityChart.update();
     }
-
 
     function updateRecentTables(tempData, humData) {
         const recentTemp = tempData.slice(-10).reverse();
@@ -168,22 +166,24 @@ document.addEventListener("DOMContentLoaded", () => {
             ? recentTemp.map(item => `
                 <tr>
                     <td>${parseFloat(item.valor).toFixed(2)} °C</td>
-                    <td>${moment(item.fecha).format('DD/MM/YYYY HH:mm')}</td>
-                    <td>${item.sensor ? item.sensor.nombre_sensor : 'Desconocido'}</td>
+                    <td>${moment(item.fecha_registro).format('DD/MM/YYYY HH:mm')}</td>
+                    <td>${item.nombre_sensor || 'Desconocido'}</td>  <!-- Nombre del Sensor -->
+                    <td>${item.id_sensor || 'Desconocido'}</td>  <!-- ID del Sensor -->
                 </tr>
             `).join('')
-            : '<tr><td colspan="3">No hay datos disponibles.</td></tr>';
-
+            : '<tr><td colspan="4">No hay datos disponibles.</td></tr>';
+    
         const recentHum = humData.slice(-10).reverse();
         humRecentTableBody.innerHTML = recentHum.length
             ? recentHum.map(item => `
                 <tr>
                     <td>${parseFloat(item.valor).toFixed(2)} %</td>
-                    <td>${moment(item.fecha).format('DD/MM/YYYY HH:mm')}</td>
-                    <td>${item.sensor ? item.sensor.nombre_sensor : 'Desconocido'}</td>
+                    <td>${moment(item.fecha_registro).format('DD/MM/YYYY HH:mm')}</td>
+                    <td>${item.nombre_sensor || 'Desconocido'}</td>  <!-- Nombre del Sensor -->
+                    <td>${item.id_sensor || 'Desconocido'}</td>  <!-- ID del Sensor -->
                 </tr>
             `).join('')
-            : '<tr><td colspan="3">No hay datos disponibles.</td></tr>';
+            : '<tr><td colspan="4">No hay datos disponibles.</td></tr>';
     }
     
 });

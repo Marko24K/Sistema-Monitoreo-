@@ -33,15 +33,14 @@
                     <div class="col-6">
                         <h1 class="text-danger">
                             <i class="fas fa-thermometer-half me-2"></i> Temperatura mas reciente
-                            <p id="latest-temperature"></p>
+                            <p id="latest-temperature">{{ temp_data.0.valor }} °C</p>
                         </h1>
                     </div>
 
                     <div class="col-6">
                         <h1 class="text-primary">
                             <i class="fas fa-tint me-2"></i> Humedad mas reciente
-                            <p class="text-primary" id="latest-humidity"></p>
-                        </h1>
+                            <p id="latest-humidity">{{ humidity_data.0.valor }} %</p>                        </h1>
                     </div>
                 </div>
 
@@ -63,6 +62,7 @@
                             <p><strong>Máximo:</strong> <span id="temp-max">{{ temp_max|default:"--" }} °C</span></p>
                             <p><strong>Mínimo:</strong> <span id="temp-min">{{ temp_min|default:"--" }} °C</span></p>
                             <p><strong>Promedio:</strong> <span id="temp-avg">{{ temp_avg|default:"--" }} °C</span></p>
+                            
                         </div>
                     </div>
 
@@ -74,6 +74,7 @@
                             <p><strong>Máximo:</strong> <span id="hum-max">{{ hum_max|default:"--" }} %</span></p>
                             <p><strong>Mínimo:</strong> <span id="hum-min">{{ hum_min|default:"--" }} %</span></p>
                             <p><strong>Promedio:</strong> <span id="hum-avg">{{ hum_avg|default:"--" }} %</span></p>
+                            
                         </div>
                     </div>
 
@@ -134,7 +135,7 @@
                             <tr>
                                 <td>{{ temp.valor }}</td>
                                 <td>{{ temp.fecha_registro }}</td>
-                                <td>{{ temp.id_sensor.nombre_sensor }}</td> <!-- Accedemos a través de id_sensor -->
+                                <td>{{ temp.id_sensor.nombre_sensor }}</td> <!-- Accedemos al nombre del sensor -->
                                 <td>{{ temp.id_sensor.id_sensor }}</td> <!-- ID del Sensor -->
                             </tr>
                             {% empty %}
@@ -143,7 +144,7 @@
                         </tbody>
                     </table>
                 </div>
-                <a href="{% url 'detalle_dato' %}?dato=Temperatura" class="btn btn-primary btn-sm mt-3">Ver más</a>
+                <a href="#" class="btn btn-primary btn-sm mt-3">Ver más</a>
             </div>
         </div>
     </div>
@@ -169,7 +170,7 @@
                                 <tr>
                                     <td>{{ hum.valor }}</td>
                                     <td>{{ hum.fecha_registro }}</td>
-                                    <td>{{ hum.id_sensor.nombre_sensor }}</td> <!-- Accedemos a través de id_sensor -->
+                                    <td>{{ hum.id_sensor.nombre_sensor }}</td> <!-- Accedemos al nombre del sensor -->
                                     <td>{{ hum.id_sensor.id_sensor }}</td> <!-- ID del Sensor -->
                                 </tr>
                                 {% empty %}
@@ -178,7 +179,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <a href="{% url 'detalle_dato' %}?dato=Humedad" class="btn btn-primary btn-sm mt-3">Ver más</a>
+                    <a href="#" class="btn btn-primary btn-sm mt-3">Ver más</a>
                 
                         </div>
                     </div>
