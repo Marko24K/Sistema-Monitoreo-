@@ -110,14 +110,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateLatestValues(tempData, humData) {
-        latestTemperatureElement.textContent = tempData.length
+        const latestTemperature = tempData.length
             ? `${parseFloat(tempData[tempData.length - 1].valor).toFixed(2)} °C`
             : '-- °C';
-
-        latestHumidityElement.textContent = humData.length
-            ? `${parseFloat(humData[humData.length - 1].valor).toFixed(2)} %`
+    
+        // Actualizar el elemento HTML
+        latestTemperatureElement.textContent = latestTemperature;
+        // Guardar en localStorage
+        localStorage.setItem('latestTemperature', latestTemperature);
+    
+        const latestHumidity = humData.length
+            ? `${parseFloat(humData[tempData.length - 1].valor).toFixed(2)} %`
             : '-- %';
+    
+        latestHumidityElement.textContent = latestHumidity;
+        localStorage.setItem('latestHumidity', latestHumidity);
     }
+    
 
     function updateStatistics(tempData, humData) {
         const calculateStats = (data, unit) => {

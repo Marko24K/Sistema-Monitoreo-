@@ -48,12 +48,14 @@
                 <div class="row align-items-center">
                     <div class="col-2" style="display: flex; flex-direction: column; justify-content: center; align-items: center;"> 
                         <div id="img-termometro">
-                            <img src="{% static 'img/term.png'%}" alt="img_termometro">
+                            <img src="{% static 'img/term.png'%}" alt="img_termometro" style="width: 100%;height: 100%; object-fit: cover; position: absolute;">
                             <div id="termometro">
                                 <div id="nivel"></div>
                             </div>
-                        </div>                     
-                    </div>                    
+                            <div id="valor"></div>
+                        </div>
+                    </div>
+                                     
 
                     <div class="col-4">
                         <div class="stat-card">
@@ -78,7 +80,7 @@
                     </div>
 
                     <div class="col-2">
-                        recuadro 3
+                        <!-- recuadro numero 3 -->
                     </div>
                 </div>
             </div>
@@ -198,15 +200,7 @@
     
     <script src="{% static 'js/script.js' %}"></script>
     <script src="{% static 'js/termometro.js' %}"></script>
-    <script>
-        // Valor predefinido de temperatura "x"
-        const temperaturaInicial = {{temp_data.0.valor}}; // Puedes cambiar este valor a lo que necesites
-
-        // Llamamos a la función automáticamente al cargar la página
-        window.onload = function() {
-            ajustarTermometro(temperaturaInicial);
-        };
-    </script>
+    
 </body>
 
 </html>

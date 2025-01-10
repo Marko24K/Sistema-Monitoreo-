@@ -306,40 +306,43 @@ footer img {
 }
 
 #img-termometro {
-    position: relative;
-    width: 160px;  /* Ajusta este valor según el tamaño de la imagen */
-    height: 320px; /* Ajusta este valor según el tamaño de la imagen */
-    overflow: hidden; /* Esto asegura que los elementos hijos no se salgan del contenedor */
+    position: relative; /* Necesario para que el posicionamiento absoluto funcione en #termometro */
+    width: 160px;
+    height: 320px;
+    background-color: transparent;
+    overflow: hidden;
 }
 
-#termometro {
-    position: absolute;
-    top: 40%;  /* Ajusta según el lugar donde quieras que aparezca el termómetro */
-    left: 50%; /* Alineación centrada */
-    transform: translate(-50%, -50%);
-    width: 25px; /* Ajusta el ancho del termómetro */
-    height: 220px; /* Ajusta la altura del termómetro */
-    background-color: #eee; /* Color de fondo del termómetro */
+#termometro { 
+    width: 30px;
+    height: 200px;
+    border: 2px solid black;
     border-radius: 10px;
-    border: 2px solid #333; /* Bordes del termómetro */
+    position: absolute;  /* Posicionamiento absoluto dentro del contenedor padre */
+    top: 38%;  /* 50% desde la parte superior */
+    left: 50%; /* 50% desde el borde izquierdo */
+    transform: translate(-50%, -50%);  /* Ajusta la posición para centrar */
+    overflow: hidden;
+    background-color: #ddd; /* Fondo del termómetro */
 }
 
 #nivel {
+    width: 100%; /* Ocupa todo el ancho */
     position: absolute;
-    bottom: 0;
-    width: 100%;
-    background-color: red; /* Color del nivel de temperatura */
-    height: 0; /* Esto se ajustará dinámicamente con JS */
-    transition: height 0.5s ease; /* Animación suave */
-}
-
-img {
-    width: 100%; /* La imagen ocupa todo el ancho del contenedor */
-    height: 100%; /* La imagen ocupa todo el alto del contenedor */
-    object-fit: cover; /* Asegura que la imagen cubra todo el espacio sin distorsionarse */
+    bottom: 0; /* Inicia desde la base */
+    background-color: red; /* Color inicial */
+    height: 0; /* Altura dinámica, comienza en 0 */
+    transition: height 0.5s; /* Animación suave al cambiar la altura */
 }
 
 #valor {
+    top: 74%;  /* 50% desde la parte superior */
+    left: 34%; /* 50% desde el borde izquierdo */
+    bottom: 0;
     margin-top: 10px;
     font-size: 24px;
+    position: absolute;
+    font-size: 24px; /* Tamaño de fuente */
+    font-family: Arial, sans-serif; /* Familia de fuente */
+    font-weight: bold; /* Negrita */
 }
