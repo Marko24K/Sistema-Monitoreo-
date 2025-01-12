@@ -1,0 +1,33 @@
+/* Contenedor de imagen */
+.contenedor-imagen {
+    width: 80%;  /* Ajusta el tamaño a un porcentaje para hacerlo más responsivo */
+    height: 80%;
+    display: flex;
+    justify-content: flex-end; /* Alinea la imagen a la derecha */
+    align-items: center;
+    margin: 10px 0;
+    overflow: hidden;
+}
+.contenedor-imagen img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+/* Estilos para el input tipo file */
+input[type="file"] {
+    margin: 10px 0;
+    display: block; /* Asegura que ocupe el espacio completo disponible */
+    width: 100%; /* Hace que el campo de entrada ocupe todo el ancho disponible */
+}
+
+/* Hacer que el diseño sea más responsivo */
+@media (max-width: 768px) {
+    .contenedor-imagen, .contenedor-formulario {
+        width: 80%;  /* Ajusta el tamaño a un 80% en pantallas pequeñas */
+    }
+
+    .contenedor-formulario {
+        padding: 15px 20px;  /* Reduce el padding para pantallas pequeñas */
+    }
+}

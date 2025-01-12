@@ -20,6 +20,9 @@ from Datos import views
 from django.conf.urls.static import static
 from django.conf import settings
 urlpatterns = [
+    #---------------agregado por felipe---------------
+    path('registro_parcela/', views.registro_parcela, name='registro_parcela'),
+    #-------------------------------------------------
     path('admin/', admin.site.urls),
     path('obtener_temperatura/', views.datos_recientes, name='datos_recientes'),
     path('', views.home, name = 'home'),

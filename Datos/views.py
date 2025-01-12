@@ -12,6 +12,10 @@ from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
 from rest_framework.response import Response
+#--------------agregado por felipe--------------
+def registro_parcela(request):
+    return render(request, 'registro_parcela.html')
+#-----------------------------------------------
 
 def home(request):
     # Obtener los datos más recientes de temperatura y humedad

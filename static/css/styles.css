@@ -305,12 +305,20 @@ footer img {
     justify-content: space-around !important;
 }
 
-#img-termometro {
+#cont-termometro {
     position: relative; /* Necesario para que el posicionamiento absoluto funcione en #termometro */
     width: 160px;
     height: 320px;
     background-color: transparent;
     overflow: hidden;
+}
+
+#img_termometro {
+    width: 80%;
+    height: 100%; 
+    object-fit:fill; 
+    position: absolute; 
+    left: 10%;
 }
 
 #termometro { 
@@ -319,7 +327,7 @@ footer img {
     border: 2px solid black;
     border-radius: 10px;
     position: absolute;  /* Posicionamiento absoluto dentro del contenedor padre */
-    top: 38%;  /* 50% desde la parte superior */
+    top: 38%;  /* 38% desde la parte superior */
     left: 50%; /* 50% desde el borde izquierdo */
     transform: translate(-50%, -50%);  /* Ajusta la posición para centrar */
     overflow: hidden;
@@ -337,7 +345,7 @@ footer img {
 
 #valor {
     top: 74%;  /* 50% desde la parte superior */
-    left: 34%; /* 50% desde el borde izquierdo */
+    left: 30%; /* 50% desde el borde izquierdo */
     bottom: 0;
     margin-top: 10px;
     font-size: 24px;
