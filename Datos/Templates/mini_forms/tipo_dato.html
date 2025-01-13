@@ -1,0 +1,30 @@
+<div class="modal">
+    <h2>Formulario</h2>
+    <form id="form_explanta">
+        <div class="row">
+            <div class="col-6">
+                <label for="nombre_dato" class="form-label"> Inserte el nombre del dato </label>
+                <input  type="text" 
+                        class="form-control" 
+                        id="nombre_dato"
+                        name="nombre_dato"
+                        required
+                        maxlength="50" 
+                        pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" 
+                        title="Solo se permiten caracteres alfabéticos, numéricos">
+
+                <label for="Unidad_medida" class="form-label">Inserte la unidad de medida</label>
+                <input  type="text" 
+                        class="form-control" 
+                        id="Unidad_medida"
+                        name="Unidad_medida"
+                        required
+                        maxlength="50" 
+                        pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" 
+                        title="Solo se permiten caracteres alfabéticos, numéricos">
+            </div>
+        </div>
+            <button type="submit">Enviar</button>
+            <button type="button" id="closeModal">Cerrar</button>
+    </form>
+</div>

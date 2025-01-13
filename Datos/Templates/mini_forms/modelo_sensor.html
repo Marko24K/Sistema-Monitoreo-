@@ -1,0 +1,25 @@
+<div class="modal">
+    <h2>Formulario</h2>
+    <form id="form_explanta">
+        <div class="row">
+            <div class="col-6">
+                <label for="nombre_sensor" class="form-label"> Inserte el nombre del sensor </label>
+                <input  type="text" 
+                        class="form-control" 
+                        id="nombre_sensor"
+                        name="nombre_sensor"
+                        required
+                        maxlength="50" 
+                        pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" 
+                        title="Solo se permiten caracteres alfabéticos, numéricos">
+
+                <div class="col-6">
+                    <label class="text-normal text-dark form-label">Descripcion del sensor</label><br>
+                    <textarea id="Descripcion_sensor" name="Descripcion_sensor" rows="6" required></textarea>
+                </div>
+            </div>
+        </div>
+            <button type="submit">Enviar</button>
+            <button type="button" id="closeModal">Cerrar</button>
+    </form>
+</div>

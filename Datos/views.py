@@ -16,6 +16,9 @@ from rest_framework.response import Response
 def registro_parcela(request):
     return render(request, 'registro_parcela.html')
 
+def registro_planta(request):
+    return render(request, 'registro_planta.html')
+
 def tipo_planta(request):
     return render(request, 'tipo_planta.html')
 
@@ -25,9 +28,9 @@ def bt_varios(request):
 def modal_view(request):
     form_type = request.GET.get('form_type', 'form1')  # Obtén el tipo de formulario desde la URL
     if form_type == "form1":
-        return render(request, 'planta.html')
+        return render(request, 'mini_forms/planta.html')
     elif form_type == "form2":
-        return render(request, 'ex_planta.html')
+        return render(request, 'mini_forms/modelo_sensor.html')
     """
     elif form_type == "form3":
         return render(request, 'template_cualquiera.html')
