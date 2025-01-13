@@ -26,7 +26,7 @@
     <main class="container my-4">
         <section class="mb-5">
             <div class="card shadow-sm p-4">
-                <form id="registro_parcela">
+                <form id="form_parcela">
                     <div class="row" style="text-align: center">
                         <div class="col-6">
                             <div class="p-6">
@@ -71,9 +71,7 @@
                                     id="val_direccion_p" 
                                     required
                                     maxlength="50" 
-                                    placeholder="EJ: Subida Leopoldo Carvallo 270, 2360004 Playa Ancha, Valparaíso"
-                                    pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" 
-                                    title="Solo se permiten caracteres alfabéticos y numericos">
+                                    placeholder="EJ: Subida Leopoldo Carvallo 270, 2360004 Playa Ancha, Valparaíso">
                             
                             <div class="row" style="text-align: center">
                                 <div class="col-6">
@@ -110,7 +108,7 @@
                                         max="1000000" 
                                         step="0.01"
                                         title="Solo se permiten caracteres numericos positivos">
-                                    medida en metros desde el meridiano central de la zona UTM
+                                    <!-- medida en metros desde el meridiano central de la zona UTM -->
                                 </div>
 
                                 <div class="col-6">
@@ -124,17 +122,33 @@
                                         max="10000000"
                                         step="0.01" 
                                         title="Solo se permiten caracteres numericos positivos">
-                                    medida en metros desde el ecuador en el sistema UTM
+                                    <!-- medida en metros desde el ecuador en el sistema UTM -->
+                                </div>
+                                
+                                <!-- Los siguiestes input pertenecen a division_parcela-->
+                                <div class="col-12">
+                                    <label for="tipo_division" class="form-label"> Tipo de division </label>
+                                    <input  type="text" 
+                                            class="form-control" 
+                                            id="tipo_division" 
+                                            required
+                                            maxlength="50" 
+                                            placeholder="EJ: Subida Leopoldo Carvallo 270, 2360004 Playa Ancha, Valparaíso">
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="identificador_division" class="form-label">Ingrese un nuemro identificador de la division</label>
+                                    <input  type="number" 
+                                            class="form-control" 
+                                            id="identificador_division" 
+                                            required>
                                 </div>
                             </div>
                             <!-- id del formulario: input-imagen, val_localidad_p, val_nombre_p, val_direccion_p, numero_zona, hemisferio, falso_este, falso_norte-->
                         </div>
-
-                        <div class="container my-4" style="background-color: bisque;">
-                            <h1>division de las parcelas</h1>
-
+                        <div class="row justify-content-md-center"style="margin-top: 20px;">
+                            <button class="btn btn-primary col-4" type="submit">Registrar parcela</button>
                         </div>
-                        <button class="btn btn-primary" type="submit">Registrar parcela</button>
                     </div>
                 </form>
             </div>

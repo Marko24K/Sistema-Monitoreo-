@@ -22,6 +22,10 @@ from django.conf import settings
 urlpatterns = [
     #---------------agregado por felipe---------------
     path('registro_parcela/', views.registro_parcela, name='registro_parcela'),
+    path('tipo_planta/', views.tipo_planta, name='tipo_planta'),
+    path('bt_varios/', views.bt_varios, name='bt_varios'),
+
+    path('modal/', views.modal_view, name='modal'),
     #-------------------------------------------------
     path('admin/', admin.site.urls),
     path('obtener_temperatura/', views.datos_recientes, name='datos_recientes'),

@@ -15,6 +15,23 @@ from rest_framework.response import Response
 #--------------agregado por felipe--------------
 def registro_parcela(request):
     return render(request, 'registro_parcela.html')
+
+def tipo_planta(request):
+    return render(request, 'tipo_planta.html')
+
+def bt_varios(request):
+    return render(request, 'bt_varios.html')
+
+def modal_view(request):
+    form_type = request.GET.get('form_type', 'form1')  # Obtén el tipo de formulario desde la URL
+    if form_type == "form1":
+        return render(request, 'planta.html')
+    elif form_type == "form2":
+        return render(request, 'ex_planta.html')
+    """
+    elif form_type == "form3":
+        return render(request, 'template_cualquiera.html')
+    """
 #-----------------------------------------------
 
 def home(request):
