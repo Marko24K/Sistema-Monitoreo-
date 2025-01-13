@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 # Create your models here.
 class Parcela(models.Model):
     id_parcela = models.AutoField(primary_key=True)
@@ -9,8 +10,8 @@ class Parcela(models.Model):
     hemisferio = models.CharField(max_length=1, choices=[('N', 'Norte'), ('S', 'Sur')])
     easting = models.DecimalField(max_digits=10, decimal_places=2)
     northing = models.DecimalField(max_digits=10, decimal_places=2)
-    UUID_parcela = models.IntegerField()
-    imagen_parcela = models.CharField(max_length=50, null=True, blank=True)
+    UUID_parcela = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    imagen_parcela = models.ImageField(upload_to='imagenes_parcelas/', null=True, blank=True)
 
     class Meta:
         db_table = 'parcela'
@@ -31,8 +32,8 @@ class TipoPlanta(models.Model):
     nombre_comun = models.CharField(max_length=50)
     nombre_cientifico = models.CharField(max_length=50)
     descripcion = models.TextField()
-    UUID_tipo_planta = models.IntegerField()
-    imagen_tipo_planta = models.CharField(max_length=50, null=True, blank=True)
+    UUID_tipo_planta =  models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    imagen_tipo_planta = models.ImageField(upload_to='imagenes_tipo_plantas/', null=True, blank=True)
 
     class Meta:
         db_table = 'tipo_planta'
@@ -75,8 +76,8 @@ class Arduino(models.Model):
     id_arduino = models.AutoField(primary_key=True)
     id_parcela = models.ForeignKey(Parcela, on_delete=models.CASCADE)
     modelo_arduino = models.CharField(max_length=50)
-    UUID_arduino = models.IntegerField()
     estado = models.IntegerField()
+    UUID_arduino=models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     class Meta:
         db_table = 'arduino'

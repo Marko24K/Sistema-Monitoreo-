@@ -53,8 +53,6 @@ class Migration(migrations.Migration):
                 ('nombre_comun', models.CharField(max_length=50)),
                 ('nombre_cientifico', models.CharField(max_length=50)),
                 ('descripcion', models.TextField()),
-                ('UUID_tipo_planta', models.IntegerField()),
-                ('imagen_tipo_planta', models.CharField(blank=True, max_length=50, null=True)),
             ],
             options={
                 'db_table': 'tipo_planta',
@@ -65,7 +63,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id_arduino', models.AutoField(primary_key=True, serialize=False)),
                 ('modelo_arduino', models.CharField(max_length=50)),
-                ('UUID_arduino', models.IntegerField()),
                 ('estado', models.IntegerField()),
                 ('id_parcela', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Datos.parcela')),
             ],

@@ -18,7 +18,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
+ALLOWED_HOSTS = ['c1f8-200-14-226-170.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = [
+    'https://c1f8-200-14-226-170.ngrok-free.app',  # Dominio específico de ngrok
+    'https://*.ngrok-free.app',  # Permite cualquier subdominio de ngrok
+]
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-q(%tm=1)sj=$)iknc_u&68ww(r^r*_^m@^_r3(j17jmm5q*060'
 
@@ -137,6 +141,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ruta par guardar los archivos
  
 import os
+
+# Ruta de los archivos de medios
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Directorio donde se guardara el archivo de respaldo
 BACKUP_DIR = os.path.join(BASE_DIR, 'backup')  # Carpeta en el servidor para respaldo

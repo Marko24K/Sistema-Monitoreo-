@@ -33,8 +33,6 @@ urlpatterns = [
     path('guardar_datos_sensor/', views.guardar_datos_sensor, name='guardar_datos_sensor'),
     path('detalle_dato/', views.detalle_dato, name='detalle_dato'),
     path('api/datos_recientes/', views.datos_recientes, name='datos_recientes'),
-    path('prueba/', views.prueba, name = 'prueba'),
-    path('guardar_datos_prueba/', views.guardar_datos_prueba, name='guardar_datos_prueba'),
     
     
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

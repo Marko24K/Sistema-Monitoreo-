@@ -26,7 +26,8 @@
     <main class="container my-4">
         <section class="mb-5">
             <div class="card shadow-sm p-4">
-                <form id="form_parcela">
+                <form id="form_parcela" enctype="multipart/form-data" method ="POST">
+                    {% csrf_token %}
                     <div class="row" style="text-align: center">
                         <div class="col-6">
                             <div class="p-6">
@@ -35,7 +36,7 @@
                                     <!-- La imagen se mostrará aquí -->
                                 </div>
                                 <!-- Input para cargar la imagen -->
-                                <input type="file" id="input-imagen" accept="image/*" class="form-control">
+                                <input type="file" id="input-imagen" name="input-imagen" accept="image/*" class="form-control">
                             </div>
                         </div>
 
@@ -47,6 +48,7 @@
                             <input  type="text" 
                                     class="form-control" 
                                     id="val_localidad_p" 
+                                    name="val_localidad_p"
                                     required
                                     maxlength="50" 
                                     placeholder="provincia/comuna donde estáubicada la parcela" 
@@ -58,6 +60,7 @@
                             <input  type="text" 
                                     class="form-control" 
                                     id="val_nombre_p" 
+                                    name="val_nombre_p"
                                     required
                                     maxlength="50"
                                     placeholder="Ejemplo nombre de parcela" 
@@ -69,6 +72,7 @@
                             <input  type="text" 
                                     class="form-control" 
                                     id="val_direccion_p" 
+                                    name= "val_direccion_p"
                                     required
                                     maxlength="50" 
                                     placeholder="EJ: Subida Leopoldo Carvallo 270, 2360004 Playa Ancha, Valparaíso">
@@ -80,6 +84,7 @@
                                     <input  type="number" 
                                             class="form-control" 
                                             id="numero_zona" 
+                                            name = "numero_zona"
                                             required 
                                             placeholder="Ingrese un numero"
                                             pattern="^[0-9]+$" 
@@ -88,7 +93,7 @@
 
                                 <div class="col-6">
                                     <label for="hemisferio" class="form-label">Seleccione un hemisferio</label>
-                                    <select class="form-select" id="hemisferio" required>
+                                    <select class="form-select" id="hemisferio" name= "hemisferio" required>
                                         <option selected disabled value="">Hemisferio </option>
                                         <option value="N">Hemisferio norte</option>
                                         <option value="S">Hemisferio sur</option>
@@ -102,6 +107,7 @@
                                     <input  type="number" 
                                         class="form-control" 
                                         id="falso_este" 
+                                        name = "falso_este"
                                         required 
                                         pattern="^[0-9]+$"
                                         min="0"
@@ -116,6 +122,7 @@
                                     <input  type="number" 
                                         class="form-control" 
                                         id="falso_norte" 
+                                        name = "falso_norte"
                                         required 
                                         pattern="^[0-9]+$"
                                         min="0"
@@ -131,18 +138,12 @@
                                     <input  type="text" 
                                             class="form-control" 
                                             id="tipo_division" 
+                                            name="tipo_division" 
                                             required
                                             maxlength="50" 
                                             placeholder="EJ: Subida Leopoldo Carvallo 270, 2360004 Playa Ancha, Valparaíso">
                                 </div>
 
-                                <div class="col-12">
-                                    <label for="identificador_division" class="form-label">Ingrese un nuemro identificador de la division</label>
-                                    <input  type="number" 
-                                            class="form-control" 
-                                            id="identificador_division" 
-                                            required>
-                                </div>
                             </div>
                             <!-- id del formulario: input-imagen, val_localidad_p, val_nombre_p, val_direccion_p, numero_zona, hemisferio, falso_este, falso_norte-->
                         </div>

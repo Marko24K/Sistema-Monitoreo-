@@ -1,10 +1,10 @@
 import datetime
 import os
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import  render, get_object_or_404
 from django.utils import timezone
 from Sistema.settings import BACKUP_DIR
-from .models import RegistroSensor, Sensor,TipoDato
-from django.http import  JsonResponse
+from .models import RegistroSensor, Sensor, TipoDato, Parcela, TipoPlanta
+from django.http import JsonResponse
 from django.db.models import Avg, Max, Min
 import json
 from rest_framework.decorators import api_view
@@ -14,9 +14,29 @@ from .serializer import RegistroSensorSerializer
 from rest_framework.response import Response
 #--------------agregado por felipe--------------
 def registro_parcela(request):
+    if request.method == 'POST':
+        # procesamiento de los datos del formulario y crear una nueva instancia
+        parcela = Parcela.objects.create(
+            localidad_parcela=request.POST['val_localidad_p'],
+            nombre_parcela=request.POST['val_nombre_p'],
+            direccion_parcela=request.POST['val_direccion_p'],
+            zona=request.POST['numero_zona'],
+            hemisferio=request.POST['hemisferio'],
+            easting=request.POST['falso_este'],
+            northing=request.POST['falso_norte'],
+            imagen_parcela=request.FILES['input-imagen'],  # Si la imagen está en el formulario
+        )
     return render(request, 'registro_parcela.html')
 
+
 def tipo_planta(request):
+    if request.method == 'POST':
+        planta = TipoPlanta.objects.create(
+            nombre_comun = request.POST['nombre_comun'],
+            nombre_cientifico = request.POST['nombre_cientifico'],
+            descripcion = request.POST['descripcion_planta'],
+            imagen_tipo_planta = request.POST['input-imagen'],
+        )
     return render(request, 'tipo_planta.html')
 
 def bt_varios(request):
@@ -32,6 +52,7 @@ def modal_view(request):
     elif form_type == "form3":
         return render(request, 'template_cualquiera.html')
     """
+
 #-----------------------------------------------
 
 def home(request):
@@ -221,84 +242,3 @@ def detalle_dato(request):
     })
 
 
-#-------prueba
-#Guardar datos de un sensor desde un esp32 
-@api_view(['POST'])
-def guardar_datos_prueba(request):
-    if request.method == 'POST':
-        # Obtener los datos enviados
-        try:
-            data = json.loads(request.body)
-            id_sensor = data.get('id_sensor')
-            valor = data.get('valor')
-            tipo = data.get('tipo')  # Este 'tipo' es el nombre del tipo de dato (Temperatura, Humedad)
-            
-            # Verificar que los datos están completos
-            if not all([id_sensor, valor, tipo]):
-                return JsonResponse({'error': 'Faltan parámetros'}, status=400)
-            
-            # Verificar si el sensor existe
-            try:
-                sensor = Sensor.objects.get(id=id_sensor)
-            except Sensor.DoesNotExist:
-                return JsonResponse({'error': f'Sensor con id {id_sensor} no encontrado'}, status=404)
-
-            # Buscar el tipo de dato por su nombre
-            try:
-                tipo_dato = TipoDato.objects.get(nombre_dato=tipo)  # Aquí buscamos por nombre
-            except TipoDato.DoesNotExist:
-                return JsonResponse({'error': f'Tipo de dato "{tipo}" no encontrado'}, status=404)
-
-            # Crear el objeto de datos del sensor en la base de datos con el id_tipo_dato
-            RegistroSensor.objects.create(
-                id_sensor=sensor,
-                id_tipo_dato=tipo_dato,  # Aquí insertamos el objeto tipo_dato
-                valor=valor
-            )
-            
-            return JsonResponse({'message': 'Datos insertados correctamente en la base de datos'}, status=200)
-        
-        except Exception as e:
-            return JsonResponse({'error al insertar': str(e)}, status=400)
-    else:
-        return JsonResponse({'error': 'Método no permitido'}, status=405)
-
-def prueba(request):
-    # Obtener el tipo de dato para temperatura y humedad
-    temp_tipo_dato = TipoDato.objects.get(nombre_dato='Temperatura')
-    hum_tipo_dato = TipoDato.objects.get(nombre_dato='Humedad')
-
-    # Obtener los datos más recientes de temperatura y humedad
-    temp_data = RegistroSensor.objects.filter(id_tipo_dato=temp_tipo_dato).order_by('-fecha_registro')[:1]
-    humidity_data = RegistroSensor.objects.filter(id_tipo_dato=hum_tipo_dato).order_by('-fecha_registro')[:1]
-
-    # Obtener las estadísticas para temperatura
-    temp_stats = RegistroSensor.objects.filter(id_tipo_dato=temp_tipo_dato).aggregate(
-        max_value=Max('valor'),
-        min_value=Min('valor'),
-        avg_value=Avg('valor')
-    )
-
-    # Obtener las estadísticas para humedad
-    hum_stats = RegistroSensor.objects.filter(id_tipo_dato=hum_tipo_dato).aggregate(
-        max_value=Max('valor'),
-        min_value=Min('valor'),
-        avg_value=Avg('valor')
-    )
-
-    # Obtener los datos recientes de temperatura y humedad (últimos 5 registros)
-    temp_recent = RegistroSensor.objects.filter(id_tipo_dato=temp_tipo_dato).order_by('-fecha_registro')[:5]
-    hum_recent = RegistroSensor.objects.filter(id_tipo_dato=hum_tipo_dato).order_by('-fecha_registro')[:5]
-
-    return render(request, 'home.html', {
-        'temp_data': temp_data,
-        'humidity_data': humidity_data,
-        'temp_max': temp_stats['max_value'],
-        'temp_min': temp_stats['min_value'],
-        'temp_avg': temp_stats['avg_value'],
-        'hum_max': hum_stats['max_value'],
-        'hum_min': hum_stats['min_value'],
-        'hum_avg': hum_stats['avg_value'],
-        'temp_recent': temp_recent,
-        'hum_recent': hum_recent
-    })
