@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById("overlay");
     const modalContainer = document.getElementById("modalContainer");
     const openModalButton = document.getElementById("openModal");
-    const openform_Button = document.getElementById("openform_explanta"); // Nuevo botón para el formulario de contacto
-    //const openform_Button = document.getElementById(" ID_del_boton_donde_esta");
+    const openModelo_sensor_Button = document.getElementById("openmodelo_sensor"); // Nuevo botón para el formulario de contacto
+    //const openModelo_sensor_Button = document.getElementById(" ID_del_boton_donde_esta");
     
     // Función para cargar un formulario
     const loadModalContent = async (formType) => {
@@ -38,8 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Cargar el formulario cuando se hace clic en el botón correspondiente
     openModalButton.addEventListener("click", () => loadModalContent('form1'));  // Cargar formulario 1
-    openform_Button.addEventListener("click", () => loadModalContent('form2'));  // Cargar formulario de contacto
-    //openform_Button.addEventListener("click", () => loadModalContent('form3'));
+    openModelo_sensor_Button.addEventListener("click", () => loadModalContent('form2'));  // Cargar formulario de contacto
+    //openModelo_sensor_Button.addEventListener("click", () => loadModalContent('form3'));
 
     // Función para cerrar el modal
     function closeModal() {

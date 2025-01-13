@@ -12,7 +12,7 @@
     border-radius: 8px;
     width: 50%;
     height: 80%;
-    text-align: center
+    text-align: center;
 }
 
 /* Fondo oscuro para el modal */
@@ -38,7 +38,7 @@
 }
 
 .modal form input,
-.modal form textarea,
+.modal form textarea
 .modal form button {
     margin-bottom: 10px;
     padding: 10px;
