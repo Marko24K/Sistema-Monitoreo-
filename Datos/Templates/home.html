@@ -26,71 +26,93 @@
                 <p>Sistema de Control y Gestión de Calidad del Agua</p>
                 
                 <!-- Barra de navegación -->
-                <nav class="navbar" style="background-color: #e3f2fd;">
+                <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
                     <a class="navbar-brand" href="{% url 'home' %}">Inicio</a>
-                    <a href="{% url 'tipo_planta' %}" class="btn btn-success btn-lg" role="button">Tipo Planta</a>
-                    <a href="{% url 'registro_parcela' %}" class="btn btn-success btn-lg" role="button">Registro Parcela</a>
-                    <a href="{% url 'registro_planta' %}" class="btn btn-success btn-lg" role="button">Registro Planta</a>
-                    <a href="{% url 'home' %}" class="btn btn-success btn-lg" role="button">Home</a>
-                    <a href="{% url 'bt_varios' %}" class="btn btn-success btn-lg" role="button">Pruebas con Botones</a>
-                </nav>
+                    
+                    <!-- Botón de menú en pantallas pequeñas -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <!-- Elementos del menú -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="btn btn-success btn-lg nav-link" href="{% url 'tipo_planta' %}" role="button">Tipo Planta</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-success btn-lg nav-link" href="{% url 'registro_parcela' %}" role="button">Registro Parcela</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-success btn-lg nav-link" href="{% url 'registro_planta' %}" role="button">Registro Planta</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-success btn-lg nav-link" href="{% url 'home' %}" role="button">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-success btn-lg nav-link" href="{% url 'bt_varios' %}" role="button">Pruebas con Botones</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>               
             </div>            
         </div>
     </header>
 
     <main class="container my-4">
         <section class="mb-5">
-            <div class="card shadow-sm p-4">
-                <div class="row" style="text-align: center">
-                    <div class="col-6">
-                        <h1 class="text-danger">
-                            <i class="fas fa-thermometer-half me-2"></i> Temperatura mas reciente
-                            <p id="latest-temperature"></p>
-                        </h1>
-                    </div>
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h1 class="text-danger">
+                                <i class="fas fa-thermometer-half me-2"></i> Temperatura mas reciente
+                                <p id="latest-temperature"></p>
+                            </h1>
+                            <div class="row" style="text-align: center">
+                                <div class="col-4" style="display: flex; flex-direction: column; justify-content: center; align-items: center;"> 
+                                    <div id="cont-termometro">
+                                        <img id="img_termometro" src="{% static 'img/term.png'%}" alt="img_termometro">
+                                        <div id="termometro">
+                                            <div id="nivel"></div>
+                                        </div>
+                                        <div id="valor"></div>
+                                    </div>
+                                </div>
 
-                    <div class="col-6">
-                        <h1 class="text-primary">
-                            <i class="fas fa-tint me-2"></i> Humedad mas reciente
-                            <p class="text-primary" id="latest-humidity"></p>
-                        </h1>
+                                <div class="col-8">
+                                    <div class="stat-card">
+                                        <h5 class="text-danger">
+                                            <i class="fas fa-thermometer-half me-2"></i> Temperatura
+                                        </h5>
+                                        <p><strong>Máximo:</strong> <span id="temp-max">{{ temp_max|default:"--" }} °C</span></p>
+                                        <p><strong>Mínimo:</strong> <span id="temp-min">{{ temp_min|default:"--" }} °C</span></p>
+                                        <p><strong>Promedio:</strong> <span id="temp-avg">{{ temp_avg|default:"--" }} °C</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h1 class="text-primary">
+                                <i class="fas fa-tint me-2"></i> Humedad mas reciente
+                                <p class="text-primary" id="latest-humidity"></p>
+                            </h1>
 
-                <div class="row align-items-center">
-                    <div class="col-2" style="display: flex; flex-direction: column; justify-content: center; align-items: center;"> 
-                        <div id="cont-termometro">
-                            <img id="img_termometro" src="{% static 'img/term.png'%}" alt="img_termometro">
-                            <div id="termometro">
-                                <div id="nivel"></div>
+                            <div class="col-8">
+                                <div class="stat-card">
+                                    <h5 class="text-primary">
+                                        <i class="fas fa-tint me-2"></i> Humedad
+                                    </h5>
+                                    <p><strong>Máximo:</strong> <span id="hum-max">{{ hum_max|default:"--" }} %</span></p>
+                                    <p><strong>Mínimo:</strong> <span id="hum-min">{{ hum_min|default:"--" }} %</span></p>
+                                    <p><strong>Promedio:</strong> <span id="hum-avg">{{ hum_avg|default:"--" }} %</span></p>
+                                </div>
                             </div>
-                            <div id="valor"></div>
                         </div>
-                    </div>
-                                     
-                    <div class="col-4">
-                        <div class="stat-card">
-                            <h5 class="text-danger">
-                                <i class="fas fa-thermometer-half me-2"></i> Temperatura
-                            </h5>
-                            <p><strong>Máximo:</strong> <span id="temp-max">{{ temp_max|default:"--" }} °C</span></p>
-                            <p><strong>Mínimo:</strong> <span id="temp-min">{{ temp_min|default:"--" }} °C</span></p>
-                            <p><strong>Promedio:</strong> <span id="temp-avg">{{ temp_avg|default:"--" }} °C</span></p>
-                        </div>
-                    </div>
-
-                    <div class="col-4">
-                        <div class="stat-card">
-                            <h5 class="text-primary">
-                                <i class="fas fa-tint me-2"></i> Humedad
-                            </h5>
-                            <p><strong>Máximo:</strong> <span id="hum-max">{{ hum_max|default:"--" }} %</span></p>
-                            <p><strong>Mínimo:</strong> <span id="hum-min">{{ hum_min|default:"--" }} %</span></p>
-                            <p><strong>Promedio:</strong> <span id="hum-avg">{{ hum_avg|default:"--" }} %</span></p>
-                        </div>
-                    </div>
-
-                    <div class="col-2">
                     </div>
                 </div>
             </div>
