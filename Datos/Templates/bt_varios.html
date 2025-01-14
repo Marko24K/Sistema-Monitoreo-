@@ -3,7 +3,7 @@
     {% load static %}
 <head>
     <meta charset="UTF-8">
-    <title>Registrar plantas</title>
+    <title>Registrar Plantas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,7 +15,7 @@
 </head>
 <body>
     <header class="header">
-        <div class="container">
+        <div class="container text-center">
             <img src="{% static 'img/logoupla.png' %}" alt="Logo UPLA" width="100" class="mb-3">
             <h1>Monitoreo de Humedal</h1>
             <p>Sistema de Control y Gestión de Calidad del Agua</p>
@@ -24,21 +24,31 @@
 
     <main class="container my-4">
         <section class="mb-5">
+            <button class="btn btn-primary mb-3" data-form-type="arduino">Abrir Formulario Arduino</button>
+            
             <div class="card shadow-sm p-4">
-                <button id="openModal">Abrir formulario para planta</button>
+                <button class="btn btn-primary" data-form-type="division_parcela">Abrir Formulario División Parcela</button>
             </div>
-
             <div class="card shadow-sm p-4">
-                <button id="openModelo_sensor">Abrir formulario del modelo sensor</button>
+                <button class="btn btn-primary" data-form-type="modelo_sensor">Abrir Formulario Modelo Sensor</button>
             </div>
+            <div class="card shadow-sm p-4">
+                <button class="btn btn-primary" data-form-type="planta">Abrir Formulario Planta</button>
+            </div>
+            <div class="card shadow-sm p-4">
+                <button class="btn btn-primary" data-form-type="sensor">Abrir Formulario Sensor</button>
+            </div>
+            <div class="card shadow-sm p-4">
+                <button class="btn btn-primary" data-form-type="tipo_dato">Abrir Formulario Tipo Dato</button>
+            </div>
+        
+            <!-- Contenedor donde se cargará el modal -->
+            <div class="overlay" id="overlay" aria-hidden="true"></div>
+            <div id="modalContainer" aria-hidden="true"></div>
         </section>
-
-        <!-- Contenedor donde se cargará el modal -->
-        <div class="overlay" id="overlay"></div>
-        <div id="modalContainer"></div>
     </main>
 
-    <footer>
+    <footer class="py-3 bg-light">
         <div class="container text-center">
             <p>&copy; 2024 Universidad de Playa Ancha. Todos los derechos reservados.</p>
             <img src="{% static 'img/logoupla.png' %}" alt="Logo UPLA" width="80">

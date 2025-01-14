@@ -8,7 +8,6 @@ from django.http import  JsonResponse
 from django.db.models import Avg, Max, Min
 import json
 from rest_framework.decorators import api_view
-
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
 from rest_framework.response import Response
@@ -26,15 +25,13 @@ def bt_varios(request):
     return render(request, 'bt_varios.html')
 
 def modal_view(request):
-    form_type = request.GET.get('form_type', 'form1')  # Obtén el tipo de formulario desde la URL
-    if form_type == "form1":
-        return render(request, 'mini_forms/planta.html')
-    elif form_type == "form2":
-        return render(request, 'mini_forms/modelo_sensor.html')
-    """
-    elif form_type == "form3":
-        return render(request, 'template_cualquiera.html')
-    """
+    form_type = request.GET.get('form_type', '')  # Parámetro de URL
+    template_path = f'mini_forms/{form_type}.html'
+    try:
+        return render(request, template_path)
+    except:
+        return render(request, 'mini_forms/arduino.html')  # Valor predeterminado
+
 #-----------------------------------------------
 
 def home(request):
