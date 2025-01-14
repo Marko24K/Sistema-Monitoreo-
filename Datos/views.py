@@ -108,7 +108,7 @@ def guardar_datos_sensor(request):
             
             # Verificar si el sensor existe
             try:
-                sensor = Sensor.objects.get(id=id_sensor)
+                sensor = Sensor.objects.get(id_sensor=id_sensor)  # Asegurarse que el id_sensor exista en la tabla Sensor
             except Sensor.DoesNotExist:
                 return JsonResponse({'error': f'Sensor con id {id_sensor} no encontrado'}, status=404)
 
@@ -172,7 +172,7 @@ def guardar_datos_sensor(request):
     
 
 @api_view(['GET'])
-def datos_recientes(request):
+def datos_recientes(request): #para las tablas al final del home
     # Obtener los últimos datos de temperatura y humedad
     temperature_data = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Temperatura') \
                                               .order_by('-fecha_registro')[:10]
@@ -191,7 +191,7 @@ def datos_recientes(request):
 
 
 
-def detalle_dato(request):
+def detalle_dato(request): #ver_mas
     dato = request.GET.get('dato', None)
     if dato not in ['Temperatura', 'Humedad']:
         return JsonResponse({'error': 'Tipo de dato inválido.'}, status=400)

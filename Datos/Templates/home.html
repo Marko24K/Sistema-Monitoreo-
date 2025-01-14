@@ -83,7 +83,6 @@
                     </div>
 
                     <div class="col-2">
-                        <!-- recuadro numero 3 -->
                     </div>
                 </div>
             </div>
@@ -134,17 +133,17 @@
                                 <th>ID del Sensor</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <!--<tbody>  REACER VISTA
                             {% for temp in temp_recent %}
                             <tr>
                                 <td>{{ temp.valor }}</td>
                                 <td>{{ temp.fecha_registro }}</td>
-                                <td>{{ temp.id_sensor.nombre_sensor }}</td> <!-- Accedemos a través de id_sensor -->
-                                <td>{{ temp.id_sensor.id_sensor }}</td> <!-- ID del Sensor -->
+                                <td>{{ temp.id_sensor.nombre_sensor }}</td>  Accedemos a través de id_sensor
+                                <td>{{ temp.id_sensor.id_sensor }}</td>  ID del Sensor 
                             </tr>
                             {% empty %}
                             <tr><td colspan="4">No hay datos recientes</td></tr>
-                            {% endfor %}
+                            {% endfor %}   -->
                         </tbody>
                     </table>
                 </div>
@@ -169,17 +168,17 @@
                                     <th>ID del Sensor</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {% for hum in hum_recent %}
+                           <!-- <tbody>
+                                {% for hum in hum_recent %} REACER VISTA
                                 <tr>
                                     <td>{{ hum.valor }}</td>
                                     <td>{{ hum.fecha_registro }}</td>
-                                    <td>{{ hum.id_sensor.nombre_sensor }}</td> <!-- Accedemos a través de id_sensor -->
-                                    <td>{{ hum.id_sensor.id_sensor }}</td> <!-- ID del Sensor -->
+                                    <td>{{ hum.id_sensor.nombre_sensor }}</td>  Accedemos a través de id_sensor 
+                                    <td>{{ hum.id_sensor.id_sensor }}</td>  ID del Sensor 
                                 </tr>
                                 {% empty %}
                                 <tr><td colspan="4">No hay datos recientes</td></tr>
-                                {% endfor %}
+                                {% endfor %} -->
                             </tbody>
                         </table>
                     </div>
