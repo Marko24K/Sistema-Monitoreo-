@@ -20,14 +20,22 @@
 <body>
     <header class="header">
         <div class="container">
-            <img src="{% static 'img/logoupla.png' %}" alt="Logo UPLA" width="100" class="mb-3">
-            <h1>Monitoreo de Humedal</h1>
-            <p>Sistema de Control y Gestión de Calidad del Agua</p>
-            <p><a href="tipo_planta/"> tipo planta</a></p>
-
-           
+            <div class="container">
+                <img src="{% static 'img/logoupla.png' %}" alt="Logo UPLA" width="100" class="mb-3">
+                <h1>Monitoreo de Humedal</h1>
+                <p>Sistema de Control y Gestión de Calidad del Agua</p>
+                
+                <!-- Barra de navegación -->
+                <nav class="navbar" style="background-color: #e3f2fd;">
+                    <a class="navbar-brand" href="{% url 'home' %}">Inicio</a>
+                    <a href="{% url 'tipo_planta' %}" class="btn btn-success btn-lg" role="button">Tipo Planta</a>
+                    <a href="{% url 'registro_parcela' %}" class="btn btn-success btn-lg" role="button">Registro Parcela</a>
+                    <a href="{% url 'registro_planta' %}" class="btn btn-success btn-lg" role="button">Registro Planta</a>
+                    <a href="{% url 'home' %}" class="btn btn-success btn-lg" role="button">Home</a>
+                    <a href="{% url 'bt_varios' %}" class="btn btn-success btn-lg" role="button">Pruebas con Botones</a>
+                </nav>
+            </div>            
         </div>
-        
     </header>
 
     <main class="container my-4">

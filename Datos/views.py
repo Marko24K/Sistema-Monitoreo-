@@ -12,7 +12,24 @@ from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
 from rest_framework.response import Response
-#--------------agregado por felipe--------------
+#-----------------------------------------------
+def bt_varios(request):
+    return render(request, 'bt_varios.html')
+
+def registro_planta(request):
+    return render(request, 'registro_planta.html')
+
+def modal_view(request):
+    form_type = request.GET.get('form_type', '')  # Obtener el tipo de formulario de la URL
+    template_path = f'mini_forms/{form_type}.html'  # Solo usar la ruta relativa a la carpeta 'templates'
+    
+    try:
+        return render(request, template_path)
+    except:
+        # Si no encuentra el archivo, cargar un formulario predeterminado
+        return render(request, 'mini_forms/arduino.html')  # Cargar un formulario predeterminado
+
+#--------------agregado por felipe-------------
 def registro_parcela(request):
     if request.method == 'POST':
         # procesamiento de los datos del formulario y crear una nueva instancia
@@ -38,22 +55,6 @@ def tipo_planta(request):
             imagen_tipo_planta = request.POST['input-imagen'],
         )
     return render(request, 'tipo_planta.html')
-
-def bt_varios(request):
-    return render(request, 'bt_varios.html')
-
-def modal_view(request):
-    form_type = request.GET.get('form_type', 'form1')  # Obtén el tipo de formulario desde la URL
-    if form_type == "form1":
-        return render(request, 'planta.html')
-    elif form_type == "form2":
-        return render(request, 'ex_planta.html')
-    """
-    elif form_type == "form3":
-        return render(request, 'template_cualquiera.html')
-    """
-
-#-----------------------------------------------
 
 def home(request):
     # Obtener los datos más recientes de temperatura y humedad
