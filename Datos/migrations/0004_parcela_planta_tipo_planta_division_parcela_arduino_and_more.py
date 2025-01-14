@@ -44,7 +44,6 @@ class Migration(migrations.Migration):
                 ('nombre_cientifico', models.CharField(max_length=50)),
                 ('descripcion', models.TextField()),
                 ('UUID_tipo_planta', models.IntegerField()),
-                ('imagen_tipo_planta', models.CharField(blank=True, max_length=50, null=True)),
             ],
         ),
         migrations.CreateModel(

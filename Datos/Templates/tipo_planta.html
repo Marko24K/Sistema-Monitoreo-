@@ -25,8 +25,9 @@
     <main class="container my-4">
         <section class="mb-5">
             <div class="card shadow-sm p-4">
-                <form id="form_planta">
-                    <div class="row" style="text-align: center;">
+                <form id="form_planta" enctype="multipart/form-data" method ="POST">
+                    {% csrf_token %}
+                    <div class="row" style="text-align: center; background-color:bisque ;">
                         <h1>Datos del tipo de planta</h1>
                         <div class="col-6">
                             <div class="p-6">
@@ -41,8 +42,8 @@
                             <label for="nombre_comun" class="form-label">nombre comun de la planta</label>
                             <input  type="text" 
                                     class="form-control" 
-                                    id="nombre_comun" 
-                                    name="nombre_comun"
+                                    id="nombre_comun"
+                                    name="nombre_comun" 
                                     required
                                     maxlength="50" 
                                     pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" 
@@ -52,17 +53,17 @@
                             <input  type="text" 
                                     class="form-control" 
                                     id="nombre_cientifico" 
-                                    name="nombre_cientifico"
+                                    name="nombre_cientifico" 
                                     required
                                     maxlength="50" 
                                     pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" 
                                     title="Solo se permiten caracteres alfabéticos, numéricos">
 
                             <label for="descripcion_planta" class="form-label">Ingrese una descripcion de la planta</label>
-                            <textarea 
+                            <textarea  type="" 
                                     class="form-control" 
-                                    id="descripcion_planta"
-                                    name="descripcion_planta" 
+                                    id="descripcion_planta" 
+                                    name="descripcion_planta"
                                     required
                                     placeholder="las características principales de la planta, como debe lucir, cuanto tarda en crecer, etc."
                                     maxlength="50" 
@@ -71,12 +72,11 @@
                             
                             <!-- Input para cargar la imagen -->
                             <label for="file" class="form-label">Ingrese una imagen de la planta</label>
-                            <input type="file" id="input-imagen" accept="image/*" class="form-control">
+                            <input type="file" id="input-imagen" name ="input-imagen" accept="image/*" class="form-control">
                         </div>
                     </div>
-                    
                     <div class="row justify-content-md-center"style="margin-top: 20px;">
-                        <button class="btn btn-primary col-4" type="submit">Registrar parcela</button>
+                        <button class="btn btn-primary col-4" type="submit">Registrar tipo planta</button>
                     </div>
                 </form>
             </div>
