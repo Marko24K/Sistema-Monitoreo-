@@ -36,7 +36,9 @@
     <main class="container my-4">
         <section class="mb-5">
             <div class="card shadow-sm p-4">
-                <form id="form_registro_planta">
+                
+                <form id="form_registro_planta" method = 'POST'>
+                    {% csrf_token %}
                     <div class="row" style="text-align: center">
                         <div class="col-6">
                             <h2>Registro de la planta</h2>

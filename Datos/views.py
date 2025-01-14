@@ -4,7 +4,7 @@ import traceback
 from django.shortcuts import  render, get_object_or_404
 from django.utils import timezone
 from Sistema.settings import BACKUP_DIR
-from .models import RegistroSensor, Sensor, TipoDato, Parcela, TipoPlanta, ModeloSensor
+from .models import RegistroSensor, Sensor, TipoDato, Parcela, TipoPlanta, ModeloSensor,RegistroPlanta
 from django.http import JsonResponse
 from django.db.models import Avg, Max, Min
 import json
@@ -17,6 +17,20 @@ def bt_varios(request):
     return render(request, 'bt_varios.html')
 
 def registro_planta(request):
+    if request.method == 'POST':
+        plantas = RegistroPlanta.objects.create(
+            numero_planta = request.POST['numero_planta'],
+            altura = request.POST['altura'],
+            largo = request.POST['largo '],
+            ancho = request.POST['ancho'],
+            grosor = request.POST['grosor'],
+            vigor = request.POST['vigor'],
+            turgencia = request.POST['turgencia'],
+            vitalidad = request.POST['vitalidad'],
+            plaga_enfermedad = request.POST['plaga_enfermedad'],
+            descripcion_plaga_enfermedad = request.POST['descripcion_plaga_enfermedad'],
+            observaciones_Registro = request.POST['observaciones_Registro'],
+        )
     return render(request, 'registro_planta.html')
 
 def modal_view(request):
@@ -52,7 +66,7 @@ def tipo_planta(request):
             nombre_comun = request.POST['nombre_comun'],
             nombre_cientifico = request.POST['nombre_cientifico'],
             descripcion = request.POST['descripcion_planta'],
-            imagen_tipo_planta = request.POST['input-imagen'],
+            imagen_tipo_planta = request.FILES['input-imagen'],
         )
     return render(request, 'tipo_planta.html')
 
@@ -148,7 +162,7 @@ def guardar_datos_sensor(request):
                     # Escribir los datos en el archivo con formato personalizado (usando pipe como delimitador)
                     f.write(f"{backup_data['id_sensor']} | {backup_data['valor']} | {backup_data['tipo']} | {backup_data['timestamp']}\n")
 
-                print("Datos respaldados correctamente.")
+                
             except Exception as e:
                 return JsonResponse({'error': f'Error al escribir en el archivo de respaldo: {str(e)}'}, status=500)
 
@@ -160,6 +174,7 @@ def guardar_datos_sensor(request):
                     id_tipo_dato=tipo_dato,
                     valor=valor
                 )
+                print("Datos insertados correctamente en la base de datos y respaldo actualizado")
                 return JsonResponse({'message': 'Datos insertados correctamente en la base de datos y respaldo actualizado'}, status=200)
 
             except Exception as db_error:
