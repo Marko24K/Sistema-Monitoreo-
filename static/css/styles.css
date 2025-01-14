@@ -305,6 +305,8 @@ footer img {
     justify-content: space-around !important;
 }
 
+
+
 #cont-termometro {
     position: relative; /* Necesario para que el posicionamiento absoluto funcione en #termometro */
     width: 160px;
