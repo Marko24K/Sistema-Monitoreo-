@@ -111,7 +111,7 @@ class RegistroSensor(models.Model):
     id_registro_sensor = models.AutoField(primary_key=True)
     id_sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
     id_tipo_dato = models.ForeignKey(TipoDato, on_delete=models.CASCADE)
-    valor = models.FloatField()
+    valor = models.DecimalField(max_digits=5, decimal_places=2)
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
     class Meta:

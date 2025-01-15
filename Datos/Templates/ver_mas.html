@@ -50,24 +50,22 @@
                         <table class="table table-hover align-middle mb-0" id="dataTable">
                             <thead class="table-primary">
                                 <tr>
-                                    <th>Valor ({{ tipo_dato.unidad }})</th>
+                                    <th>Valor ({{ unidad }})</th>
                                     <th>Fecha</th>
                                     <th>Sensor</th>
-                                    <th>Tipo de Sensor</th>
+                                    <th>ID del Sensor</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for data in recent_data %}
+                                {% for d in recent_data %}
                                     <tr>
-                                        <td>{{ data.valor|floatformat:2 }} {{ tipo_dato.unidad }}</td>
-                                        <td>{{ data.fecha_registro|date:"d/m/Y H:i" }}</td>
-                                        <td>{{ data.sensor.nombre_sensor }}</td>
-                                        <td>{{ data.sensor.tipo_sensor }}</td>
+                                        <td>{{ d.valor }}</td>
+                                        <td>{{ d.fecha_registro }}</td>
+                                        <td>{{ d.sensor_name }}</td>
+                                        <td>{{ d.sensor_model_id }}</td>
                                     </tr>
                                 {% empty %}
-                                    <tr>
-                                        <td colspan="4" class="text-center">No hay datos disponibles.</td>
-                                    </tr>
+                                    <tr><td colspan="4">No hay datos recientes</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -155,7 +153,7 @@
                     type: "GET",
                     data: { 'dato': dato },
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest'  // Indicamos que es una solicitud AJAX
+                        'X-Requested-With': 'XMLHttpRequest'  // Indicar que es una solicitud AJAX
                     },
                     success: function (response) {
                         // Procesar los datos recibidos para el gráfico
@@ -169,7 +167,7 @@
                         detailedChart.update();  // Redibujar el gráfico con los nuevos datos
         
                         // Actualizar la tabla con los nuevos datos (no manipulamos las fechas aquí)
-                        const tableBody = document.querySelector('#dataTable tbody');
+                        const tableBody = document.querySelector('#recent-data-table tbody');
                         tableBody.innerHTML = '';  // Limpiar la tabla antes de agregar los nuevos datos
         
                         // Mostrar las fechas tal como vienen del backend sin modificar
@@ -177,9 +175,9 @@
                             const rowElement = document.createElement('tr');
                             rowElement.innerHTML = `
                                 <td>${row.valor}</td>
-                                <td>${row.fecha}</td>  <!-- Mostrar la fecha tal como está -->
-                                <td>${row.sensor}</td>
-                                <td>${row.tipo_sensor}</td>
+                                <td>${row.fecha_registro}</td>  <!-- Mostrar la fecha tal como está -->
+                                <td>${row.sensor_name}</td>
+                                <td>${row.sensor_model_id}</td>
                             `;
                             tableBody.appendChild(rowElement);
                         });
@@ -195,8 +193,8 @@
                 updateChartData('{{ dato }}');  // Actualiza con el tipo de dato actual
             }, 5000);  // 5000 ms = 5 segundos
         });
-        
     </script>
+    
     
 </body>
 

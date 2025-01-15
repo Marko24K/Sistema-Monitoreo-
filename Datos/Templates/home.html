@@ -100,7 +100,7 @@
                         <div class="card-body">
                             <h1 class="text-primary">
                                 <i class="fas fa-tint me-2"></i> Humedad mas reciente
-                                <p class="text-primary" id="latest-humidity"></p>
+                                <p class="text-primary" id="latest-humidity" name = "latest-humidity"></p>
                             </h1>
 
                             <div class="row align-items-center">
@@ -171,17 +171,17 @@
                                 <th>ID del Sensor</th>
                             </tr>
                         </thead>
-                        <!--<tbody>  REACER VISTA
-                            {% for temp in temp_recent %}
+                        <tbody>  
+                        {% for temp in temp_recent %}
                             <tr>
                                 <td>{{ temp.valor }}</td>
-                                <td>{{ temp.fecha_registro }}</td>
-                                <td>{{ temp.id_sensor.nombre_sensor }}</td>  Accedemos a través de id_sensor
-                                <td>{{ temp.id_sensor.id_sensor }}</td>  ID del Sensor 
+                                <td>{{ temp.fecha_registro}}</td>
+                                <td>{{ temp.sensor_name }}</td>  
+                                <td>{{ temp.sensor_model_id }}</td>  
                             </tr>
-                            {% empty %}
+                        {% empty %}
                             <tr><td colspan="4">No hay datos recientes</td></tr>
-                            {% endfor %}   -->
+                        {% endfor %}   
                         </tbody>
                     </table>
                 </div>
@@ -206,17 +206,17 @@
                                     <th>ID del Sensor</th>
                                 </tr>
                             </thead>
-                           <!-- <tbody>
-                                {% for hum in hum_recent %} REACER VISTA
+                           <tbody>
+                            {% for hum in hum_recent %}
                                 <tr>
                                     <td>{{ hum.valor }}</td>
                                     <td>{{ hum.fecha_registro }}</td>
-                                    <td>{{ hum.id_sensor.nombre_sensor }}</td>  Accedemos a través de id_sensor 
-                                    <td>{{ hum.id_sensor.id_sensor }}</td>  ID del Sensor 
+                                    <td>{{ hum.sensor_name }}</td>  
+                                    <td>{{ hum.sensor_model_id }}</td>  
                                 </tr>
-                                {% empty %}
+                            {% empty %}
                                 <tr><td colspan="4">No hay datos recientes</td></tr>
-                                {% endfor %} -->
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>
