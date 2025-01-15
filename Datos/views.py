@@ -1,9 +1,10 @@
-import datetime
+from datetime import datetime
 import os
+import traceback
 from django.shortcuts import  render, get_object_or_404
 from django.utils import timezone
 from Sistema.settings import BACKUP_DIR
-from .models import RegistroSensor, Sensor, TipoDato, Parcela, TipoPlanta
+from .models import RegistroSensor, Sensor, TipoDato, Parcela, TipoPlanta, ModeloSensor,RegistroPlanta
 from django.http import JsonResponse
 from django.db.models import Avg, Max, Min
 import json
@@ -11,7 +12,38 @@ from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
 from rest_framework.response import Response
-#--------------agregado por felipe--------------
+#-----------------------------------------------
+def bt_varios(request):
+    return render(request, 'bt_varios.html')
+
+def registro_planta(request):
+    if request.method == 'POST':
+        plantas = RegistroPlanta.objects.create(
+            numero_planta = request.POST['numero_planta'],
+            altura = request.POST['altura'],
+            largo = request.POST['largo '],
+            ancho = request.POST['ancho'],
+            grosor = request.POST['grosor'],
+            vigor = request.POST['vigor'],
+            turgencia = request.POST['turgencia'],
+            vitalidad = request.POST['vitalidad'],
+            plaga_enfermedad = request.POST['plaga_enfermedad'],
+            descripcion_plaga_enfermedad = request.POST['descripcion_plaga_enfermedad'],
+            observaciones_Registro = request.POST['observaciones_Registro'],
+        )
+    return render(request, 'registro_planta.html')
+
+def modal_view(request):
+    form_type = request.GET.get('form_type', '')  # Obtener el tipo de formulario de la URL
+    template_path = f'mini_forms/{form_type}.html'  # Solo usar la ruta relativa a la carpeta 'templates'
+    
+    try:
+        return render(request, template_path)
+    except:
+        # Si no encuentra el archivo, cargar un formulario predeterminado
+        return render(request, 'mini_forms/arduino.html')  # Cargar un formulario predeterminado
+
+#--------------agregado por felipe-------------
 def registro_parcela(request):
     if request.method == 'POST':
         # procesamiento de los datos del formulario y crear una nueva instancia
@@ -34,34 +66,9 @@ def tipo_planta(request):
             nombre_comun = request.POST['nombre_comun'],
             nombre_cientifico = request.POST['nombre_cientifico'],
             descripcion = request.POST['descripcion_planta'],
-            imagen_tipo_planta = request.POST['input-imagen'],
+            imagen_tipo_planta = request.FILES['input-imagen'],
         )
     return render(request, 'tipo_planta.html')
-
-def bt_varios(request):
-    return render(request, 'bt_varios.html')
-
-def modal_view(request):
-<<<<<<< HEAD
-    form_type = request.GET.get('form_type', '')  # Parámetro de URL
-    template_path = f'mini_forms/{form_type}.html'
-    try:
-        return render(request, template_path)
-    except:
-        return render(request, 'mini_forms/arduino.html')  # Valor predeterminado
-=======
-    form_type = request.GET.get('form_type', 'form1')  # Obtén el tipo de formulario desde la URL
-    if form_type == "form1":
-        return render(request, 'planta.html')
-    elif form_type == "form2":
-        return render(request, 'ex_planta.html')
-    """
-    elif form_type == "form3":
-        return render(request, 'template_cualquiera.html')
-    """
->>>>>>> e22938effe5f106b4ca62d32f0d01047089d9632
-
-#-----------------------------------------------
 
 def home(request):
     # Obtener los datos más recientes de temperatura y humedad
@@ -82,7 +89,7 @@ def home(request):
         avg_value=Avg('valor')
     )
 
-    # Obtener los datos recientes de temperatura y humedad
+    # Obtener los datos recientes de temperatura y humedad (últimos 5)
     temp_recent = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Temperatura').order_by('-fecha_registro')[:5]
     hum_recent = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Humedad').order_by('-fecha_registro')[:5]
 
@@ -99,88 +106,90 @@ def home(request):
         'hum_recent': hum_recent
     })
 
-#Guardar datos de un sensor desde un esp32 
 @api_view(['POST'])
 def guardar_datos_sensor(request):
     if request.method == 'POST':
-        # Obtener los datos enviados
         try:
+            # Obtener los datos enviados en la solicitud
             data = json.loads(request.body)
-            id_sensor = data.get('id_sensor')
+            id_modelo_sensor = data.get('id_sensor')  # id del modelo del sensor que envía los datos
             valor = data.get('valor')
             tipo = data.get('tipo')
             
-            # Verificar que los datos están completos
-            if not all([id_sensor, valor, tipo]):
+            # Verificar que los datos estén completos
+            if not all([id_modelo_sensor, valor, tipo]):
                 return JsonResponse({'error': 'Faltan parámetros'}, status=400)
-            
-            # Verificar si el sensor existe
-            try:
-                sensor = Sensor.objects.get(id=id_sensor)
-            except Sensor.DoesNotExist:
-                return JsonResponse({'error': f'Sensor con id {id_sensor} no encontrado'}, status=404)
 
-            # Verificar si el tipo de dato existe
+            # Paso 1: Buscar el ModeloSensor utilizando el id del modelo (id_sensor enviado por el ESP32)
             try:
-                tipo_dato = TipoDato.objects.get(nombre_tipo_dato=tipo)
+                modelo_sensor = ModeloSensor.objects.get(id_modelo_sensor=id_modelo_sensor)
+            except ModeloSensor.DoesNotExist:
+                return JsonResponse({'error': f'Modelo de sensor con id {id_modelo_sensor} no encontrado'}, status=404)
+
+            # Paso 2: Buscar el Sensor asociado con ese ModeloSensor
+            try:
+                sensor = Sensor.objects.get(id_modelo_sensor=modelo_sensor)  # Buscar el sensor por el modelo
+            except Sensor.DoesNotExist:
+                return JsonResponse({'error': f'Sensor relacionado con el modelo {modelo_sensor.nombre_sensor} no encontrado'}, status=404)
+
+            # Paso 3: Buscar el TipoDato correspondiente
+            try:
+                tipo_dato = TipoDato.objects.get(nombre_dato=tipo)
             except TipoDato.DoesNotExist:
                 return JsonResponse({'error': f'Tipo de dato "{tipo}" no encontrado'}, status=404)
 
-            # Buscar el sensor y tipo de dato correspondiente
-            sensor = Sensor.objects.get(id=id_sensor)
-            tipo_dato = TipoDato.objects.get(nombre_tipo_dato=tipo)
-
-            # Guardar los datos en un archivo de texto como respaldo primero
+            # Guardar los datos en un archivo de respaldo si ocurre un error con la base de datos
             backup_data = {
-                'id_sensor': id_sensor,
+                'id_sensor': id_modelo_sensor,
                 'valor': valor,
                 'tipo': tipo,
                 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             }
 
+            BACKUP_DIR = os.path.join(settings.BASE_DIR, 'backup')
+            os.makedirs(BACKUP_DIR, exist_ok=True)
+            backup_filename = os.path.join(BACKUP_DIR, 'backup_data.txt')
 
-            # Definir el archivo de respaldo único
-            BACKUP_DIR = os.path.join(settings.BASE_DIR, 'backup')  # Carpeta para respaldo
-            os.makedirs(BACKUP_DIR, exist_ok=True)  # Crear el directorio si no existe
-            backup_filename = os.path.join(BACKUP_DIR, 'backup_data.txt')  # Archivo único de respaldo
-
-            # Escribir los datos en el archivo de respaldo (en modo 'a' para anexar)
-            with open(backup_filename, 'a') as f:
-                # Si es la primera vez que se guarda en el archivo, escribir el encabezado
-                if f.tell() == 0:  # Si el archivo está vacío
-                    f.write('id_sensor\tvalor\ttipo\ttimestamp\n')  # Encabezado con tabuladores
-                # Escribir los datos de respaldo en formato de columnas
-                f.write(f"{backup_data['id_sensor']}\t{backup_data['valor']}\t{backup_data['tipo']}\t{backup_data['timestamp']}\n")
-            
-            # Intentar insertar los datos en la base de datos
+            # Intentar escribir en el archivo de respaldo
             try:
-                # Verificar si el sensor existe
-                sensor = Sensor.objects.get(id=id_sensor)
-                
-                # Verificar si el tipo de dato existe
-                tipo_dato = TipoDato.objects.get(nombre_tipo_dato=tipo)
+                # Abrir el archivo en modo append para agregar los datos sin eliminar los existentes
+                with open(backup_filename, mode='a') as f:
+                    # Comprobar si el archivo está vacío para escribir el encabezado
+                    if f.tell() == 0:
+                        # Escribimos un encabezado legible para el archivo
+                        f.write("id_sensor | valor | tipo | timestamp\n")
+                    
+                    # Escribir los datos en el archivo con formato personalizado (usando pipe como delimitador)
+                    f.write(f"{backup_data['id_sensor']} | {backup_data['valor']} | {backup_data['tipo']} | {backup_data['timestamp']}\n")
 
-                # Crear el objeto de datos del sensor en la base de datos
+                
+            except Exception as e:
+                return JsonResponse({'error': f'Error al escribir en el archivo de respaldo: {str(e)}'}, status=500)
+
+            # Intentar guardar en la base de datos
+            try:
+                # Crear un nuevo registro de sensor en la base de datos
                 RegistroSensor.objects.create(
-                    sensor=sensor,
-                    tipo_dato=tipo_dato,
+                    id_sensor=sensor,  # Usamos el id del sensor encontrado
+                    id_tipo_dato=tipo_dato,
                     valor=valor
                 )
-                
+                print("Datos insertados correctamente en la base de datos y respaldo actualizado")
                 return JsonResponse({'message': 'Datos insertados correctamente en la base de datos y respaldo actualizado'}, status=200)
-            
+
             except Exception as db_error:
-                # Si ocurre un error con la base de datos, se maneja aquí
+                # Si ocurre un error con la base de datos
                 return JsonResponse({'error': f'Error al insertar en la base de datos: {str(db_error)}. Los datos se han guardado en el archivo de respaldo.'}, status=500)
         
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
+            traceback.print_exc()  # Imprimir la traza del error en el servidor para depuración
+            return JsonResponse({'error': f'Error inesperado en el servidor: {str(e)}'}, status=500)
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)
     
 
 @api_view(['GET'])
-def datos_recientes(request):
+def datos_recientes(request): #para las tablas al final del home
     # Obtener los últimos datos de temperatura y humedad
     temperature_data = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Temperatura') \
                                               .order_by('-fecha_registro')[:10]
@@ -199,7 +208,7 @@ def datos_recientes(request):
 
 
 
-def detalle_dato(request):
+def detalle_dato(request): #ver_mas
     dato = request.GET.get('dato', None)
     if dato not in ['Temperatura', 'Humedad']:
         return JsonResponse({'error': 'Tipo de dato inválido.'}, status=400)

@@ -112,7 +112,7 @@ class RegistroSensor(models.Model):
     id_sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
     id_tipo_dato = models.ForeignKey(TipoDato, on_delete=models.CASCADE)
     valor = models.FloatField()
-    fecha_registro = models.DateField(auto_now_add=True)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'registro_sensor'
