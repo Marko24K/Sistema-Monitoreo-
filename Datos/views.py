@@ -120,13 +120,13 @@ def guardar_datos_sensor(request):
             if not all([id_modelo_sensor, valor, tipo]):
                 return JsonResponse({'error': 'Faltan parámetros'}, status=400)
 
-            # Paso 1: Buscar el ModeloSensor utilizando el id del modelo (id_sensor enviado por el ESP32)
+            # Paso 1: Buscar el ModeloSensor utilizando el id del modelo 
             try:
                 modelo_sensor = ModeloSensor.objects.get(id_modelo_sensor=id_modelo_sensor)
             except ModeloSensor.DoesNotExist:
                 return JsonResponse({'error': f'Modelo de sensor con id {id_modelo_sensor} no encontrado'}, status=404)
 
-            # Paso 2: Buscar el Sensor asociado con ese ModeloSensor
+            # Paso 2: Buscar en la tabla Sensor asociado con ese ModeloSensor
             try:
                 sensor = Sensor.objects.get(id_modelo_sensor=modelo_sensor)  # Buscar el sensor por el modelo
             except Sensor.DoesNotExist:
@@ -192,9 +192,9 @@ def guardar_datos_sensor(request):
 def datos_recientes(request): #para las tablas al final del home
     # Obtener los últimos datos de temperatura y humedad
     temperature_data = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Temperatura') \
-                                              .order_by('-fecha_registro')[:10]
+                                              .order_by('-fecha_registro')[:5]
     humidity_data = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Humedad') \
-                                            .order_by('-fecha_registro')[:10]
+                                            .order_by('-fecha_registro')[:5]
 
     # Serializar los datos
     temperature_serializer = RegistroSensorSerializer(temperature_data, many=True)
