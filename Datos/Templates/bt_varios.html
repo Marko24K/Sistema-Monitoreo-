@@ -12,6 +12,13 @@
     
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/estilo_form_emergente.css' %}">
+    <!--Nota: para añadir los botones es necesario agregar lo siguiente
+    <link rel="stylesheet" href="{% static 'css/estilo_form_emergente.css' %}">
+    <script src="{% static 'js/form_emergente.js' %}"></script>
+
+    #seleccione un boton
+
+    -->
 </head>
 <body>
     <header class="header">
@@ -22,7 +29,7 @@
                 <p>Sistema de Control y Gestión de Calidad del Agua</p>
                 
                 <!-- Barra de navegación -->
-                <nav class="navbar" style="background-color: #e3f2fd;">
+                <nav class="navbar" style="background-color:{{primary}};">
                     <a class="navbar-brand" href="{% url 'home' %}">Inicio</a>
                     <a href="{% url 'tipo_planta' %}" class="btn btn-success btn-lg" role="button">Tipo Planta</a>
                     <a href="{% url 'registro_parcela' %}" class="btn btn-success btn-lg" role="button">Registro Parcela</a>
@@ -36,8 +43,9 @@
 
     <main class="container my-4">
         <section class="mb-5">
-            <button class="btn btn-primary mb-3" data-form-type="arduino">Abrir Formulario Arduino</button>
-            
+            <div class="card shadow-sm p-4">
+                <button class="btn btn-primary mb-3" data-form-type="arduino">Abrir Formulario Arduino</button>
+            </div>
             <div class="card shadow-sm p-4">
                 <button class="btn btn-primary" data-form-type="division_parcela">Abrir Formulario División Parcela</button>
             </div>
