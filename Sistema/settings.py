@@ -23,6 +23,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://c43d-200-14-226-170.ngrok-free.app',  # Dominio específico de ngrok
     'https://*.ngrok-free.app',  # Permite cualquier subdominio de ngrok
 ]"""
+#si no se esta utilizando el host borrar o comentar para evitar este error (Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-q(%tm=1)sj=$)iknc_u&68ww(r^r*_^m@^_r3(j17jmm5q*060'
 
