@@ -6,13 +6,17 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
-    background-color: white;
+    background-color: #ffffff;
     padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    width: 50%;
-    height: 80%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    width: 500px;
+    height: auto;
+    max-width: 600px;
+    max-height: 90%;
+    overflow-y: auto;
     text-align: center;
+    font-family: 'Arial', sans-serif;
 }
 
 /* Fondo oscuro para el modal */
@@ -23,36 +27,68 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     z-index: 999;
 }
 
 /* Estilos adicionales */
 .modal h2 {
-    margin-top: 0;
+    margin: 0 0 15px;
+    font-size: 1.5rem;
+    color: #333;
 }
 
 .modal form {
     display: flex;
     flex-direction: column;
+    gap: 15px;
+    align-items: center;
 }
 
 .modal form input,
-.modal form textarea
-.modal form button {
-    margin-bottom: 10px;
-    padding: 10px;
+.modal form textarea,
+.modal form select {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.modal form input:focus,
+.modal form textarea:focus,
+.modal form select:focus {
+    border-color: #4CAF50;
 }
 
 .modal form button {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px;
     background-color: #4CAF50;
     color: white;
     border: none;
+    border-radius: 5px;
+    font-size: 1rem;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .modal form button:hover {
     background-color: #45a049;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .modal {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .modal h2 {
+        font-size: 1.25rem;
+    }
 }
