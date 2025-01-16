@@ -152,13 +152,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const humStats = calculateStats(humData);
     
         // Actualiza estadísticas de temperatura
-        document.getElementById('temp-max').innerHTML = `Temperatura máxima: ${tempStats.max} °C<br>Fecha: ${tempStats.maxDate}`;
-        document.getElementById('temp-min').innerHTML = `Temperatura mínima: ${tempStats.min} °C<br>Fecha: ${tempStats.minDate}`;
-        document.getElementById('temp-avg').textContent = `Promedio: ${tempStats.avg} °C`;
+        document.getElementById('temp-max').innerHTML = `${tempStats.max} °C`;
+        document.getElementById('temp-max-date').innerHTML =`${tempStats.maxDate}`;
+        document.getElementById('temp-min').innerHTML = `${tempStats.min} °C`;
+        document.getElementById('temp-min-date').innerHTML =`${tempStats.minDate}`;
+        document.getElementById('temp-avg').textContent = `${tempStats.avg} °C`;
     
         // Actualiza estadísticas de humedad
-        document.getElementById('hum-max').innerHTML = `Humedad máxima: ${humStats.max} %<br>Fecha: ${humStats.maxDate}`;
-        document.getElementById('hum-min').innerHTML = `Humedad mínima: ${humStats.min} %<br>Fecha: ${humStats.minDate}`;
+        document.getElementById('hum-max').innerHTML = `Humedad máxima: ${humStats.max} hr<br>Fecha: ${humStats.maxDate}`;
+        document.getElementById('hum-min').innerHTML = `Humedad mínima: ${humStats.min} hr<br>Fecha: ${humStats.minDate}`;
         document.getElementById('hum-avg').textContent = `Promedio: ${humStats.avg} %`;
     }    
 
