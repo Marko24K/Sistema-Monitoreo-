@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     },
                     y: {
                         beginAtZero: true,
-                        title: { display: true, text: 'Humedad (%)' }
+                        title: { display: true, text: 'Humedad (Hr)' }
                     }
                 }
             }
@@ -125,11 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem('latestTemperature', latestTemperature);
         
         const latestHumidity = humData.length
-            ? `${parseFloat(humData[0].valor).toFixed(2)} %`
-            : '-- %';
-    
+            ? `${parseFloat(humData[0].valor).toFixed(2)} Hr`
+            : '-- Hr';
         latestHumidityElement.textContent = latestHumidity;
-        
+        localStorage.setItem('latestHumidity', latestHumidity);
     }
 
     function updateStatistics(tempData, humData) {
@@ -159,9 +158,11 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('temp-avg').textContent = `${tempStats.avg} °C`;
     
         // Actualiza estadísticas de humedad
-        document.getElementById('hum-max').innerHTML = `Humedad máxima: ${humStats.max} hr<br>Fecha: ${humStats.maxDate}`;
-        document.getElementById('hum-min').innerHTML = `Humedad mínima: ${humStats.min} hr<br>Fecha: ${humStats.minDate}`;
-        document.getElementById('hum-avg').textContent = `Promedio: ${humStats.avg} %`;
+        document.getElementById('hum-max').innerHTML = `${humStats.max}Hr`;
+        document.getElementById('hum-max-date').innerHTML = `${humStats.maxDate}`;
+        document.getElementById('hum-min').innerHTML = `${humStats.min}Hr`;
+        document.getElementById('hum-min-date').innerHTML = `${humStats.minDate}`;
+        document.getElementById('hum-avg').textContent = `${humStats.avg} Hr`;
     }    
 
     function updateCharts(tempData, humData) {
@@ -194,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
         humRecentTableBody.innerHTML = recentHum.length
             ? recentHum.map(item => `
                 <tr>
-                    <td>${parseFloat(item.valor).toFixed(2)} %</td>
+                    <td>${parseFloat(item.valor).toFixed(2)} Hr</td>
                     <td>${moment(item.fecha_registro).format('DD/MM/YYYY HH:mm')}</td>
                     <td>${item.id_sensor.id_modelo_sensor.nombre_sensor || 'Desconocido'}</td>
                     <td>${item.id_sensor.id_sensor}</td>
