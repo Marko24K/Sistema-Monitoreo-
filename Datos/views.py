@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
 from rest_framework.response import Response
-#-----------------------------------------------
+#-----------------agregado por felipe-------------
 def bt_varios(request):
     return render(request, 'bt_varios.html')
 
@@ -43,7 +43,7 @@ def modal_view(request):
         # Si no encuentra el archivo, cargar un formulario predeterminado
         return render(request, 'mini_forms/arduino.html')  # Cargar un formulario predeterminado
 
-#--------------agregado por felipe-------------
+#-----------------------------------------
 def registro_parcela(request):
     if request.method == 'POST':
         # procesamiento de los datos del formulario y crear una nueva instancia
@@ -70,7 +70,7 @@ def tipo_planta(request):
         )
     return render(request, 'tipo_planta.html')
 
-
+#def mostrar_parcelas(requesyt)
 
 @api_view(['POST'])
 def guardar_datos_sensor(request):
@@ -154,6 +154,7 @@ def guardar_datos_sensor(request):
     
 
 #------visualizacion en home
+
 def home(request):
 
     # Obtener los datos más recientes de temperatura y humedad
@@ -194,7 +195,7 @@ def home(request):
         'hum_recent': hum_serializer.data
     })
 
-@api_view(['GET']) #
+@api_view(['GET']) 
 def datos_recientes(request):
     # Obtener los datos más recientes de temperatura y humedad (solo los 1 más recientes)
     temp_data = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Temperatura').order_by('-fecha_registro')[:1]
@@ -280,8 +281,6 @@ def detalle_dato(request):
         'recent_data': serializer.data,  # Enviar los datos serializados a la plantilla
     })
 
-@api_view(['GET'])
-def obtener_registros(request):
-    registros = RegistroSensor.objects.all().order_by('-fecha_registro')[:10] # Obtiene todos los registros
-    serializer = RegistroSensorSerializer(registros, many=True)  # Serializa todos los registros
-    return Response(serializer.data)  # Devuelve los datos serializados
+
+
+
