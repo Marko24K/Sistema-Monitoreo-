@@ -13,8 +13,7 @@ from django.conf import settings
 from .serializer import RegistroSensorSerializer
 from rest_framework.response import Response
 #-----------------agregado por felipe-------------
-def bt_varios(request):
-    return render(request, 'bt_varios.html')
+
 
 def registro_planta(request):
     if request.method == 'POST':
@@ -44,6 +43,15 @@ def modal_view(request):
         return render(request, 'mini_forms/arduino.html')  # Cargar un formulario predeterminado
 
 #-----------------------------------------
+def bt_varios(request):
+    return render(request, 'bt_varios.html')
+
+def mostrar_parcelas(request):
+    parcelas = Parcela.objects.all()  # Obtener todas las parcelas de la base de datos
+    return render(request, 'bt_varios.html', {'parcelas': parcelas})
+
+
+
 def registro_parcela(request):
     if request.method == 'POST':
         # procesamiento de los datos del formulario y crear una nueva instancia
@@ -70,7 +78,8 @@ def tipo_planta(request):
         )
     return render(request, 'tipo_planta.html')
 
-#def mostrar_parcelas(requesyt)
+
+
 
 @api_view(['POST'])
 def guardar_datos_sensor(request):

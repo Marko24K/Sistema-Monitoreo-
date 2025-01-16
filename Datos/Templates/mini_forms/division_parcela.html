@@ -1,11 +1,14 @@
 <div class="modal">
     <h2>Formulario division de las parcelas</h2>
-    <form id="divisionParcelaForm">
-        <select class="form-select" aria-label="Default select example">
-            <option selected>Open this select menu</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
+    {% csrf_token %}
+    <form id="divisionParcelaForm" method = "POST">
+        <select class="form-select" id="id_parcela" name="id_parcela" aria-label="Seleccione una parcela">
+            <option>Seleccione una parcela</option>
+            {% for parcela in parcelas %}
+                <option value="{{ parcela.id_parcela }}">{{ parcela.nombre_parcela }}</option>
+            {% empty %}
+                <option disabled>No hay parcelas disponibles</option>
+            {% endfor %}
         </select>
 
 

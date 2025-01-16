@@ -34,5 +34,7 @@ urlpatterns = [
     path('detalle_dato/', views.detalle_dato, name='detalle_dato'),
     path('datos_recientes/', views.datos_recientes, name='datos_recientes'),
 
+
+
     
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
