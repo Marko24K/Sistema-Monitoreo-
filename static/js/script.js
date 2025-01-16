@@ -141,9 +141,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const avg = (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2);
             return {
                 max: values[maxIndex].toFixed(2),
-                maxDate: moment(data[maxIndex].fecha_registro).format('DD/MM/YYYY HH:mm'),
+                maxDate: moment(data[maxIndex].fecha_registro).format('DD/MM/YYYY [a las] HH:mm'),
                 min: values[minIndex].toFixed(2),
-                minDate: moment(data[minIndex].fecha_registro).format('DD/MM/YYYY HH:mm'),
+                minDate: moment(data[minIndex].fecha_registro).format('DD/MM/YYYY [a las] HH:mm'),
                 avg: avg
             };
         };
@@ -152,16 +152,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const humStats = calculateStats(humData);
     
         // Actualiza estadísticas de temperatura
-        document.getElementById('temp-max').textContent = `${tempStats.max} °C (${tempStats.maxDate})`;
-        document.getElementById('temp-min').textContent = `${tempStats.min} °C (${tempStats.minDate})`;
-        document.getElementById('temp-avg').textContent = `${tempStats.avg} °C`;
+        document.getElementById('temp-max').innerHTML = `Temperatura máxima: ${tempStats.max} °C<br>Fecha: ${tempStats.maxDate}`;
+        document.getElementById('temp-min').innerHTML = `Temperatura mínima: ${tempStats.min} °C<br>Fecha: ${tempStats.minDate}`;
+        document.getElementById('temp-avg').textContent = `Promedio: ${tempStats.avg} °C`;
     
         // Actualiza estadísticas de humedad
-        document.getElementById('hum-max').textContent = `${humStats.max} % (${humStats.maxDate})`;
-        document.getElementById('hum-min').textContent = `${humStats.min} % (${humStats.minDate})`;
-        document.getElementById('hum-avg').textContent = `${humStats.avg} %`;
-    }
-    
+        document.getElementById('hum-max').innerHTML = `Humedad máxima: ${humStats.max} %<br>Fecha: ${humStats.maxDate}`;
+        document.getElementById('hum-min').innerHTML = `Humedad mínima: ${humStats.min} %<br>Fecha: ${humStats.minDate}`;
+        document.getElementById('hum-avg').textContent = `Promedio: ${humStats.avg} %`;
+    }    
 
     function updateCharts(tempData, humData) {
         tempData.sort((a, b) => new Date(a.fecha_registro) - new Date(b.fecha_registro));
