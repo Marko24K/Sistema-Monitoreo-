@@ -5,7 +5,7 @@ from django.shortcuts import  render, get_object_or_404
 from django.utils import timezone
 from Sistema.settings import BACKUP_DIR
 from .models import RegistroSensor, Sensor, TipoDato, Parcela, TipoPlanta, ModeloSensor,RegistroPlanta
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.db.models import Avg, Max, Min
 import json
 from rest_framework.decorators import api_view
@@ -34,22 +34,29 @@ def registro_planta(request):
 
 def modal_view(request):
     form_type = request.GET.get('form_type', '')  # Obtener el tipo de formulario de la URL
-    template_path = f'mini_forms/{form_type}.html'  # Solo usar la ruta relativa a la carpeta 'templates'
     
-    try:
-        return render(request, template_path)
-    except:
-        # Si no encuentra el archivo, cargar un formulario predeterminado
-        return render(request, 'mini_forms/arduino.html')  # Cargar un formulario predeterminado
+    # Verificar si el tipo de formulario no está vacío
+    if not form_type:
+        return Http404("Formulario no especificado")
+    
+    # Ruta de la plantilla correspondiente
+    template_path = f'mini_forms/{form_type}.html'
 
+   
+    if form_type == 'division_parcela':
+        parcelas = Parcela.objects.all()  # Obtener las parcelas para pasarlas al formulario
+        return render(request, template_path, {'parcelas': parcelas})
+
+    try:
+        # Intentamos renderizar la plantilla
+        return render(request, template_path)
+    except Exception as e:
+        # Si no encuentra la plantilla, lanzar una excepción y devolver un formulario predeterminado
+        print(f"Error al cargar la plantilla {template_path}: {e}")
+        return render(request, 'mini_forms/arduino.html')
 #-----------------------------------------
 def bt_varios(request):
     return render(request, 'bt_varios.html')
-
-def mostrar_parcelas(request):
-    parcelas = Parcela.objects.all()  # Obtener todas las parcelas de la base de datos
-    return render(request, 'bt_varios.html', {'parcelas': parcelas})
-
 
 
 def registro_parcela(request):

@@ -1,6 +1,97 @@
 from django.db import models
 import uuid
-# Create your models here.
+class Country(models.Model):
+    id_country = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    name_ascii = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True)
+    geoname_id = models.PositiveIntegerField()
+    alternate_names = models.TextField(blank=True, null=True)
+    code2 = models.CharField(max_length=10)
+    code3 = models.CharField(max_length=10)
+    continent = models.CharField(max_length=50)
+    tld = models.CharField(max_length=10)  # Top Level Domain
+    phone = models.CharField(max_length=20)
+
+    class Meta:
+        db_table = 'country'
+
+class Region(models.Model):
+    id_region = models.AutoField(primary_key=True)
+    id_country = models.ForeignKey(Country, on_delete=models.CASCADE)  # Relación con Country
+    name = models.CharField(max_length=100)
+    name_ascii = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True)
+    geoname_id = models.PositiveIntegerField()
+    alternate_names = models.TextField(blank=True, null=True)
+    display_name = models.CharField(max_length=100)
+    geoname_code = models.CharField(max_length=20)
+
+    class Meta:
+        db_table = 'region'
+
+class SubRegion(models.Model):
+    id_sub_region = models.AutoField(primary_key=True)
+    id_country = models.ForeignKey(Country, on_delete=models.CASCADE)  # Relación con Country
+    id_region = models.ForeignKey(Region, on_delete=models.CASCADE)    # Relación con Region
+    name = models.CharField(max_length=100)
+    name_ascii = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True)
+    geoname_id = models.PositiveIntegerField()
+    alternate_names = models.TextField(blank=True, null=True)
+    display_name = models.CharField(max_length=100)
+    geoname_code = models.CharField(max_length=20)
+
+    class Meta:
+        db_table = 'sub_region'
+
+
+class City(models.Model):
+    id_city = models.AutoField(primary_key=True)
+    id_region = models.ForeignKey(Region, on_delete=models.CASCADE)  # Relación con Region
+    id_country = models.ForeignKey(Country, on_delete=models.CASCADE)  # Relación con Country
+    id_sub_region = models.ForeignKey(SubRegion, on_delete=models.CASCADE)  # Relación con SubRegion
+    name = models.CharField(max_length=100)
+    name_ascii = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True)
+    geoname_id = models.PositiveIntegerField()
+    alternate_names = models.TextField(blank=True, null=True)
+    display_name = models.CharField(max_length=100)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)  # Para almacenar latitud
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)  # Para almacenar longitud
+    population = models.PositiveIntegerField()  # Población de la ciudad
+    featured_code = models.CharField(max_length=20, blank=True, null=True)  # Código destacado
+    search_names = models.TextField(blank=True, null=True)  # Nombres de búsqueda
+    timezone = models.CharField(max_length=50)  # Zona horaria
+
+    class Meta:
+        db_table = 'city'
+
+class Localidad(models.Model):
+    id_localidad = models.AutoField(primary_key=True)
+    id_city = models.ForeignKey(City, on_delete=models.CASCADE)  # Relación con Region
+    fecha_creado = models.DateTimeField(auto_now_add=True)
+    fecha_editado = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'localidad'
+
+
+class Parcela(models.Model):
+    id_parcela = models.AutoField(primary_key=True)
+    id_localidad = models.ForeignKey(Localidad, on_delete=models.CASCADE)
+    nombre_parcela = models.CharField(max_length=50)
+    direccion_parcela = models.CharField(max_length=50)
+    zona = models.PositiveSmallIntegerField()
+    hemisferio = models.CharField(max_length=1, choices=[('N', 'Norte'), ('S', 'Sur')])
+    easting = models.DecimalField(max_digits=10, decimal_places=2)
+    northing = models.DecimalField(max_digits=10, decimal_places=2)
+    UUID_parcela = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    imagen_parcela = models.ImageField(upload_to='imagenes_parcelas/', null=True, blank=True)
+
+    class Meta:
+        db_table = 'parcela'
+        
 class Parcela(models.Model):
     id_parcela = models.AutoField(primary_key=True)
     localidad_parcela = models.CharField(max_length=50)
@@ -67,6 +158,8 @@ class RegistroPlanta(models.Model):
     descripcion_plaga_enfermedad = models.TextField(null=True, blank=True)
     observaciones_Registro = models.TextField(null=True, blank=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
+    imagen_registro_planta = models.ImageField(upload_to='imagenes_registro_plantas/', null=True, blank=True)
+
 
     class Meta:
         db_table = 'registro_planta'

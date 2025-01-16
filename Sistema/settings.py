@@ -18,9 +18,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-"""ALLOWED_HOSTS = ['e90a-200-14-226-170.ngrok-free.app']
+"""ALLOWED_HOSTS = ['8ad3-200-14-226-170.ngrok-free.app']
 CSRF_TRUSTED_ORIGINS = [
-    'https://e90a-200-14-226-170.ngrok-free.app',  # Dominio específico de ngrok
+    'https://8ad3-200-14-226-170.ngrok-free.app',  # Dominio específico de ngrok
     'https://*.ngrok-free.app',  # Permite cualquier subdominio de ngrok
 ]"""
 #si no se esta utilizando el host borrar o comentar para evitar este error (Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.)
