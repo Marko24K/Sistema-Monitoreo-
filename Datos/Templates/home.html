@@ -25,8 +25,11 @@
                 <p>Sistema de Control y Gestión de Calidad del Agua</p>
                 
                 <!-- Barra de navegación -->
-                <nav class="navbar navbar-expand-lg navbar-light" style="background-color:{{primary}};">
-                    <a class="navbar-brand" href="{% url 'home' %}">Inicio</a>
+                <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--bs-primary);">
+                    <a class="navbar-brand text-light fw-bold" href="{% url 'home' %}" 
+                       style="font-family: 'Arial', sans-serif; font-size: 1.5rem; padding-left: 1rem;">
+                        Inicio
+                    </a>
                     
                     <!-- Botón de menú en pantallas pequeñas -->
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,25 +38,25 @@
                     
                     <!-- Elementos del menú -->
                     <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="nav justify-content-center">
+                        <ul class="navbar-nav mx-auto">
                             <li class="nav-item">
-                                <a class="btn btn-success btn-lg nav-link" href="{% url 'tipo_planta' %}" role="button">Tipo Planta</a>
+                                <a class="nav-link {% if request.resolver_match.url_name == 'tipo_planta' %}active{% endif %}" href="{% url 'tipo_planta' %}">Tipo Planta</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-success btn-lg nav-link" href="{% url 'registro_parcela' %}" role="button">Registro Parcela</a>
+                                <a class="nav-link {% if request.resolver_match.url_name == 'registro_parcela' %}active{% endif %}" href="{% url 'registro_parcela' %}">Registro Parcela</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-success btn-lg nav-link" href="{% url 'registro_planta' %}" role="button">Registro Planta</a>
+                                <a class="nav-link {% if request.resolver_match.url_name == 'registro_planta' %}active{% endif %}" href="{% url 'registro_planta' %}">Registro Planta</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-success btn-lg nav-link" href="{% url 'home' %}" role="button">Home</a>
+                                <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-success btn-lg nav-link" href="{% url 'bt_varios' %}" role="button">Pruebas con Botones</a>
+                                <a class="nav-link {% if request.resolver_match.url_name == 'bt_varios' %}active{% endif %}" href="{% url 'bt_varios' %}">Pruebas con Botones</a>
                             </li>
                         </ul>
                     </div>
-                </nav>               
+                </nav>   
             </div>            
         </div>
     </header>
@@ -85,9 +88,9 @@
                                         <h5 class="text-danger">
                                             <i class="fas fa-thermometer-half me-2"></i> Temperatura
                                         </h5>
-                                        <p><strong>Máximo:</strong> <span id="temp-max">{{ temp_max|default:"--" }} °C</span></p>
-                                        <p><strong>Mínimo:</strong> <span id="temp-min">{{ temp_min|default:"--" }} °C</span></p>
-                                        <p><strong>Promedio:</strong> <span id="temp-avg">{{ temp_avg|default:"--" }} °C</span></p>
+                                        <p><strong>Máximo:</strong> <span id="temp-max">-- °C (--)</span></p>
+                                        <p><strong>Mínimo:</strong> <span id="temp-min">-- °C (--)</span></p>
+                                        <p><strong>Promedio:</strong> <span id="temp-avg">-- °C</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -108,9 +111,9 @@
                                         <h5 class="text-primary">
                                             <i class="fas fa-tint me-2"></i> Humedad
                                         </h5>
-                                        <p><strong>Máximo:</strong> <span id="hum-max">{{ hum_max|default:"--" }} %</span></p>
-                                        <p><strong>Mínimo:</strong> <span id="hum-min">{{ hum_min|default:"--" }} %</span></p>
-                                        <p><strong>Promedio:</strong> <span id="hum-avg">{{ hum_avg|default:"--" }} %</span></p>
+                                        <p><strong>Máximo:</strong> <span id="hum-max">-- % (--)</span></p>
+                                        <p><strong>Mínimo:</strong> <span id="hum-min">-- % (--)</span></p>
+                                        <p><strong>Promedio:</strong> <span id="hum-avg">-- %</span></p>
                                     </div>
                                 </div>
                                 <!--
@@ -188,7 +191,7 @@
             </div>
         </div>
     </div>
-
+    
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm h-100">
                 <div class="card-body">

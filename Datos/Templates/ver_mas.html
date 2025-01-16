@@ -26,14 +26,38 @@
                 <p>Sistema de Control y Gestión de Calidad del Agua</p>
                 
                 <!-- Barra de navegación -->
-                <nav class="navbar" style="background-color: #e3f2fd;">
-                    <a class="navbar-brand" href="{% url 'home' %}">Inicio</a>
-                    <a href="{% url 'tipo_planta' %}" class="btn btn-success btn-lg" role="button">Tipo Planta</a>
-                    <a href="{% url 'registro_parcela' %}" class="btn btn-success btn-lg" role="button">Registro Parcela</a>
-                    <a href="{% url 'registro_planta' %}" class="btn btn-success btn-lg" role="button">Registro Planta</a>
-                    <a href="{% url 'home' %}" class="btn btn-success btn-lg" role="button">Home</a>
-                    <a href="{% url 'bt_varios' %}" class="btn btn-success btn-lg" role="button">Pruebas con Botones</a>
-                </nav>
+                <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--bs-primary);">
+                    <a class="navbar-brand text-light fw-bold" href="{% url 'home' %}" 
+                       style="font-family: 'Arial', sans-serif; font-size: 1.5rem; padding-left: 1rem;">
+                        Inicio
+                    </a>
+                    
+                    <!-- Botón de menú en pantallas pequeñas -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <!-- Elementos del menú -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'tipo_planta' %}active{% endif %}" href="{% url 'tipo_planta' %}">Tipo Planta</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'registro_parcela' %}active{% endif %}" href="{% url 'registro_parcela' %}">Registro Parcela</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'registro_planta' %}active{% endif %}" href="{% url 'registro_planta' %}">Registro Planta</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'bt_varios' %}active{% endif %}" href="{% url 'bt_varios' %}">Pruebas con Botones</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>   
             </div>            
         </div>
     </header>
