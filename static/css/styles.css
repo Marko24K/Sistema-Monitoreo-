@@ -306,7 +306,6 @@ footer img {
 }
 
 
-
 #cont-termometro {
     position: relative; /* Necesario para que el posicionamiento absoluto funcione en #termometro */
     width: 160px;
@@ -323,36 +322,33 @@ footer img {
     left: 10%;
 }
 
-#termometro { 
+/* Contenedor del termómetro */
+#termometro {
+    transform: rotate(180deg);
     width: 30px;
     height: 200px;
     border: 2px solid black;
     border-radius: 10px;
-    position: absolute;  /* Posicionamiento absoluto dentro del contenedor padre */
-    top: 38%;  /* 38% desde la parte superior */
-    left: 50%; /* 50% desde el borde izquierdo */
-    transform: translate(-50%, -50%);  /* Ajusta la posición para centrar */
+    position: relative; /* Cambiado a relative para que el texto pueda colocarse dentro del contenedor */
     overflow: hidden;
-    background-color: #ddd; /* Fondo del termómetro */
+    background-color: #ddd;
+    margin: 15% auto; /* Centra el termómetro horizontalmente */
 }
 
-#nivel {
-    width: 100%; /* Ocupa todo el ancho */
+/* Nivel dinámico */
+.nivel {
+    width: 100%; /* Ocupa todo el ancho del contenedor */
     position: absolute;
     bottom: 0; /* Inicia desde la base */
     background-color: red; /* Color inicial */
-    height: 0; /* Altura dinámica, comienza en 0 */
-    transition: height 0.5s; /* Animación suave al cambiar la altura */
+    height: 0; /* Altura dinámica */
+    transition: height 0.5s ease; /* Animación suave */
 }
 
-#valor {
-    top: 74%;  /* 50% desde la parte superior */
-    left: 30%; /* 50% desde el borde izquierdo */
-    bottom: 0;
-    margin-top: 10px;
-    font-size: 24px;
-    position: absolute;
-    font-size: 24px; /* Tamaño de fuente */
-    font-family: Arial, sans-serif; /* Familia de fuente */
-    font-weight: bold; /* Negrita */
+/* Valor debajo del termómetro */
+.valor {
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+    margin-top: 5px; /* Espacio entre el termómetro y el texto */
 }

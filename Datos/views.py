@@ -13,7 +13,8 @@ from django.conf import settings
 from .serializer import RegistroSensorSerializer
 from rest_framework.response import Response
 #-----------------agregado por felipe-------------
-
+def vista_parcela(request):
+    return render(request, 'vista_parcela.html')
 
 def registro_planta(request):
     if request.method == 'POST':

@@ -11,14 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'css/estilo_form_emergente.css' %}">
-    <!--Nota: para añadir los botones es necesario agregar lo siguiente
-    <link rel="stylesheet" href="{% static 'css/estilo_form_emergente.css' %}">
-    <script src="{% static 'js/form_emergente.js' %}"></script>
-
-    #seleccione un boton
-
-    -->
+    <link rel="stylesheet" href="{% static 'css/estilo_tabla.css' %}">
 </head>
 <body>
     <header class="header">
@@ -67,28 +60,22 @@
 
     <main class="container my-4">
         <section class="mb-5">
-            <div class="card shadow-sm p-4">
-                <button class="btn btn-primary mb-3" data-form-type="arduino">Abrir Formulario Arduino</button>
-            </div>
-            <div class="card shadow-sm p-4">
-                <button class="btn btn-primary" data-form-type="division_parcela">Abrir Formulario División Parcela</button>
-            </div>
-            <div class="card shadow-sm p-4">
-                <button class="btn btn-primary" data-form-type="modelo_sensor">Abrir Formulario Modelo Sensor</button>
-            </div>
-            <div class="card shadow-sm p-4">
-                <button class="btn btn-primary" data-form-type="planta">Abrir Formulario Planta</button>
-            </div>
-            <div class="card shadow-sm p-4">
-                <button class="btn btn-primary" data-form-type="sensor">Abrir Formulario Sensor</button>
-            </div>
-            <div class="card shadow-sm p-4">
-                <button class="btn btn-primary" data-form-type="tipo_dato">Abrir Formulario Tipo Dato</button>
-            </div>
-        
-            <!-- Contenedor donde se cargará el modal -->
-            <div class="overlay" id="overlay" aria-hidden="true"></div>
-            <div id="modalContainer" aria-hidden="true"></div>
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>ID divicion Parcela</th> <!-- Columna para el ID divicion parcela -->
+                        <th>ID Parcela</th> <!-- Columna para el ID parcela -->
+                        <th>tipo division</th> <!-- Columna para el tipo division -->
+                        <th>Identificador</th> <!-- Columna para la Identificacion -->
+                        <th>codigoQR</th> <!-- Columna para el QR -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Las filas de la tabla serán generadas dinámicamente aquí -->
+                </tbody>
+            </table>
+            <!-- dejar una tabla la cual tenga un boton para ver la parcela y salga toda la informacion de la parcela
+            ademas de salir la informacion de la parcela saldria todas las diviciones que ha tenido esa parcela-->
         </section>
     </main>
 
@@ -100,13 +87,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'js/form_emergente.js' %}"></script>
-    <h2>Parcelas disponibles:</h2>
-    <ul>
-        {% for parcela in parcelas %}
-            <li>{{ parcela.nombre_parcela }} - {{ parcela.id_parcela }}</li>
-        {% empty %}
-            <li>No hay parcelas disponibles</li>
-        {% endfor %}
+    <script src="{% static 'js/tabla_dinamica.js' %}"></script>
 </body>
 </html>
