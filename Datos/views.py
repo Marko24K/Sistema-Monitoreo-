@@ -16,7 +16,8 @@ from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
 #-----------------agregado por felipe-------------
-
+def vista_parcela(request):
+    return render(request, 'vista_parcela.html')
 
 def registro_planta(request):
     if request.method == 'POST':

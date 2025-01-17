@@ -1,55 +1,69 @@
-function obtenerUltimaTemperatura() {
-  // Intentamos obtener la temperatura más reciente desde localStorage
-  const ultimaTemperatura = localStorage.getItem('latestTemperature');
-  
-  // Verificar si se ha encontrado un valor en localStorage
-  console.log("Última temperatura obtenida desde localStorage:", ultimaTemperatura);
-  
-  // Si existe en localStorage, devolverla, de lo contrario, retornar un valor predeterminado
-  if (ultimaTemperatura) {
-    return parseInt(ultimaTemperatura);
-  } else {
-    return 0;  // Si no se encuentra ninguna temperatura almacenada, usar 0°C por defecto
-  }
+// Función para obtener un valor almacenado en localStorage o un predeterminado
+function obtenerValor(key, defaultValue) {
+  const valor = localStorage.getItem(key);
+  const numero = parseInt(valor, 10);
+  return isNaN(numero) ? defaultValue : numero;
 }
 
-// Función para ajustar el termómetro usando la última temperatura registrada
-function ajustarTermometro() { 
-  // Obtener la última temperatura registrada desde localStorage
-  let temperatura = obtenerUltimaTemperatura();
+// Función para actualizar un indicador (genérico para temperatura/humedad)
+function ajustarIndicador(tipo, valorActual, config) {
+  const { idNivel, idValor, limites, colores } = config;
+  const nivel = document.getElementById(idNivel);
+  const valor = document.getElementById(idValor);
 
-  const nivel = document.getElementById('nivel');
-  const valor = document.getElementById('valor');
+  // Limita el valor al rango definido
+  const valorLimitado = Math.min(Math.max(valorActual, limites.min), limites.max);
 
-  // Limita la temperatura entre -25 y 50
-  let altura = Math.min(Math.max(temperatura, -25), 50);
+  // Mapea el valor a un porcentaje
+  const porcentaje = ((valorLimitado - limites.min) / (limites.max - limites.min)) * 100;
 
-  // Mapea la temperatura entre -25 y 50 a un porcentaje entre 0% y 100%
-  let alturaPorcentaje = ((altura + 25) / 75) * 100;
-  alturaPorcentaje = Math.min(Math.max(alturaPorcentaje, 0), 100); // Asegura que esté entre 0% y 100%
+  // Ajusta la altura del indicador
+  nivel.style.height = `${porcentaje}%`;
 
-  // Ajusta la altura del nivel del termómetro
-  nivel.style.height = `${alturaPorcentaje}%`;
-
-  // Ajustar color según la temperatura
-  if (temperatura < 15) {
-    nivel.style.backgroundColor = 'blue'; // Frío
-  } else if (temperatura >= 15 && temperatura <= 30) {
-    nivel.style.backgroundColor = 'yellow'; // Moderado
+  // Determina el color del indicador basado en el valor
+  if (valorLimitado < colores.umbralBajo) {
+    nivel.style.backgroundColor = colores.bajo;
+  } else if (valorLimitado <= colores.umbralAlto) {
+    nivel.style.backgroundColor = colores.moderado;
   } else {
-    nivel.style.backgroundColor = 'red'; // Caluroso
+    nivel.style.backgroundColor = colores.alto;
   }
 
-  // Actualizar el valor mostrado de la temperatura
-  valor.textContent = `${temperatura}°C`;
+  // Actualiza el texto mostrado
+  valor.textContent = `${valorActual}${tipo === 'temperatura' ? '°C' : '%'}`;
 
-  // Guardar la temperatura actual en localStorage
-  localStorage.setItem('latestTemperature', temperatura);
-  console.log("Temperatura guardada en localStorage:", temperatura);
+  // Guarda el valor actualizado en localStorage
+  localStorage.setItem(`latest${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`, valorActual);
+
+  console.log(`${tipo.charAt(0).toUpperCase() + tipo.slice(1)} guardado en localStorage:`, valorActual);
 }
 
-// Llamamos a la función para actualizar el termómetro cada 10 segundos
-setInterval(function() {ajustarTermometro();}, 1);  // 10000 ms = 10 segundos
+// Función para ajustar el termómetro
+function ajustarTermometro() {
+  const temperatura = obtenerValor('latestTemperature', 0);
+  ajustarIndicador('temperatura', temperatura, {
+    idNivel: 'nivel',
+    idValor: 'valor',
+    limites: { min: -25, max: 50 },
+    colores: { bajo: 'blue', moderado: 'green', alto: 'red', umbralBajo: 15, umbralAlto: 26 },
+  });
+}
 
-// Ajustar el termómetro al cargar la página con la última temperatura almacenada
-window.addEventListener('load', function() {ajustarTermometro();});
+// Función para ajustar el indicador de humedad
+function ajustarIndicadorHumedad() {
+  const humedad = obtenerValor('latestHumidity', 50);
+  ajustarIndicador('humedad', humedad, {
+    idNivel: 'nivelHumedad',
+    idValor: 'valorHumedad',
+    limites: { min: 0, max: 100 },
+    colores: { bajo: 'yellow', moderado: 'blue', alto: 'purple', umbralBajo: 30, umbralAlto: 60 },
+  });
+}
+
+// Configurar actualizaciones automáticas cada 1 segundos
+setInterval(ajustarTermometro, 1000);
+setInterval(ajustarIndicadorHumedad, 1000);
+
+// Ajustar indicadores al cargar la página
+window.addEventListener('load', ajustarTermometro);
+window.addEventListener('load', ajustarIndicadorHumedad);
