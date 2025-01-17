@@ -65,9 +65,9 @@
                     {% csrf_token %}
                     <div class="row" style="text-align: center">
                         <div class="col-6">
-                            <h2>Registro de la planta</h2>
+                            <h2>Registro de la plantación</h2>
                             <div class="row" style="text-align: center">
-                                <div class="col-12">
+                                <div class="col-6">
                                 <label for="numero_planta" class="form-label">Numero de la planta</label>
                                 <input  type="number" 
                                     class="form-control" 
@@ -79,6 +79,18 @@
                                     max="1000000" 
                                     title="Solo se permiten caracteres numericos positivos">
                                 </div>
+                                <div class="col-6">
+                                    <label for="División" class="form-label">Division</label>
+                                    <input  type="number" 
+                                        class="form-control" 
+                                        id="numero_planta"
+                                        name="numero_planta" 
+                                        required 
+                                        pattern="^[0-9]+$"
+                                        min="0"
+                                        max="1000000" 
+                                        title="Solo se permiten caracteres numericos positivos">
+                                    </div>
 
                                 <div class="col-6">
                                     <label for="altura" class="form-label"> altura </label>

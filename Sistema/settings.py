@@ -72,7 +72,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Sistema.wsgi.application'
-
+# Configuración de almacenamiento de mensajes
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

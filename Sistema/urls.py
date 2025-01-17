@@ -25,7 +25,7 @@ urlpatterns = [
     path('tipo_planta/', views.tipo_planta, name='tipo_planta'),
     path('registro_planta/', views.registro_planta, name='registro_planta'),
     path('bt_varios/', views.bt_varios, name='bt_varios'),
-    path('modal/', views.modal_view, name='modal'),
+    path('modal/', views.modal_view, name='modal_view'),
     #-------------------------------------------------
     path('admin/', admin.site.urls),
     path('obtener_temperatura/', views.datos_recientes, name='datos_recientes'),
@@ -33,8 +33,6 @@ urlpatterns = [
     path('guardar_datos_sensor/', views.guardar_datos_sensor, name='guardar_datos_sensor'),
     path('detalle_dato/', views.detalle_dato, name='detalle_dato'),
     path('datos_recientes/', views.datos_recientes, name='datos_recientes'),
-
-
-
-    
+    path('mapa/', views.mapa, name='mapa'),
+     
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,17 +1,20 @@
 from datetime import datetime
 import os
+import qrcode
+from django.core.files.storage import FileSystemStorage
+from io import BytesIO
+from django.core.files.base import ContentFile
+from django.contrib import messages
 import traceback
-from django.shortcuts import  render, get_object_or_404
-from django.utils import timezone
+from django.shortcuts import  redirect, render, get_object_or_404
 from Sistema.settings import BACKUP_DIR
-from .models import RegistroSensor, Sensor, TipoDato, Parcela, TipoPlanta, ModeloSensor,RegistroPlanta
+from .models import Arduino, RegistroSensor, Sensor, TipoDato, Parcela, TipoPlanta, ModeloSensor,RegistroPlanta, DivisionParcela
 from django.http import Http404, JsonResponse
 from django.db.models import Avg, Max, Min
 import json
 from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
-from rest_framework.response import Response
 #-----------------agregado por felipe-------------
 
 
@@ -32,28 +35,68 @@ def registro_planta(request):
         )
     return render(request, 'registro_planta.html')
 
+
+
 def modal_view(request):
     form_type = request.GET.get('form_type', '')  # Obtener el tipo de formulario de la URL
-    
-    # Verificar si el tipo de formulario no está vacío
+
     if not form_type:
         return Http404("Formulario no especificado")
-    
+
     # Ruta de la plantilla correspondiente
     template_path = f'mini_forms/{form_type}.html'
 
-   
+    context = {}
+
     if form_type == 'division_parcela':
-        parcelas = Parcela.objects.all()  # Obtener las parcelas para pasarlas al formulario
-        return render(request, template_path, {'parcelas': parcelas})
+        parcelas = Parcela.objects.all()  # Obtener las parcelas
+        context['parcelas'] = parcelas
+
+        if request.method == 'POST':
+            id_parcela = request.POST.get('id_parcela')
+            tipo_division = request.POST.get('tipo_division')  # Asegúrate de que sea texto
+            identificador_division = request.POST.get('identificador_division')
+
+            # Verificar si el identificador ya existe
+            existe = DivisionParcela.objects.filter(id_parcela=id_parcela, identificador=identificador_division).exists()
+
+            if existe:
+                messages.error(request, 'Este número identificador ya existe para la parcela seleccionada.')
+            else:
+                DivisionParcela.objects.create(
+                    id_parcela_id=id_parcela,
+                    tipo_division=tipo_division,  # Almacena el texto aquí
+                    identificador=identificador_division,
+                )
+                messages.success(request, 'La división se ha creado exitosamente.')
+
+            return redirect('bt_varios')  # Redirigir después de procesar
+
+    if form_type == 'arduino':
+        # Obtener la lista de Arduinos disponibles
+        arduino_list = Arduino.objects.all()
+        context['arduino_list'] = arduino_list  # Pasar los Arduinos al contexto
+
+        if request.method == 'POST':
+            id_arduino = request.POST.get('id_arduino')  # Obtener el Arduino seleccionado
+            nombre_sensor = request.POST.get('nombre_sensor')
+            descripcion_sensor = request.POST.get('Descripcion_sensor')
+
+            # Crear el modelo de sensor
+            Sensor.objects.create(
+                id_arduino_id=id_arduino,
+                nombre_sensor=nombre_sensor,
+                descripcion=descripcion_sensor,
+            )
+            messages.success(request, 'Sensor creado exitosamente.')
+            return redirect('bt_varios')  # Redirigir después de procesar
 
     try:
-        # Intentamos renderizar la plantilla
-        return render(request, template_path)
+        return render(request, template_path, context)
     except Exception as e:
-        # Si no encuentra la plantilla, lanzar una excepción y devolver un formulario predeterminado
         print(f"Error al cargar la plantilla {template_path}: {e}")
         return render(request, 'mini_forms/arduino.html')
+
 #-----------------------------------------
 def bt_varios(request):
     return render(request, 'bt_varios.html')
@@ -84,8 +127,6 @@ def tipo_planta(request):
             imagen_tipo_planta = request.FILES['input-imagen'],
         )
     return render(request, 'tipo_planta.html')
-
-
 
 
 @api_view(['POST'])
@@ -260,7 +301,7 @@ def datos_recientes(request):
 #ver_mas.html
 def detalle_dato(request):
     dato = request.GET.get('dato', None)
-    if dato not in ['Temperatura', 'Humedad']:
+    if dato not in ['Temperatura', 'Humedad','Humedad_suelo','CO2','TDS']:
         return JsonResponse({'error': 'Tipo de dato inválido.'}, status=400)
 
     tipo_dato = get_object_or_404(TipoDato, nombre_dato=dato)
@@ -297,6 +338,7 @@ def detalle_dato(request):
         'recent_data': serializer.data,  # Enviar los datos serializados a la plantilla
     })
 
-
+def mapa(request):
+    return render(request, 'mapa.html')
 
 

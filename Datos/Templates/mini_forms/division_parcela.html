@@ -1,9 +1,11 @@
+<!-- mini_forms/division_parcela.html -->
 <div class="modal">
-    <h2>Formulario division de las parcelas</h2>
-    {% csrf_token %}
-    <form id="divisionParcelaForm" method = "POST">
+    <h2>Formulario división de las parcelas</h2>
+    
+    <form id="divisionParcelaForm" method="POST" action="{% url 'modal_view' %}?form_type=division_parcela">
+        {% csrf_token %}
         <select class="form-select" id="id_parcela" name="id_parcela" aria-label="Seleccione una parcela">
-            <option>Seleccione una parcela</option>
+            <option selected disabled>Seleccione una parcela</option>
             {% for parcela in parcelas %}
                 <option value="{{ parcela.id_parcela }}">{{ parcela.nombre_parcela }}</option>
             {% empty %}
@@ -11,23 +13,15 @@
             {% endfor %}
         </select>
 
-
-        <!-- Los siguiestes input pertenecen a division_parcela-->
+        <!-- Los siguientes inputs pertenecen a division_parcela-->
         <div class="col-12">
-            <label for="tipo_division" class="form-label"> Tipo de division </label>
-            <input  type="text" 
-                    class="form-control" 
-                    id="tipo_division" 
-                    required
-                    maxlength="50" >
+            <label for="tipo_division" class="form-label">Tipo de división</label>
+            <input type="text" class="form-control" id="tipo_division" name="tipo_division" required maxlength="50">
         </div>
-        
+
         <div class="col-12">
-            <label for="identificador_division" class="form-label">Ingrese un numero identificador de la division</label>
-            <input  type="number" 
-                    class="form-control" 
-                    id="identificador_division" 
-                    required>
+            <label for="identificador_division" class="form-label">Ingrese un número identificador de la división</label>
+            <input type="number" class="form-control" id="identificador_division" name="identificador_division" required>
         </div>
 
         <button type="submit" class="btn btn-outline-success">Enviar</button>
