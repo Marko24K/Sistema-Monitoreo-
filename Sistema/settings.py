@@ -81,7 +81,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Humedal',
+        'NAME': 'Humedal2',
         'USER':'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
@@ -89,7 +89,7 @@ DATABASES = {
     },
     'espejo': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Humedal_espejo',
+        'NAME': 'humedal_espejo',
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
@@ -97,8 +97,6 @@ DATABASES = {
     }
     
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -148,7 +146,7 @@ if DEBUG:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# ruta par guardar los archivos
+# ruta para guardar los archivos
  
 import os
 

@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-#import qrcode
+import qrcode
 from django.core.files.storage import FileSystemStorage
 from io import BytesIO
 from django.core.files.base import ContentFile
@@ -9,7 +9,7 @@ import traceback
 from django.shortcuts import  redirect, render, get_object_or_404
 from Sistema.settings import BACKUP_DIR
 from .models import Arduino, RegistroSensor, Sensor, TipoDato, Parcela, TipoPlanta, ModeloSensor,RegistroPlanta, DivisionParcela
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.db.models import Avg, Max, Min
 import json
 from rest_framework.decorators import api_view
@@ -77,7 +77,7 @@ def modal_view(request):
                 messages.success(request, 'La división se ha creado exitosamente.')
 
             return redirect('bt_varios')  
-    if form_type == 'modelo_sensor':
+    elif form_type == 'modelo_sensor':
         # Obtener la lista de Arduinos disponibles
         arduino_list = Arduino.objects.all()
         context['arduino_list'] = arduino_list  # Pasar los Arduinos al contexto
@@ -94,6 +94,22 @@ def modal_view(request):
             )
             
             return redirect('bt_varios') 
+        
+    elif form_type == 'arduino':
+        parcelas = Parcela.objects.all()  
+        context['parcelas'] = parcelas
+        
+        if request.method == 'POST':
+            return redirect('bt_varios') 
+        
+    elif form_type == 'planta':
+        if request.method == 'POST':
+            return redirect('bt_varios')
+        
+    elif form_type == 'sensor':
+        if request.method == 'POST':
+            return redirect('bt_varios') 
+
 
     try:
         return render(request, template_path, context)
@@ -349,3 +365,40 @@ def vista_parcela(request):
     vista = DivisionParcela.objects.all()
 
     return render(request, 'vista_parcela.html', {'vista': vista})
+
+
+def generar_qr(request, data):
+    # Crea un objeto QR
+    qr = qrcode.QRCode(
+        version=1,  # Tamaño del QR
+        error_correction=qrcode.constants.ERROR_CORRECT_L,  # Nivel de corrección de errores
+        box_size=10,  # Tamaño de cada cuadro
+        border=4,  # Tamaño del borde
+    )
+    
+    # Añadir datos al código QR
+    qr.add_data(data)
+    qr.make(fit=True)
+    
+    # Crear la imagen del QR
+    img = qr.make_image(fill='black', back_color='white')
+    
+    # Define la ruta en la que quieres guardar el código QR
+    folder_path = os.path.join(settings.MEDIA_ROOT, 'qr_codes_division')
+    
+    # Asegúrate de que la carpeta existe
+    os.makedirs(folder_path, exist_ok=True)
+    
+    # Generar un nombre único para el archivo, por ejemplo, basándote en el tiempo
+    qr_filename = f"qr_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+    
+    # Ruta completa donde se guardará la imagen
+    file_path = os.path.join(folder_path, qr_filename)
+    
+    # Guardar la imagen en la ruta especificada
+    img.save(file_path)
+    
+    # Opcional: Retornar la URL del archivo guardado para que puedas acceder a él
+    qr_url = os.path.join(settings.MEDIA_URL, 'qr_codes_division', qr_filename)
+    
+    return HttpResponse(f'El código QR se ha guardado en: <a href="{qr_url}">Ver QR</a>')

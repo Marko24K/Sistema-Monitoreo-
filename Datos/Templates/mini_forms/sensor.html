@@ -1,7 +1,7 @@
 <div class="modal">
     <h2>Formulario</h2>
     {% csrf_token %}
-    <form id="sensorForm">
+    <form id="sensorForm" method="POST" action="{% url 'modal_view' %}?form_type=sensor">
         <div class="col 8">
             <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off" checked>
             <label class="btn btn-outline-success" for="option1">Activo</label>

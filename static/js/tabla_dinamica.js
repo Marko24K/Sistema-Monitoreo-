@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data.forEach(item => {
                 const row = document.createElement("tr"); // Crea una nueva fila
                 row.innerHTML = `
-                    <th>${item.id_divicion_Parcela}</th> <!-- agregar para el ID divicion parcela -->
+                    <th>${item.id_division_Parcela}</th> <!-- agregar para el ID divicion parcela -->
                     <th>${item.id_parcela}</th> <!-- agregar para el ID parcela -->
                     <th>${item.tipo_division}</th> <!-- agregar para el tipo division -->
                     <th>${item.Identificador}</th> <!-- agregar para la Identificacion -->

@@ -1,7 +1,7 @@
 <div class="modal">
     <h2>Formulario planta</h2>
     {% csrf_token %}
-    <form id="plantaForm">
+    <form id="plantaForm" method="POST" action="{% url 'modal_view' %}?form_type=planta">
         <div class="row">
             <div class="col-6">
                 <label class="text-normal text-dark form-label">Descripcion</label><br>

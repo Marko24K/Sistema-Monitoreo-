@@ -6,10 +6,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const tempRecentTableBody = document.querySelector('#temp-recent-table tbody');
     const humRecentTableBody = document.querySelector('#hum-recent-table tbody');
 
+    // Asegúrate de que esta función esté definida antes de que se use
+    function updateLatestValues(tempData, humData) {
+        const latestTemperature = tempData.length
+            ? `${parseFloat(tempData[0].valor).toFixed(2)} °C`
+            : '-- °C';
+
+        latestTemperatureElement.textContent = latestTemperature;
+        localStorage.setItem('latestTemperature', latestTemperature);
+
+        const latestHumidity = humData.length
+            ? `${parseFloat(humData[0].valor).toFixed(2)} Hr`
+            : '-- Hr';
+        latestHumidityElement.textContent = latestHumidity;
+        localStorage.setItem('latestHumidity', latestHumidity);
+    }
+
     initializeCharts();
     fetchData();
     setInterval(fetchData, 10000);  // Actualiza cada 10 segundos
-
+    
+    
     function initializeCharts() {
         const tempCtx = document.getElementById('temperatureChart').getContext('2d');
         const humidityCtx = document.getElementById('humidityChart').getContext('2d');
@@ -100,6 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(data => {
                 console.log("Datos recibidos:", data);  // Muestra los datos completos para depuración
                 processData(data);
+                
             })
             .catch(error => {
                 console.error('Error al obtener los datos:', error);  // Muestra cualquier error
@@ -169,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateRecentTables(tempData, humData) {
-        const recentTemp = tempData.slice(-10).reverse();
+        const recentTemp = tempData.slice(-10).reverse();  // Los últimos 10 datos de temperatura
         tempRecentTableBody.innerHTML = recentTemp.length
             ? recentTemp.map(item => `
                 <tr>
@@ -180,8 +198,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 </tr>
             `).join('')
             : '<tr><td colspan="4">No hay datos disponibles.</td></tr>';
-
-        const recentHum = humData.slice(-10).reverse();
+    
+        const recentHum = humData.slice(-10).reverse();  // Los últimos 10 datos de humedad
         humRecentTableBody.innerHTML = recentHum.length
             ? recentHum.map(item => `
                 <tr>
@@ -194,13 +212,17 @@ document.addEventListener("DOMContentLoaded", () => {
             : '<tr><td colspan="4">No hay datos disponibles.</td></tr>';
     }
 
+    
     function processData(data) {
         const temperatureData = data.temp_recent;  
         const humidityData = data.hum_recent;  
 
-        updateLatestValues(data.latest_temperature, data.latest_humidity);
+        // Asegúrate de que la función updateLatestValues esté definida antes de llamarla
+        updateLatestValues(data.latest_temperature, data.latest_humidity);  // Llamada a la función
+
         updateStatistics(temperatureData, humidityData);
         updateCharts(temperatureData, humidityData);
         updateRecentTables(temperatureData, humidityData);
     }
+
 });
