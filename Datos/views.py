@@ -15,13 +15,12 @@ import json
 from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
-#-----------------agregado por felipe-------------
-def vista_parcela(request):
-    return render(request, 'vista_parcela.html')
 
+
+#------------forms------------------------
 def registro_planta(request):
     if request.method == 'POST':
-        plantas = RegistroPlanta.objects.create(
+        RegistroPlanta.objects.create(
             numero_planta = request.POST['numero_planta'],
             altura = request.POST['altura'],
             largo = request.POST['largo '],
@@ -71,9 +70,8 @@ def modal_view(request):
                 )
                 messages.success(request, 'La división se ha creado exitosamente.')
 
-            return redirect('bt_varios')  # Redirigir después de procesar
-
-    if form_type == 'arduino':
+            return redirect('bt_varios')  
+    if form_type == 'modelo_sensor':
         # Obtener la lista de Arduinos disponibles
         arduino_list = Arduino.objects.all()
         context['arduino_list'] = arduino_list  # Pasar los Arduinos al contexto
@@ -84,13 +82,12 @@ def modal_view(request):
             descripcion_sensor = request.POST.get('Descripcion_sensor')
 
             # Crear el modelo de sensor
-            Sensor.objects.create(
-                id_arduino_id=id_arduino,
+            ModeloSensor.objects.create(
                 nombre_sensor=nombre_sensor,
                 descripcion=descripcion_sensor,
             )
-            messages.success(request, 'Sensor creado exitosamente.')
-            return redirect('bt_varios')  # Redirigir después de procesar
+            
+            return redirect('bt_varios') 
 
     try:
         return render(request, template_path, context)
@@ -98,7 +95,6 @@ def modal_view(request):
         print(f"Error al cargar la plantilla {template_path}: {e}")
         return render(request, 'mini_forms/arduino.html')
 
-#-----------------------------------------
 def bt_varios(request):
     return render(request, 'bt_varios.html')
 
@@ -106,7 +102,7 @@ def bt_varios(request):
 def registro_parcela(request):
     if request.method == 'POST':
         # procesamiento de los datos del formulario y crear una nueva instancia
-        parcela = Parcela.objects.create(
+        Parcela.objects.create(
             localidad_parcela=request.POST['val_localidad_p'],
             nombre_parcela=request.POST['val_nombre_p'],
             direccion_parcela=request.POST['val_direccion_p'],
@@ -121,7 +117,7 @@ def registro_parcela(request):
 
 def tipo_planta(request):
     if request.method == 'POST':
-        planta = TipoPlanta.objects.create(
+        TipoPlanta.objects.create(
             nombre_comun = request.POST['nombre_comun'],
             nombre_cientifico = request.POST['nombre_cientifico'],
             descripcion = request.POST['descripcion_planta'],
@@ -129,7 +125,7 @@ def tipo_planta(request):
         )
     return render(request, 'tipo_planta.html')
 
-
+#---------------------------------------------------------------------------------
 @api_view(['POST'])
 def guardar_datos_sensor(request):
     if request.method == 'POST':
@@ -343,3 +339,7 @@ def mapa(request):
     return render(request, 'mapa.html')
 
 
+def vista_parcela(request):
+    vista = DivisionParcela.objects.all()
+
+    return render(request, 'vista_parcela.html', {'vista': vista})

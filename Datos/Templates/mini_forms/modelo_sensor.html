@@ -1,28 +1,8 @@
 <div class="modal" id="myModal" aria-hidden="true">
     <h2>Formulario</h2>
 
-    <form id="modeloSensorForm" method="POST" action="{% url 'modal_view' %}?form_type=arduino">
+    <form id="modeloSensorForm" method="POST" action="{% url 'modal_view' %}?form_type=modelo_sensor">
         {% csrf_token %}
-
-        <!-- Depuración: Imprimir los modelos Arduino -->
-        <p>Arduinos disponibles: </p>
-        {% for arduino in arduino_list %}
-            <p>{{ arduino.modelo_arduino }}</p>
-        {% empty %}
-            <p>No hay Arduinos disponibles</p>
-        {% endfor %}
-
-        <!-- Campo para seleccionar el Arduino -->
-        <label for="id_arduino" class="form-label">Seleccione el Arduino:</label>
-        <select class="form-control" id="id_arduino" name="id_arduino" required>
-            <option value="">Seleccione un Arduino</option>
-            {% for arduino in arduino_list %}
-                <option value="{{ arduino.id_arduino }}">{{ arduino.modelo_arduino }}</option>
-            {% empty %}
-                <option value="">No hay Arduinos disponibles</option>
-            {% endfor %}
-        </select>
-
         <label for="nombre_sensor" class="form-label">Inserte el nombre del sensor</label>
         <input type="text" class="form-control" id="nombre_sensor" name="nombre_sensor" required maxlength="50" pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" title="Solo se permiten caracteres alfabéticos, numéricos">
 
