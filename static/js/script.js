@@ -1,4 +1,3 @@
-/*
 document.addEventListener("DOMContentLoaded", () => {
     let temperatureChart, humidityChart;
     const latestTemperatureElement = document.getElementById('latest-temperature');
@@ -10,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeCharts();
     fetchData();
     setInterval(fetchData, 10000);  // Actualiza cada 10 segundos
-    setInterval(updateRecentTables, 10000);
 
     function initializeCharts() {
         const tempCtx = document.getElementById('temperatureChart').getContext('2d');
@@ -57,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'Humedad (%)',
+                    label: 'Humedad (Hr)',
                     data: [],
                     borderColor: '#003366', 
                     backgroundColor: 'rgba(0, 51, 102, 0.2)',
@@ -106,16 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(error => {
                 console.error('Error al obtener los datos:', error);  // Muestra cualquier error
             });
-    }
-
-    function processData(data) {
-        const temperatureData = data.temp_recent;  
-        const humidityData = data.hum_recent;  
-
-        updateLatestValues(data.latest_temperature, data.latest_humidity);
-        updateStatistics(temperatureData, humidityData);
-        updateCharts(temperatureData, humidityData);
-        updateRecentTables(temperatureData, humidityData);
     }
 
     function updateLatestValues(tempData, humData) {
@@ -205,147 +193,14 @@ document.addEventListener("DOMContentLoaded", () => {
             `).join('')
             : '<tr><td colspan="4">No hay datos disponibles.</td></tr>';
     }
-});*/
-document.addEventListener("DOMContentLoaded", () => {
-    let temperatureChart, humidityChart;
-    const latestTemperatureElement = document.getElementById('latest-temperature');
-    const latestHumidityElement = document.getElementById('latest-humidity');
-
-    const tempRecentTableBody = document.querySelector('#temp-recent-table tbody');
-    const humRecentTableBody = document.querySelector('#hum-recent-table tbody');
-
-    initializeCharts();
-    fetchData();
-    setInterval(fetchData, 10000); // Actualiza cada 10 segundos
-
-    function initializeCharts() {
-        const tempCtx = document.getElementById('temperatureChart').getContext('2d');
-        const humidityCtx = document.getElementById('humidityChart').getContext('2d');
-
-        temperatureChart = new Chart(tempCtx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Temperatura (°C)',
-                    data: [],
-                    borderColor: '#d9534f',
-                    backgroundColor: 'rgba(217, 83, 79, 0.2)',
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'hour',
-                            tooltipFormat: 'DD/MM/YYYY HH:mm',
-                            displayFormats: { hour: 'DD/MM HH:mm' }
-                        },
-                        title: { display: true, text: 'Fecha' }
-                    },
-                    y: {
-                        beginAtZero: false,
-                        title: { display: true, text: 'Temperatura (°C)' }
-                    }
-                }
-            }
-        });
-
-        humidityChart = new Chart(humidityCtx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Humedad (%)',
-                    data: [],
-                    borderColor: '#003366',
-                    backgroundColor: 'rgba(0, 51, 102, 0.2)',
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'hour',
-                            tooltipFormat: 'DD/MM/YYYY HH:mm',
-                            displayFormats: { hour: 'DD/MM HH:mm' }
-                        },
-                        title: { display: true, text: 'Fecha' }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'Humedad (Hr)' }
-                    }
-                }
-            }
-        });
-    }
-
-    function fetchData() {
-        const url = '/datos_recientes/';
-
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error en la solicitud');
-                }
-                return response.json();
-            })
-            .then(data => {
-                processData(data);
-            })
-            .catch(error => {
-                console.error('Error al obtener los datos:', error);
-            });
-    }
 
     function processData(data) {
-        const temperatureData = data.temp_recent;
-        const humidityData = data.hum_recent;
+        const temperatureData = data.temp_recent;  
+        const humidityData = data.hum_recent;  
 
         updateLatestValues(data.latest_temperature, data.latest_humidity);
         updateStatistics(temperatureData, humidityData);
         updateCharts(temperatureData, humidityData);
-        updateRecentTables(temperatureData, humidityData); // Siempre actualizar desde aquí
-    }
-
-    function updateRecentTables(tempData, humData) {
-        const recentTemp = tempData.slice(-10).reverse();
-        tempRecentTableBody.innerHTML = recentTemp.length
-            ? recentTemp.map(item => `
-                <tr>
-                    <td>${parseFloat(item.valor).toFixed(2)} °C</td>
-                    <td>${moment(item.fecha_registro).format('DD/MM/YYYY HH:mm')}</td>
-                    <td>${item.id_sensor.id_modelo_sensor.nombre_sensor || 'Desconocido'}</td>
-                    <td>${item.id_sensor.id_sensor}</td>
-                </tr>
-            `).join('')
-            : '<tr><td colspan="4">No hay datos disponibles.</td></tr>';
-
-        const recentHum = humData.slice(-10).reverse();
-        humRecentTableBody.innerHTML = recentHum.length
-            ? recentHum.map(item => `
-                <tr>
-                    <td>${parseFloat(item.valor).toFixed(2)} Hr</td>
-                    <td>${moment(item.fecha_registro).format('DD/MM/YYYY HH:mm')}</td>
-                    <td>${item.id_sensor.id_modelo_sensor.nombre_sensor || 'Desconocido'}</td>
-                    <td>${item.id_sensor.id_sensor}</td>
-                </tr>
-            `).join('')
-            : '<tr><td colspan="4">No hay datos disponibles.</td></tr>';
+        updateRecentTables(temperatureData, humidityData);
     }
 });

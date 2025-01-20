@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Monitoreo de Humedal - Universidad de Playa Ancha</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/min/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style_home2.css' %}">
+    <script src="{% static 'js/script_home2.js' %}"></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="container">
+                <img src="{% static 'img/logoupla.png' %}" alt="Logo UPLA" width="100" class="mb-3">
+                <h1>Monitoreo de Humedal</h1>
+                <p>Sistema de Control y Gestión de Calidad del Agua</p>
+                
+                <!-- Barra de navegación -->
+                <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--bs-primary);">
+                    <a class="navbar-brand text-light fw-bold" href="{% url 'home' %}" 
+                       style="font-family: 'Arial', sans-serif; font-size: 1.5rem; padding-left: 1rem;">
+                        Inicio
+                    </a>
+                    
+                    <!-- Botón de menú en pantallas pequeñas -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <!-- Elementos del menú -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'tipo_planta' %}active{% endif %}" href="{% url 'tipo_planta' %}">Tipo Planta</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'registro_parcela' %}active{% endif %}" href="{% url 'registro_parcela' %}">Registro Parcela</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'registro_planta' %}active{% endif %}" href="{% url 'registro_planta' %}">Registro Planta</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'bt_varios' %}active{% endif %}" href="{% url 'bt_varios' %}">Pruebas con Botones</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>   
+            </div>            
+        </div>
+    </header>
+    
+    
+
+    <main class="container my-4">
+        <section class="mb-5">
+            <div class="row">
+                <div class="col-lg-12 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="carrusel">
+                                <div class="contenedor">
+                                    <div class="seccion">Sección 1</div>
+                                    <div class="seccion">Sección 2</div>
+                                    <div class="seccion">Sección 3</div>
+                                    <div class="seccion">Sección 4</div>
+                                    <div class="seccion">Sección 5</div>
+                                    <div class="seccion">Sección 6</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="siguiente">Siguiente</button>
+                        <button id="anterior">Anterior</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

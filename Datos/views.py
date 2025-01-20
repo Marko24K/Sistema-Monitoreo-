@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-import qrcode
+#import qrcode
 from django.core.files.storage import FileSystemStorage
 from io import BytesIO
 from django.core.files.base import ContentFile
@@ -15,7 +15,10 @@ import json
 from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
-#-----------------agregado por felipe-------------
+
+def home2(request):
+    return render(request, 'home2.html')
+
 def vista_parcela(request):
     return render(request, 'vista_parcela.html')
 
@@ -98,7 +101,6 @@ def modal_view(request):
         print(f"Error al cargar la plantilla {template_path}: {e}")
         return render(request, 'mini_forms/arduino.html')
 
-#-----------------------------------------
 def bt_varios(request):
     return render(request, 'bt_varios.html')
 

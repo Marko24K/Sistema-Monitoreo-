@@ -2,12 +2,14 @@
     <h2>Formulario</h2>
     {% csrf_token %}
     <form id="sensorForm">
-        <div class="row">
-            <div class="col-6">
-                <!--insertar datos-->
-            </div>
+        <div class="col 8">
+            <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off" checked>
+            <label class="btn btn-outline-success" for="option1">Activo</label>
+
+            <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
+            <label class="btn btn-outline-danger" for="option2">Inactivo</label>
         </div>
-            <button type="submit">Enviar</button>
-            <button type="button" id="closeModal">Cerrar</button>
+        <button type="submit">Enviar</button>
+        <button type="button" id="closeModal">Cerrar</button>
     </form>
 </div>

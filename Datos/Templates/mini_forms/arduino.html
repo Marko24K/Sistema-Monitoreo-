@@ -2,10 +2,20 @@
     <h2>Formulario</h2>
     {% csrf_token %}
     <form id="arduinoForm">
-        <div class="row">
-            <div class="col-6">
-                <!--insertar datos-->
-            </div>
+        <div class="col 8">
+            <select style="margin-bottom: 5%;" class="form-select" id="modelo_arduino" name="modelo_arduino" aria-label="Seleccione un arduino">
+                <option selected disabled>Seleccione un arduino</option>
+                <option value="Mega">Mega</option>
+                <option value="Uno">Uno</option>
+                <option value="Nano">Nano</option>
+                <option value="Esp32">Esp32</option>
+            </select>
+
+            <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off" checked>
+            <label class="btn btn-outline-success" for="option1">Arduino activo</label>
+
+            <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
+            <label class="btn btn-outline-danger" for="option2">Arduino inactivo</label>
         </div>
             <button type="submit">Enviar</button>
             <button type="button" id="closeModal">Cerrar</button>

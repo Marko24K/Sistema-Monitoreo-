@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Monitoreo de Humedal - Universidad de Playa Ancha</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="{% static 'img/icon.webp' %}">
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -63,7 +63,6 @@
 
     <main class="container my-4">
         <section class="mb-5">
-            <h2 class="mb-4 text-primary">Visualización de Datos</h2>
             <div class="row">
                 <div class="col-lg-6 mb-4">
                     <div class="card shadow-sm h-100">
@@ -111,7 +110,7 @@
                             </h1>
 
                             <div class="row align-items-center">
-                                <div class="col-12">
+                                <div class="col-8">
                                     <div class="stat-card">
                                         <h5 class="text-primary">
                                             <i class="fas fa-tint me-2"></i> Humedad
@@ -126,11 +125,16 @@
                                         <p><strong>Promedio:</strong> <span id="hum-avg">-- °C</span></p>
                                     </div>
                                 </div>
-                                <!--
-                                <div class="col-4">
-                                     recuadro numero 3
+                                
+                                <div class="col-4" style="display: flex; flex-direction: column; justify-content: center; align-items: center;"> 
+                                    <div id="cont-termometro">
+                                        <img id="img_termometro" src="{% static 'img/term.png'%}" alt="img_termometro">
+                                        <div id="termometro">
+                                            <div id="nivelHumedad"></div>
+                                        </div>
+                                        <div id="valorHumedad"></div>
+                                    </div>
                                 </div>
-                                 -->
                             </div>
                         </div>
                     </div>
@@ -172,69 +176,67 @@
                         <div class="card-body">
                             <h5 class="card-title mb-3 text-danger">
                                 <i class="fas fa-thermometer-half me-2"></i> Temperatura
-                </h5>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0" id="temp-recent-table">
-                        <thead>
-                            <tr>
-                                <th>Valor (°C)</th>
-                                <th>Fecha</th>
-                                <th>Sensor</th>
-                                <th>ID del Sensor</th>
-                            </tr>
-                        </thead>
-                        <tbody>  
-                        {% for temp in temp_recent %}
-                            <tr>
-                                <td>{{ temp.valor }}</td>
-                                <td>{{ temp.fecha_registro}}</td>
-                                <td>{{ temp.sensor_name }}</td>  
-                                <td>{{ temp.sensor_model_id }}</td>  
-                            </tr>
-                        {% empty %}
-                            <tr><td colspan="4">No hay datos recientes</td></tr>
-                        {% endfor %}   
-                        </tbody>
-                    </table>
-                </div>
-                <a href="{% url 'detalle_dato' %}?dato=Temperatura" class="btn btn-primary btn-sm mt-3">Ver más</a>
-            </div>
-        </div>
-    </div>
-    
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title mb-3 text-primary">
-                        <i class="fas fa-tint me-2"></i> Humedad
-                    </h5>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0" id="hum-recent-table">
-                            <thead>
-                                <tr>
-                                    <th>Valor (Hr)</th>
-                                    <th>Fecha</th>
-                                    <th>Sensor</th>
-                                    <th>ID del Sensor</th>
-                                </tr>
-                            </thead>
-                           <tbody>
-                            {% for hum in hum_recent %}
-                                <tr>
-                                    <td>{{ hum.valor }}</td>
-                                    <td>{{ hum.fecha_registro }}</td>
-                                    <td>{{ hum.sensor_name }}</td>  
-                                    <td>{{ hum.sensor_model_id }}</td>  
-                                </tr>
-                            {% empty %}
-                                <tr><td colspan="4">No hay datos recientes</td></tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <a href="{% url 'detalle_dato' %}?dato=Humedad" class="btn btn-primary btn-sm mt-3">Ver más</a>
-                
+                            </h5>
+                            <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="temp-recent-table">
+                                <thead>
+                                    <tr>
+                                        <th>Valor (°C)</th>
+                                        <th>Fecha</th>
+                                        <th>Sensor</th>
+                                        <th>ID del Sensor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>  
+                                {% for temp in temp_recent %}
+                                    <tr>
+                                        <td>{{ temp.valor }}</td>
+                                        <td>{{ temp.fecha_registro}}</td>
+                                        <td>{{ temp.sensor_name }}</td>  
+                                        <td>{{ temp.sensor_model_id }}</td>  
+                                    </tr>
+                                {% empty %}
+                                    <tr><td colspan="4">No hay datos recientes</td></tr>
+                                {% endfor %}   
+                                </tbody>
+                            </table>
                         </div>
+                        <a href="{% url 'detalle_dato' %}?dato=Temperatura" class="btn btn-primary btn-sm mt-3">Ver más</a>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3 text-primary">
+                            <i class="fas fa-tint me-2"></i> Humedad
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="hum-recent-table">
+                                <thead>
+                                    <tr>
+                                        <th>Valor (Hr)</th>
+                                        <th>Fecha</th>
+                                        <th>Sensor</th>
+                                        <th>ID del Sensor</th>
+                                    </tr>
+                                </thead>
+                            <tbody>
+                                {% for hum in hum_recent %}
+                                    <tr>
+                                        <td>{{ hum.valor }}</td>
+                                        <td>{{ hum.fecha_registro }}</td>
+                                        <td>{{ hum.sensor_name }}</td>  
+                                        <td>{{ hum.sensor_model_id }}</td>  
+                                    </tr>
+                                {% empty %}
+                                    <tr><td colspan="4">No hay datos recientes</td></tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <a href="{% url 'detalle_dato' %}?dato=Humedad" class="btn btn-primary btn-sm mt-3">Ver más</a>
                     </div>
                 </div>
             </div>
