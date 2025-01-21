@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Plantas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilo_tabla.css' %}">
+
+    <script src="{% static 'js/form_emergente.js' %}"></script>
+</head>
+<body>
+  {% include 'header.html' %}
+
+    <main class="container my-4">
+      {% block content %}
+      <!--muestra de datos-->
+      <section class="mb-5">
+        <div class="card shadow-sm p-4">
+          {% csrf_token %}
+          <div class="row" style="text-align: center">
+            <div class="col-6">
+              <div class="p-6">
+                <h3>Imagen de la parcela</h3>
+                <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
+                  <!-- La imagen se mostrará aquí -->
+                </div>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <!-- Columna para el resto del formulario -->
+              <h3>Datos de la parcela</h3>
+              <!-- localidad_parcela -->
+              <label for="val_localidad_p" class="form-label">localidad de la parcela</label>
+
+              <!-- Nombre parcela -->
+              <label for="val_nombre_p" class="form-label">Nombre parcela</label>
+                            
+              <!-- direccion parcela -->
+              <label for="val_direccion_p" class="form-label">Direccion de la parcela</label>
+                            
+              <div class="row" style="text-align: center">
+                <div class="col-6">
+                  <label for="numero_zona" class="form-label"> numero de la zona </label>
+                </div>
+
+                <div class="col-6">
+                  <label for="hemisferio" class="form-label">Seleccione un hemisferio</label>
+                </div>
+              </div>
+
+              <div class="row" style="text-align: center">
+                <div class="col-6">
+                  <label for="falso_este" class="form-label"> Falso este </label>
+                </div>
+
+                <div class="col-6">
+                  <label for="falso_norte" class="form-label"> Falso norte </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row justify-content-md-center"style="margin-top: 20px;">
+              <button class="btn btn-success" data-form-type="division_parcela">Registrar division parcela</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tabla -->
+      <section class="mb-5">
+        <h2>Informacion sobre las divisiones</h2>
+        <ul class="responsive-table">
+          <li class="table-header">
+            <div class="col col-1">ID division Parcela</div>
+            <div class="col col-2">Parcela</div>
+            <div class="col col-3">Tipo division</div>
+            <div class="col col-4">Identificador</div>
+            <div class="col col-5">CodigoQR</div>
+            <div class="col col-6">Acciones</div> <!-- Columna para el botón de acción -->
+          </li>
+          
+          {% for v in vista %}
+          <li class="table-row">
+            <div class="col col-1" data-label="ID division Parcela">{{ v.id_division_parcela }}</div>
+            <div class="col col-2" data-label="Parcela">{{ v.id_parcela.nombre_parcela }}</div>
+            <div class="col col-3" data-label="Tipo division">{{ v.tipo_division }}</div>
+            <div class="col col-4" data-label="Identificador">{{ v.identificador }}</div>
+            <div class="col col-5" data-label="CodigoQR">{{ v.codigoqr }}</div>
+            <div class="col col-6" data-label="Acciones">
+              <button class="btn btn-warning" data-form-type="division_parcela"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
+            </div>
+          </li>
+          {% empty %}
+          <li class="table-row"><div class="col" colspan="6">No parcelas o divisiones registradas</div></li>
+          {% endfor %}
+        </ul>
+        <!-- Modal y overlay -->
+        <div class="overlay" id="overlay" aria-hidden="true"></div>
+        <div id="modalContainer" aria-hidden="true"></div>
+      </section>
+      {% endblock %}
+    </main>
+
+    {% include 'footer.html' %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/tabla_dinamica.js' %}"></script>
+</body>
+</html>

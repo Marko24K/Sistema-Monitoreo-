@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Plantas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/estilo_form_emergente.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilo_tabla.css' %}">
+
+    <script src="{% static 'js/form_emergente.js' %}"></script>
+</head>
+<body>
+    {% include 'header.html' %}
+
+    <main class="container my-4">
+        {% block content %}
+        <section class="mb-5">
+            <h2>Informacion sobre las diviciones</h2>
+            <ul class="responsive-table">
+              <li class="table-header">
+                <div class="col col-1">  </div>
+
+                <div class="col col-6">Acciones</div> <!-- Columna para el botón de acción -->
+              </li>
+          
+              {% for v in vista %}
+              <li class="table-row">
+                <div class="col col-1" data-label="  ">{{  }}</div>
+
+                <div class="col col-6" data-label="Acciones">
+                    <!--
+                    <button class="btn btn-primary mb-3" data-form-type="arduino">
+                    <button class="btn btn-primary" data-form-type="modelo_sensor">
+                    <button class="btn btn-primary" data-form-type="planta">
+                    <button class="btn btn-primary" data-form-type="sensor">
+                    <button class="btn btn-primary" data-form-type="tipo_dato">
+                    -->
+                    <button class=" " data-form-type=" ">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                </div>
+              </li>
+              {% empty %}
+              <li class="table-row"><div class="col" colspan="6">Sin datos registrados</div></li>
+              {% endfor %}
+            </ul>
+            <!-- Modal y overlay -->
+            <div class="overlay" id="overlay" aria-hidden="true"></div>
+            <div id="modalContainer" aria-hidden="true"></div>
+        </section>
+        {% endblock %}
+    </main>
+
+    {% include 'footer.html' %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/tabla_dinamica.js' %}"></script>
+</body>
+</html>
+
