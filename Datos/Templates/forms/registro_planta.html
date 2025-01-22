@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-    {% load static %}
+{% load static %}
 <head>
     <meta charset="UTF-8">
-    <title>Registrar plantas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Plantas</title>
     <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    
+    <link rel="stylesheet" href="{% static 'css/estilo_form.css' %}">
 </head>
 <body>
     {% include 'header.html' %}
@@ -19,147 +18,89 @@
         {% block content %}
         <section class="mb-5">
             <div class="card shadow-sm p-4">
-                
-                <form id="form_registro_planta" method = 'POST'>
+                <form id="form_registro_planta" method="POST">
                     {% csrf_token %}
-                    <div class="row" style="text-align: center">
-                        <div class="col-6">
-                            <h2>Registro de la plantación</h2>
-                            <div class="row" style="text-align: center">
+                    <h2 class="text-center mb-4">Registro de la Plantación</h2>
+                    <div class="row g-3">
+                        <!-- Primera columna -->
+                        <div class="col-12 col-lg-6">
+                            <div class="row g-3">
                                 <div class="col-6">
-                                <label for="numero_planta" class="form-label">Numero de la planta</label>
-                                <input  type="number" 
-                                    class="form-control" 
-                                    id="numero_planta"
-                                    name="numero_planta" 
-                                    required 
-                                    pattern="^[0-9]+$"
-                                    min="0"
-                                    max="1000000" 
-                                    title="Solo se permiten caracteres numericos positivos">
+                                    <label for="numero_planta" class="form-label">Número de la planta</label>
+                                    <input type="number" class="form-control" id="numero_planta" name="numero_planta" required min="0" max="1000000" title="Solo números positivos">
                                 </div>
                                 <div class="col-6">
-                                    <label for="División" class="form-label">Division</label>
-                                    <input  type="number" 
-                                        class="form-control" 
-                                        id="numero_planta"
-                                        name="numero_planta" 
-                                        required 
-                                        pattern="^[0-9]+$"
-                                        min="0"
-                                        max="1000000" 
-                                        title="Solo se permiten caracteres numericos positivos">
-                                    </div>
-
-                                <div class="col-6">
-                                    <label for="altura" class="form-label"> altura </label>
-                                    <input  type="number" 
-                                        class="form-control" 
-                                        id="altura"
-                                        name="altura" 
-                                        required 
-                                        pattern="^[0-9]+$"
-                                        min="0"
-                                        max="1000000" 
-                                        step="0.01"
-                                        title="Solo se permiten caracteres numericos positivos">
-                                </div>   
-                                    
-                                <div class="col-6">
-                                    <label for="largo" class="form-label"> largo </label>
-                                    <input  type="number" 
-                                        class="form-control" 
-                                        id="largo" 
-                                        name="largo"
-                                        required 
-                                        pattern="^[0-9]+$"
-                                        min="0"
-                                        max="1000000" 
-                                        step="0.01"
-                                        title="Solo se permiten caracteres numericos positivos">
-                                    <!-- medida en metros desde el meridiano central de la zona UTM -->
-                                </div> 
-                            </div>
-
-                            <div class="row" style="text-align: center">        
-                                <div class="col-6">
-                                    <label for="ancho" class="form-label"> ancho </label>
-                                    <input  type="number" 
-                                        class="form-control" 
-                                        id="ancho"
-                                        name="ancho" 
-                                        required 
-                                        pattern="^[0-9]+$"
-                                        min="0"
-                                        max="1000000" 
-                                        step="0.01"
-                                        title="Solo se permiten caracteres numericos positivos">
-                                    <!-- medida en metros desde el meridiano central de la zona UTM -->
-                                </div>
-
-                                <div class="col-6">
-                                    <label for="grosor" class="form-label"> grosor </label>
-                                    <input  type="number" 
-                                        class="form-control" 
-                                        id="grosor"
-                                        name="grosor" 
-                                        required 
-                                        pattern="^[0-9]+$"
-                                        min="0"
-                                        max="1000000" 
-                                        step="0.01"
-                                        title="Solo se permiten caracteres numericos positivos">
-                                    <!-- medida en metros desde el meridiano central de la zona UTM -->
+                                    <label for="División" class="form-label">Número de la División</label>
+                                    <input type="number" class="form-control" id="division" name="division" required min="0" title="Solo números positivos">
                                 </div>
                             </div>
-
-                            <label for="vigor" class="form-label">vigor</label>
-                            <input  type="text" 
-                                    class="form-control" 
-                                    id="vigor"
-                                    name="vigor"
-                                    required
-                                    maxlength="50" 
-                                    pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" 
-                                    title="Solo se permiten caracteres alfabéticos, numéricos">
-
-                            <label for="turgenciar" class="form-label">turgencia</label>
-                            <input  type="text" 
-                                    class="form-control" 
-                                    id="turgencia"
-                                    name="turgencia"
-                                    required
-                                    maxlength="50" 
-                                    pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" 
-                                    title="Solo se permiten caracteres alfabéticos, numéricos">  
-                        </div>
-
-                        <div class="col-6">
-                            <h2>Formulario de plagas</h2>
-                            <div class"col" style="margin: 10px;">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="exampleRadios" id="afirmativo" value=0 checked>
-                                    <label class="form-check-label" for="afirmativo">
-                                        Se detectaron plagas
-                                    </label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="exampleRadios" id="negativo" value=1>
-                                    <label class="form-check-label" for="negativo">
-                                        sin plagas
-                                    </label>
-                                </div>
-                            </div>
-  
-                            <h5>Descripcion de la plaga</h5>
-                            <textarea class="form-control" id="Descripcion_plaga_enfermedad" name="Descripcion_plaga_enfermedad"></textarea>
                             
-                            <h2>Observaciones</h2>
-                            <textarea class="form-control" id="Observaciones_registro" name="Observaciones_registro"></textarea>
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <label for="altura" class="form-label">Altura</label>
+                                    <input type="number" class="form-control" id="altura" name="altura" required min="0" title="Solo números positivos">
+                                </div>
+                                <div class="col-6">
+                                    <label for="largo" class="form-label">Largo</label>
+                                    <input type="number" class="form-control" id="largo" name="largo" required min="0" title="Solo números positivos">
+                                </div>
+                                <div class="col-6">
+                                    <label for="ancho" class="form-label">Ancho</label>
+                                    <input type="number" class="form-control" id="ancho" name="ancho" required min="0" title="Solo números positivos">
+                                </div>
+                                <div class="col-6">
+                                    <label for="grosor" class="form-label">Grosor</label>
+                                    <input type="number" class="form-control" id="grosor" name="grosor" required min="0" title="Solo números positivos">
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <label for="vigor" class="form-label">Vigor</label>
+                                    <select class="form-select" id="vigor" name="vigor">
+                                        <option disabled selected>Nivel de vigorosidad</option>
+                                        <option value="Muy poco vigorosa">Muy poco vigorosa</option>
+                                        <option value="Semi-vigorosa">Semi-vigorosa</option>
+                                        <option value="Vigorosa">Vigorosa</option>
+                                        <option value="Muy vigorosa">Muy vigorosa</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="turgencia" class="form-label">Turgencia</label>
+                                    <select class="form-select" id="turgencia" name="turgencia">
+                                        <option disabled selected>Nivel de turgencia</option>
+                                        <option value="Muy poco turgente">Muy poco turgente</option>
+                                        <option value="Semi-turgente">Semi-turgente</option>
+                                        <option value="Turgente">Turgente</option>
+                                        <option value="Muy turgente">Muy turgente</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Segunda columna -->
+                        <div class="col-12 col-lg-6">
+                            <h3 class="text-center mb-3">Formulario de Plagas</h3>
+                            <div class="mb-3">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="plagas" id="negativo" value="1" checked>
+                                    <label class="form-check-label" for="negativo">Sin plagas</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="plagas" id="afirmativo" value="0">
+                                    <label class="form-check-label" for="afirmativo">Se detectaron plagas</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="Descripcion_plaga_enfermedad" class="form-label">Descripción de la plaga</label>
+                                <textarea class="form-control" id="Descripcion_plaga_enfermedad" name="Descripcion_plaga_enfermedad"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="Observaciones_registro" class="form-label">Observaciones</label>
+                                <textarea class="form-control" id="Observaciones_registro" name="Observaciones_registro"></textarea>
+                            </div>
                         </div>
                     </div>
-                    <div class="row justify-content-md-center"style="margin-top: 20px;">
-                        <button class="btn btn-primary col-4" type="submit">Confirmar registrar planta</button>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-primary" type="submit">Confirmar Registro</button>
                     </div>
                 </form>
             </div>
@@ -168,7 +109,6 @@
     </main>
 
     {% include 'footer.html' %}
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/form_emergente.js' %}"></script>
 </body>

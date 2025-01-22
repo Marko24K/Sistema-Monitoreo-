@@ -9,8 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/estilo_form.css' %}">
 </head>
 <body>
@@ -21,116 +19,77 @@
         {% block content %}
         <section class="mb-5">
             <div class="card shadow-sm p-4">
-                <form id="form_parcela" enctype="multipart/form-data" method ="POST">
+                <form id="form_parcela" enctype="multipart/form-data" method="POST">
                     {% csrf_token %}
-                    <div class="row" style="text-align: center">
-                        <div class="col-6">
-                            <div class="p-6">
-                                <h3>Imagen de la parcela</h3>
-                                <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
-                                    <!-- La imagen se mostrará aquí -->
-                                </div>
-                                <!-- Input para cargar la imagen -->
-                                <input type="file" id="input-imagen" name="input-imagen" accept="image/*" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="col-6">
-                            <!-- Columna para el resto del formulario -->
+                    <div class="row text-center">
+                        <!-- Datos de la parcela -->
+                        <div class="col-lg-6 mb-4">
                             <h3>Datos de la parcela</h3>
-                            <!-- localidad_parcela -->
-                            <label for="val_localidad_p" class="form-label">localidad de la parcela</label>
-                            <input  type="text" 
-                                    class="form-control" 
-                                    id="val_localidad_p" 
-                                    name="val_localidad_p"
-                                    required
-                                    maxlength="50" 
-                                    placeholder="provincia/comuna donde estáubicada la parcela" 
-                                    pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" 
-                                    title="Solo se permiten caracteres alfabéticos, numéricos">
-
-                            <!-- Nombre parcela -->
-                            <label for="val_nombre_p" class="form-label">Nombre parcela</label>
-                            <input  type="text" 
-                                    class="form-control" 
-                                    id="val_nombre_p" 
-                                    name="val_nombre_p"
-                                    required
-                                    maxlength="50"
-                                    placeholder="Ejemplo nombre de parcela" 
-                                    pattern="^[A-Za-z]+(?: [A-Za-z]+)*$" 
-                                    title="Solo se permiten caracteres alfabéticos">
-                            
-                            <!-- direccion parcela -->
-                            <label for="val_direccion_p" class="form-label">Direccion de la parcela</label>
-                            <input  type="text" 
-                                    class="form-control" 
-                                    id="val_direccion_p" 
-                                    name= "val_direccion_p"
-                                    required
-                                    maxlength="50" 
-                                    placeholder="EJ: Subida Leopoldo Carvallo 270, 2360004 Playa Ancha, Valparaíso">
-                            
-                            <div class="row" style="text-align: center">
-                                <div class="col-6">
-                                    <!-- zona -->
-                                    <label for="numero_zona" class="form-label"> numero de la zona </label>
-                                    <input  type="number" 
-                                            class="form-control" 
-                                            id="numero_zona" 
-                                            name = "numero_zona"
-                                            required 
-                                            placeholder="Ingrese un numero"
-                                            pattern="^[0-9]+$" 
-                                            title="Solo se permiten caracteres numericos positivos">
+                            <div class="mb-3">
+                                <label for="val_localidad_p" class="form-label">Localidad de la parcela</label>
+                                <input type="text" class="form-control" id="val_localidad_p" name="val_localidad_p" 
+                                       required maxlength="50" placeholder="Provincia/comuna donde está ubicada la parcela" 
+                                       pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" 
+                                       title="Solo se permiten caracteres alfabéticos y numéricos">
+                            </div>
+                            <div class="mb-3">
+                                <label for="val_nombre_p" class="form-label">Nombre parcela</label>
+                                <input type="text" class="form-control" id="val_nombre_p" name="val_nombre_p" 
+                                       required maxlength="50" placeholder="Ejemplo nombre de parcela" 
+                                       pattern="^[A-Za-z]+(?: [A-Za-z]+)*$" title="Solo se permiten caracteres alfabéticos">
+                            </div>
+                            <div class="mb-3">
+                                <label for="val_direccion_p" class="form-label">Dirección de la parcela</label>
+                                <input type="text" class="form-control" id="val_direccion_p" name="val_direccion_p" 
+                                       required maxlength="50" placeholder="EJ: Subida Leopoldo Carvallo 270, Valparaíso">
+                            </div>
+                            <!-- Zona y hemisferio -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="numero_zona" class="form-label">Número de la zona</label>
+                                    <input type="number" class="form-control" id="numero_zona" name="numero_zona" 
+                                           required placeholder="Ingrese un número" pattern="^[0-9]+$" 
+                                           title="Solo se permiten caracteres numéricos positivos">
                                 </div>
-
-                                <div class="col-6">
+                                <div class="col-md-6">
                                     <label for="hemisferio" class="form-label">Seleccione un hemisferio</label>
-                                    <select class="form-select" id="hemisferio" name= "hemisferio" required>
-                                        <option selected disabled value="">Hemisferio </option>
+                                    <select class="form-select" id="hemisferio" name="hemisferio" required>
+                                        <option selected disabled value="">Hemisferio</option>
                                         <option value="N">Hemisferio norte</option>
                                         <option value="S">Hemisferio sur</option>
                                     </select>
                                 </div>
                             </div>
-
-                            <div class="row" style="text-align: center">
-                                <div class="col-6">
-                                    <label for="falso_este" class="form-label"> Falso este </label>
-                                    <input  type="number" 
-                                        class="form-control" 
-                                        id="falso_este" 
-                                        name = "falso_este"
-                                        required 
-                                        pattern="^[0-9]+$"
-                                        min="0"
-                                        max="1000000" 
-                                        step="0.01"
-                                        title="Solo se permiten caracteres numericos positivos">
-                                    <!-- medida en metros desde el meridiano central de la zona UTM -->
+                            <!-- Falso este y falso norte -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="falso_este" class="form-label">Falso este</label>
+                                    <input type="number" class="form-control" id="falso_este" name="falso_este" 
+                                           required min="0" max="1000000" step="0.01" 
+                                           title="Solo se permiten caracteres numéricos positivos">
                                 </div>
-
-                                <div class="col-6">
-                                    <label for="falso_norte" class="form-label"> Falso norte </label>
-                                    <input  type="number" 
-                                        class="form-control" 
-                                        id="falso_norte" 
-                                        name = "falso_norte"
-                                        required 
-                                        pattern="^[0-9]+$"
-                                        min="0"
-                                        max="10000000"
-                                        step="0.01" 
-                                        title="Solo se permiten caracteres numericos positivos">
-                                    <!-- medida en metros desde el ecuador en el sistema UTM -->
+                                <div class="col-md-6">
+                                    <label for="falso_norte" class="form-label">Falso norte</label>
+                                    <input type="number" class="form-control" id="falso_norte" name="falso_norte" 
+                                           required min="0" max="10000000" step="0.01" 
+                                           title="Solo se permiten caracteres numéricos positivos">
                                 </div>
                             </div>
-                            <!-- id del formulario: input-imagen, val_localidad_p, val_nombre_p, val_direccion_p, numero_zona, hemisferio, falso_este, falso_norte-->
+                            <label for="input-imagen" class="form-label">Inserte una imagen de la parcela</label>
+                            <input type="file" id="input-imagen" name="input-imagen" accept="image/*" class="form-control mt-3">
                         </div>
-                        <div class="row justify-content-md-center"style="margin-top: 20px;">
-                            <button class="btn btn-primary col-4" type="submit">Registrar parcela</button>
+
+                        <!-- Imagen de la parcela -->
+                        <div class="col-lg-6 mb-4">
+                            <h3>Imagen de la parcela</h3>
+                            <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
+                                <!-- La imagen se mostrará aquí -->
+                            </div>
+                        </div>
+
+                        <!-- Botón de registro -->
+                        <div class="col-12 text-center">
+                            <button class="btn btn-primary mt-3 px-5" type="submit">Confirmar Registro</button>
                         </div>
                     </div>
                 </form>

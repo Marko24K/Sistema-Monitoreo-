@@ -1,3 +1,83 @@
+:root {
+    --primary-color: #0c71c3; 
+    --secondary-color: #f4f4f4; 
+    --danger-color: #d9534f; 
+    --accent-color: #0056b3; 
+    --text-color: #333333; 
+    --light-text-color: #ffffff; 
+    --border-color: #cccccc; 
+
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --heading-font-size: 2rem;
+    --subheading-font-size: 1.5rem;
+    --body-font-size: 1rem;
+
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+
+    --border-radius: 0.5rem;
+    --transition-speed: 0.3s;
+}
+
+/* Global styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    font-size: var(--body-font-size);
+    line-height: 1.6;
+    text-align: center;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+}
+
+h2 {
+    font-size: var(--heading-font-size);
+    padding-bottom: 0.5rem;
+    margin-bottom: var(--spacing-md);
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+.card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    background-color: #ffffff;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive utilities */
+@media (max-width: 992px) {
+    h2 {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    h2 {
+        font-size: 1.5rem;
+    }
+}
+
 /* Contenedor de imagen */
 .contenedor-imagen {
     width: 80%;  /* Ajusta el tamaño a un porcentaje para hacerlo más responsivo */

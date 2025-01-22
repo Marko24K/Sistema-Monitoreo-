@@ -1,3 +1,70 @@
+<style>
+    .header {
+        background: var(--primary-color);
+        position: relative;
+        overflow: hidden;
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .header::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.1);
+        z-index: 1;
+    }
+    
+    .header .container {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+    
+    .header img {
+        transition: transform var(--transition-speed);
+        width: 100px;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .header img:hover {
+        transform: scale(1.05);
+    }
+    
+    .header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--light-text-color);
+    }
+    .header p {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        color: #000;
+    }
+    
+    @media (max-width: 992px) {
+        .header h1 {
+            font-size: 2rem;
+        }
+    
+        .header p {
+            font-size: 1rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .header h1 {
+            font-size: 1.75rem;
+        }
+    
+        .header p {
+            font-size: 0.9rem;
+        }
+    }
+</style>
 {% load static %}
 <header class="header">
     <div class="container">
@@ -32,9 +99,6 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'home2' %}active{% endif %}" href="{% url 'home2' %}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'vista_division_parcela' %}active{% endif %}" href="{% url 'vista_division_parcela' %}">vista parcela</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'vista_parcelas' %}active{% endif %}" href="{% url 'vista_parcelas' %}">vista parcelas</a>

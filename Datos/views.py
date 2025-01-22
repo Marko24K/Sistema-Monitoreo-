@@ -131,7 +131,7 @@ def modal_view(request):
                     codigoqr=os.path.relpath(image_path, settings.MEDIA_ROOT),
                 )
 
-            return redirect('bt_varios')
+            return redirect('vista_division_parcela')
     
     elif form_type == 'modelo_sensor':
         if request.method == 'POST':
