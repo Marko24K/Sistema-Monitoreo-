@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-#import qrcode
+import qrcode
 from django.core.files.storage import FileSystemStorage
 from io import BytesIO
 from django.contrib import messages
@@ -22,8 +22,6 @@ def home2(request):
 def vista_division_parcela(request):
     return render(request, 'vistas_datos/vista_parcela.html')
 
-def vista_parcelas(request):
-    return render(request, 'vistas_datos/vista_parcelas.html')
 
 
 #------------forms------------------------
@@ -423,10 +421,10 @@ def mapa(request):
     return render(request, 'mapa.html')
 
 
-def vista_parcela(request):
-    vista = DivisionParcela.objects.all()
+def vista_parcelas(request):
+    vista = Parcela.objects.all()
 
-    return render(request, 'vistas_datos/vista_parcela.html', {'vista': vista})
+    return render(request, 'vistas_datos/vista_parcelas.html', {'vista': vista})
 
 """
 def generar_qr(request, data):
