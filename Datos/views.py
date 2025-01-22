@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-import qrcode
+#import qrcode
 from django.core.files.storage import FileSystemStorage
 from io import BytesIO
 from django.contrib import messages
@@ -19,11 +19,16 @@ from PIL import Image
 def home2(request):
     return render(request, 'home2.html')
 
-def vista_parcela(request):
-    return render(request, 'vista_parcela.html')
+def vista_division_parcela(request):
+    return render(request, 'vistas_datos/vista_parcela.html')
+
+def vista_parcelas(request):
+    return render(request, 'vistas_datos/vista_parcelas.html')
 
 
 #------------forms------------------------
+
+
 def registro_planta(request):
     if request.method == 'POST':
         RegistroPlanta.objects.create(
@@ -39,9 +44,7 @@ def registro_planta(request):
             descripcion_plaga_enfermedad = request.POST['descripcion_plaga_enfermedad'],
             observaciones_Registro = request.POST['observaciones_Registro'],
         )
-    return render(request, 'registro_planta.html')
-
-
+    return render(request, 'forms/registro_planta.html')
 
 def modal_view(request):
     form_type = request.GET.get('form_type', '')  # Obtener el tipo de formulario de la URL
@@ -180,10 +183,6 @@ def modal_view(request):
         print(f"Error al cargar la plantilla {template_path}: {e}")
         return render(request, 'mini_forms/arduino.html')
 
-def bt_varios(request):
-    return render(request, 'bt_varios.html')
-
-
 def registro_parcela(request):
     if request.method == 'POST':
         
@@ -197,7 +196,7 @@ def registro_parcela(request):
             northing=request.POST['falso_norte'],
             imagen_parcela=request.FILES['input-imagen'],  # Si la imagen está en el formulario
         )
-    return render(request, 'registro_parcela.html')
+    return render(request, 'forms/registro_parcela.html')
 
 
 def tipo_planta(request):
@@ -208,7 +207,7 @@ def tipo_planta(request):
             descripcion = request.POST['descripcion_planta'],
             imagen_tipo_planta = request.FILES['input-imagen'],
         )
-    return render(request, 'tipo_planta.html')
+    return render(request, 'forms/tipo_planta.html')
 
 #---------------------------------------------------------------------------------
 @api_view(['POST'])
@@ -291,9 +290,9 @@ def guardar_datos_sensor(request):
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)
     
-
+def home2(request):
+    return render(request, 'forms/home2.html')
 #------visualizacion en home
-
 def home(request):
 
     # Obtener los datos más recientes de temperatura y humedad
@@ -426,5 +425,43 @@ def mapa(request):
 
 def vista_parcela(request):
     vista = DivisionParcela.objects.all()
-    return render(request, 'vista_parcela.html', {'vista': vista})
 
+    return render(request, 'vistas_datos/vista_parcela.html', {'vista': vista})
+
+"""
+def generar_qr(request, data):
+    # Crea un objeto QR
+    qr = qrcode.QRCode(
+        version=1,  # Tamaño del QR
+        error_correction=qrcode.constants.ERROR_CORRECT_L,  # Nivel de corrección de errores
+        box_size=10,  # Tamaño de cada cuadro
+        border=4,  # Tamaño del borde
+    )
+    
+    # Añadir datos al código QR
+    qr.add_data(data)
+    qr.make(fit=True)
+    
+    # Crear la imagen del QR
+    img = qr.make_image(fill='black', back_color='white')
+    
+    # Define la ruta en la que quieres guardar el código QR
+    folder_path = os.path.join(settings.MEDIA_ROOT, 'qr_codes_division')
+    
+    # Asegúrate de que la carpeta existe
+    os.makedirs(folder_path, exist_ok=True)
+    
+    # Generar un nombre único para el archivo, por ejemplo, basándote en el tiempo
+    qr_filename = f"qr_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+    
+    # Ruta completa donde se guardará la imagen
+    file_path = os.path.join(folder_path, qr_filename)
+    
+    # Guardar la imagen en la ruta especificada
+    img.save(file_path)
+    
+    # Opcional: Retornar la URL del archivo guardado para que puedas acceder a él
+    qr_url = os.path.join(settings.MEDIA_URL, 'qr_codes_division', qr_filename)
+    
+    return HttpResponse(f'El código QR se ha guardado en: <a href="{qr_url}">Ver QR</a>')
+"""

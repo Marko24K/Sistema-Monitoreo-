@@ -1,0 +1,47 @@
+{% load static %}
+<header class="header">
+    <div class="container">
+        <div class="container">
+            <img src="{% static 'img/logoupla.png' %}" alt="Logo UPLA" width="100" class="mb-3">
+            <h1>Monitoreo de Humedal</h1>
+            <p>Sistema de Control y Gestión de Calidad del Agua</p>
+
+            <!-- Barra de navegación -->
+            <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--bs-primary);">
+                <a class="navbar-brand text-light fw-bold" href="{% url 'home' %}" 
+                   style="font-family: 'Arial', sans-serif; font-size: 1.5rem; padding-left: 1rem;">
+                    Inicio
+                </a>
+
+                <!-- Botón de menú en pantallas pequeñas -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Elementos del menú -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'tipo_planta' %}active{% endif %}" href="{% url 'tipo_planta' %}">Tipo Planta</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'registro_parcela' %}active{% endif %}" href="{% url 'registro_parcela' %}">Registro Parcela</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'registro_planta' %}active{% endif %}" href="{% url 'registro_planta' %}">Registro Planta</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'home2' %}active{% endif %}" href="{% url 'home2' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'vista_division_parcela' %}active{% endif %}" href="{% url 'vista_division_parcela' %}">vista parcela</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'vista_parcelas' %}active{% endif %}" href="{% url 'vista_parcelas' %}">vista parcelas</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>            
+    </div>
+</header>

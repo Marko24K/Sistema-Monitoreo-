@@ -1,19 +1,181 @@
-table {
+/* Estilo para la ventana modal */
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    width: 500px;
+    height: auto;
+    max-width: 600px;
+    max-height: 90%;
+    overflow-y: auto;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Fondo oscuro para el modal */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
 }
 
-th, td {
-    border: 1px solid #ddd;
+/* Estilos adicionales */
+.modal h2 {
+    margin: 0 0 15px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.modal form input,
+.modal form textarea,
+.modal form select {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.modal form input:focus,
+.modal form textarea:focus,
+.modal form select:focus {
+    border-color: #4CAF50;
+}
+
+.modal form button {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal form button:hover {
+    background-color: #45a049;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .modal {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .modal h2 {
+        font-size: 1.25rem;
+    }
+}
+
+/* Estilos generales para la tabla basada en listas */
+.responsive-table {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .table-header,
+  .table-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 5px; /* Espacio entre filas */
+  }
+  
+  .col {
+    flex: 1;
     padding: 10px;
-    text-align: center;
-}
-
-th {
-    background-color: #f4f4f4;
-}
-
-h1 {
-    text-align: center;
-}
+    text-align: left;
+    font-size: 14px; /* Ajustar el tamaño de fuente */
+  }
+  
+  .table-header .col {
+    font-weight: bold;
+    background-color: #f2f2f2;
+    text-transform: uppercase; /* Hacer los encabezados en mayúsculas */
+    font-size: 16px;
+  }
+  
+  /* Estilos del botón */
+  .btn i {
+    margin-right: 5px;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Estilo responsivo */
+  @media (max-width: 767px) {
+    /* Convertir filas a formato de bloque y ajustar visualización */
+    .responsive-table li {
+      display: block;
+      margin-bottom: 15px; /* Espacio entre las filas */
+      border: none;
+    }
+  
+    .col {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 8px;
+      font-size: 16px; /* Ajustar el tamaño de fuente */
+    }
+  
+    /* Estilo para las celdas con data-label */
+    .col[data-label] {
+      font-weight: bold;
+      background-color: #f9f9f9;
+    }
+  
+    /* Ocultar encabezados en pantallas pequeñas */
+    .table-header {
+      display: none;
+    }
+  
+    /* Hacer los datos más legibles en pantallas pequeñas */
+    .table-row {
+      display: block;
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  
+    /* Agregar separación entre celdas de datos */
+    .table-row .col {
+      margin-bottom: 8px;
+    }
+  
+    /* Mejorar la visualización del botón en pantallas pequeñas */
+    .btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+  
