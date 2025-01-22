@@ -127,6 +127,59 @@
       <div class="overlay" id="overlay" aria-hidden="true"></div>
       <div id="modalContainer" aria-hidden="true"></div>
     </section>
+
+    <section class="mb-5">
+      <h2>Informacion sobre las plantas</h2>
+      <ul class="responsive-table">
+        <li class="table-header">
+          <div class="col col-1">ID</div>
+
+          <div class="col col-6">Acciones</div> <!-- Columna para el botón de acción -->
+        </li>
+          
+        {% for v in vista %}
+        <li class="table-row">
+          <div class="col col-1" data-label=""></div>
+
+          <div class="col col-6" data-label="Acciones">
+            <button class="btn btn-warning" data-form-type="division_parcela"><i class="fas fa-edit"></i></button>
+            <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
+          </div>
+        </li>
+        {% empty %}
+        <li class="table-row"><div class="col" colspan="6">No parcelas o divisiones registradas</div></li>
+        {% endfor %}
+      </ul>
+      <!-- Modal y overlay -->
+      <div class="overlay" id="overlay" aria-hidden="true"></div>
+      <div id="modalContainer" aria-hidden="true"></div>
+    </section>
+
+    <section class="mb-5">
+      <h2>Informacion sobre sensore</h2>
+      <ul class="responsive-table">
+        <li class="table-header">
+          <div class="col col-1">ID</div>
+
+          <div class="col col-6">Acciones</div> <!-- Columna para el botón de acción -->
+        </li>
+          
+        {% for v in vista %}
+        <li class="table-row">
+
+          <div class="col col-6" data-label="Acciones">
+            <button class="btn btn-warning" data-form-type="division_parcela"><i class="fas fa-edit"></i></button>
+            <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
+          </div>
+        </li>
+        {% empty %}
+        <li class="table-row"><div class="col" colspan="6">No parcelas o divisiones registradas</div></li>
+        {% endfor %}
+      </ul>
+      <!-- Modal y overlay -->
+      <div class="overlay" id="overlay" aria-hidden="true"></div>
+      <div id="modalContainer" aria-hidden="true"></div>
+    </section>
     {% endblock %}
   </main>
 
