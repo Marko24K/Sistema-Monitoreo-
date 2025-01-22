@@ -30,7 +30,10 @@ urlpatterns = [
     
     #vistas
     path('vista_parcelas/', views.vista_parcelas, name='vista_parcelas'),
-    path('vista_division_parcela/', views.vista_division_parcela, name='vista_division_parcela'),
+    path('detalle_parcela/<int:id_parcela>/', views.detalle_parcela, name='detalle_parcela'),
+    path('editar_parcela/<int:id_parcela>/', views.editar_parcela, name='editar_parcela'),
+    path('eliminar_parcela/<int:id_parcela>/', views.eliminar_parcela, name='eliminar_parcela'),
+
     path('modal/', views.modal_view, name='modal_view'),
     
     #otros
