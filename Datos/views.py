@@ -3,7 +3,6 @@ import os
 import qrcode
 from django.core.files.storage import FileSystemStorage
 from io import BytesIO
-from django.core.files.base import ContentFile
 from django.contrib import messages
 import traceback
 from django.shortcuts import  redirect, render, get_object_or_404
@@ -15,6 +14,7 @@ import json
 from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
+from PIL import Image
 
 def home2(request):
     return render(request, 'home2.html')
@@ -59,33 +59,84 @@ def modal_view(request):
         context['parcelas'] = parcelas
 
         if request.method == 'POST':
-            id_parcela = request.POST.get('id_parcela')
-            tipo_division = request.POST.get('tipo_division')  # Asegúrate de que sea texto
-            identificador_division = request.POST.get('identificador_division')
+            id_parcela = request.POST['id_parcela']
+            tipo_division = request.POST['tipo_division'].strip()
+            print(f"Tipo de división recibido: {tipo_division} (longitud: {len(tipo_division)})")
+
+            identificador_division = request.POST['identificador_division']
+
+            # Validar que identificador_division es un número entero
+            try:
+                identificador_division = int(identificador_division)
+            except ValueError:
+                return HttpResponse("El identificador debe ser un número entero.")
 
             # Verificar si el identificador ya existe
             existe = DivisionParcela.objects.filter(id_parcela=id_parcela, identificador=identificador_division).exists()
 
             if existe:
-                messages.error(request, 'Este número identificador ya existe para la parcela seleccionada.')
+                return HttpResponse("Ya existe ese número asignado.")
             else:
+                data = "https://www.youtube.com/watch?v=xvFZjo5PgG0&ab_channel=Duran"
+                logo_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'icon.png')
+
+                # Crear el objeto QR
+                qr = qrcode.QRCode(
+                    version=1,
+                    error_correction=qrcode.constants.ERROR_CORRECT_H,
+                    box_size=10,
+                    border=4,
+                )
+                qr.add_data(data)
+                qr.make(fit=True)
+
+                # Crear la imagen QR con color verde
+                img = qr.make_image(fill='green', back_color='white')
+
+                # Convertir la imagen a un objeto de Pillow
+                img = img.convert('RGB')
+
+                # Redimensionar y colocar el logo
+                width, height = img.size
+                for x in range(width):
+                    for y in range(height):
+                        pixel = img.getpixel((x, y))
+                        if pixel != (255, 255, 255):
+                            img.putpixel((x, y), (123, 187, 4))
+
+                logo = Image.open(logo_path)
+                if logo.mode != 'RGBA':
+                    logo = logo.convert('RGBA')
+                logo_size = int(img.size[0] * 0.3)
+                logo = logo.resize((logo_size, logo_size))
+
+                # Obtener la posición para centrar el logo
+                img_width, img_height = img.size
+                logo_width, logo_height = logo.size
+                position = ((img_width - logo_width) // 2, (img_height - logo_height) // 2)
+
+                img.paste(logo, position, logo)
+
+                # Guardar la imagen
+                image_path = os.path.join(settings.MEDIA_ROOT, 'qr_codes_division', f'Division_parcela{id_parcela}_N°{identificador_division}.png')
+                os.makedirs(os.path.dirname(image_path), exist_ok=True)
+                img.save(image_path)
+
+                # Crear la DivisionParcela
                 DivisionParcela.objects.create(
                     id_parcela_id=id_parcela,
-                    tipo_division=tipo_division,  # Almacena el texto aquí
+                    tipo_division=tipo_division,
                     identificador=identificador_division,
+                    codigoqr=os.path.relpath(image_path, settings.MEDIA_ROOT),
                 )
-                messages.success(request, 'La división se ha creado exitosamente.')
 
-            return redirect('bt_varios')  
+            return redirect('bt_varios')
+    
     elif form_type == 'modelo_sensor':
-        # Obtener la lista de Arduinos disponibles
-        arduino_list = Arduino.objects.all()
-        context['arduino_list'] = arduino_list  # Pasar los Arduinos al contexto
-
         if request.method == 'POST':
-            id_arduino = request.POST.get('id_arduino')  # Obtener el Arduino seleccionado
-            nombre_sensor = request.POST.get('nombre_sensor')
-            descripcion_sensor = request.POST.get('Descripcion_sensor')
+            nombre_sensor = request.POST['nombre_sensor']
+            descripcion_sensor = request.POST['Descripcion_sensor']
+            
 
             # Crear el modelo de sensor
             ModeloSensor.objects.create(
@@ -100,6 +151,18 @@ def modal_view(request):
         context['parcelas'] = parcelas
         
         if request.method == 'POST':
+            modelo_arduino = request.POST['modelo_arduino']
+            id_parcela = request.POST['parcela']
+            estado = 1 if request.POST['options'] == 'option1' else 0  # 1 para activo, 0 para inactivo
+
+            if not modelo_arduino or not id_parcela:
+                return HttpResponse("Por favor, complete todos los campos del formulario.")
+
+            Arduino.objects.create(
+                modelo_arduino=modelo_arduino,
+                id_parcela_id=id_parcela,
+                estado=estado,            
+                )
             return redirect('bt_varios') 
         
     elif form_type == 'planta':
@@ -123,7 +186,7 @@ def bt_varios(request):
 
 def registro_parcela(request):
     if request.method == 'POST':
-        # procesamiento de los datos del formulario y crear una nueva instancia
+        
         Parcela.objects.create(
             localidad_parcela=request.POST['val_localidad_p'],
             nombre_parcela=request.POST['val_nombre_p'],
@@ -363,42 +426,5 @@ def mapa(request):
 
 def vista_parcela(request):
     vista = DivisionParcela.objects.all()
-
     return render(request, 'vista_parcela.html', {'vista': vista})
 
-
-def generar_qr(request, data):
-    # Crea un objeto QR
-    qr = qrcode.QRCode(
-        version=1,  # Tamaño del QR
-        error_correction=qrcode.constants.ERROR_CORRECT_L,  # Nivel de corrección de errores
-        box_size=10,  # Tamaño de cada cuadro
-        border=4,  # Tamaño del borde
-    )
-    
-    # Añadir datos al código QR
-    qr.add_data(data)
-    qr.make(fit=True)
-    
-    # Crear la imagen del QR
-    img = qr.make_image(fill='black', back_color='white')
-    
-    # Define la ruta en la que quieres guardar el código QR
-    folder_path = os.path.join(settings.MEDIA_ROOT, 'qr_codes_division')
-    
-    # Asegúrate de que la carpeta existe
-    os.makedirs(folder_path, exist_ok=True)
-    
-    # Generar un nombre único para el archivo, por ejemplo, basándote en el tiempo
-    qr_filename = f"qr_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
-    
-    # Ruta completa donde se guardará la imagen
-    file_path = os.path.join(folder_path, qr_filename)
-    
-    # Guardar la imagen en la ruta especificada
-    img.save(file_path)
-    
-    # Opcional: Retornar la URL del archivo guardado para que puedas acceder a él
-    qr_url = os.path.join(settings.MEDIA_URL, 'qr_codes_division', qr_filename)
-    
-    return HttpResponse(f'El código QR se ha guardado en: <a href="{qr_url}">Ver QR</a>')

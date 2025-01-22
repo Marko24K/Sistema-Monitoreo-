@@ -18,7 +18,7 @@ from django.contrib import admin
 from Datos import views
 from django.conf.urls.static import static
 from django.conf import settings
-from django.urls import path, include
+from django.urls import path
 
 
 urlpatterns = [
@@ -37,6 +37,4 @@ urlpatterns = [
     path('detalle_dato/', views.detalle_dato, name='detalle_dato'),
     path('datos_recientes/', views.datos_recientes, name='datos_recientes'),
     path('mapa/', views.mapa, name='mapa'),
-    path('generar_qr/', views.generar_qr, name='generar_qr'),
-
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

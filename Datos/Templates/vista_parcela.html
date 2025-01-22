@@ -67,7 +67,6 @@
                         <th>Parcela</th> <!-- Columna para parcela -->
                         <th>tipo division</th> <!-- Columna para el tipo division -->
                         <th>Identificador</th> <!-- Columna para la Identificacion -->
-                        <th>codigoQR</th> <!-- Columna para el QR -->
                     </tr>
                 </thead>
                 <tbody>
@@ -77,7 +76,6 @@
                         <td>{{v.id_parcela.nombre_parcela}}</td>
                         <td>{{v.tipo_division}}</td>  
                         <td>{{v.identificador }}</td>  
-                        <td>{{v.codigoqr }}</td>  
                     </tr>
                     {% empty %}
                     <tr><td colspan="4">No parcelas o divisiones registradas</td></tr>

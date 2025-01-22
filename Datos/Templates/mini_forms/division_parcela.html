@@ -18,12 +18,12 @@
             <label for="tipo_division" class="form-label">Tipo de división</label>
             <input type="text" class="form-control" id="tipo_division" name="tipo_division" required maxlength="50">
         </div>
-
+        
         <div class="col-12">
             <label for="identificador_division" class="form-label">Ingrese un número identificador de la división</label>
-            <input type="number" class="form-control" id="identificador_division" name="identificador_division" required>
+            <input type="number" class="form-control" id="identificador_division" name="identificador_division" required pattern="\d+" title="Debe ser un número entero">
         </div>
-
+        
         <button type="submit" class="btn btn-outline-success">Enviar</button>
         <button type="button" class="btn btn-outline-danger" id="closeModal">Cerrar</button>
     </form>

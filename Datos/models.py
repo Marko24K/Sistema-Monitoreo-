@@ -96,9 +96,9 @@ class Parcela(models.Model):
 class DivisionParcela(models.Model):
     id_division_parcela = models.AutoField(primary_key=True)
     id_parcela = models.ForeignKey(Parcela, on_delete=models.CASCADE)
-    tipo_division = models.CharField(max_length=50)  
+    tipo_division = models.CharField(max_length=100)  
     identificador = models.IntegerField()
-    codigoqr = models.CharField(max_length=50)
+    codigoqr = models.CharField(max_length=255)
 
     class Meta:
         db_table = 'division_parcela'
