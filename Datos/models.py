@@ -70,6 +70,7 @@ class City(models.Model):
 class Localidad(models.Model):
     id_localidad = models.AutoField(primary_key=True)
     id_city = models.ForeignKey(City, on_delete=models.CASCADE)  # Relación con Region
+    nombre_localidad= models.CharField(max_length=100)
     estado_localidad = models.CharField(max_length=100)
     fecha_creado = models.DateTimeField(auto_now_add=True)
     fecha_editado = models.DateTimeField(auto_now=True)
