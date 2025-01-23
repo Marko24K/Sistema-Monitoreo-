@@ -1,96 +1,157 @@
 from datetime import datetime
 import os
+from PIL import Image
 import qrcode
 from django.contrib import messages
 import traceback
 from django.shortcuts import  redirect, render, get_object_or_404
 from Sistema.settings import BACKUP_DIR
-from .models import Arduino, RegistroSensor, Sensor, TipoDato, Parcela, TipoPlanta, ModeloSensor,RegistroPlanta, DivisionParcela, Localidad
+from .models import Arduino, RegistroSensor, Sensor, TipoDato, Espacio, TipoPlanta, ModeloSensor,RegistroPlanta, DivisionEspacio, Localidad,TipoEspacio
 from django.http import Http404, HttpResponse, JsonResponse
 from django.db.models import Avg, Max, Min
 import json
 from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
-from PIL import Image
+
 
 
 def home2(request):
     return render(request, 'home2.html')
 #--------------------parcela -----------------------------
-def registro_parcela(request):
-    localidad = Localidad.objects.all()
 
+def registro_espacio(request):
+    localidad = Localidad.objects.all()
+    tipo_espacio = TipoEspacio.objects.all()
+    espacio = None
     if request.method == 'POST':
         localidad_obj = Localidad.objects.get(id_localidad=request.POST['val_localidad_p'])
-        Parcela.objects.create(
-            id_localidad=localidad_obj,
-            nombre_parcela=request.POST['val_nombre_p'],
-            direccion_parcela=request.POST['val_direccion_p'],
-            zona=request.POST['numero_zona'],
-            hemisferio=request.POST['hemisferio'],
-            easting=request.POST['falso_este'],
-            northing=request.POST['falso_norte'],
-            imagen_parcela=request.FILES['input-imagen'],  # Si la imagen está en el formulario
+        imagen_espacio = request.FILES.get('input-imagen', None)
+        if imagen_espacio:
+            espacio = Espacio.objects.create(
+                id_localidad=localidad_obj,
+                nombre_espacio=request.POST['val_nombre_p'],
+                direccion_espacio=request.POST['val_direccion_p'],
+                utm=request.POST['utm'],
+                id_tipo_espacio=TipoEspacio.objects.get(id_tipo_espacio=request.POST['tipo_espacio']),
+                imagen_espacio=imagen_espacio,  # solo lo agrega si existe
+            )
+        else:
+            espacio = Espacio.objects.create(
+                id_localidad=localidad_obj,
+                nombre_espacio=request.POST['val_nombre_p'],
+                direccion_espacio=request.POST['val_direccion_p'],
+                utm=request.POST['utm'],
+                id_tipo_espacio=TipoEspacio.objects.get(id_tipo_espacio=request.POST['tipo_espacio']),
+                imagen_espacio=None,  # Asignar None si no se manda una imagen
+            )
+
+
+        data = f"#"
+        logo_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'icon.png')
+
+        # Crear el objeto QR
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_H,
+            box_size=10,
+            border=4,
         )
-        messages.success(request, "La parcela ha sido registrada exitosamente.")
-        return redirect('vista_parcelas')
+        qr.add_data(data)
+        qr.make(fit=True)
 
-    return render(request, 'forms/registro_parcela.html', {'localidad': localidad})
+        # Crear la imagen QR con color verde
+        img = qr.make_image(fill='green', back_color='white')
 
-def vista_parcelas(request):
-    vista = Parcela.objects.all().order_by('id_parcela')
-    return render(request, 'vistas_datos/vista_parcelas.html', {'vista': vista})
+        # Convertir la imagen a un objeto de Pillow
+        img = img.convert('RGB')
+
+        # Redimensionar y colocar el logo
+        width, height = img.size
+        for x in range(width):
+            for y in range(height):
+                pixel = img.getpixel((x, y))
+                if pixel != (255, 255, 255):
+                    img.putpixel((x, y), (123, 187, 4))
+
+        logo = Image.open(logo_path)
+        if logo.mode != 'RGBA':
+            logo = logo.convert('RGBA')
+        logo_size = int(img.size[0] * 0.3)
+        logo = logo.resize((logo_size, logo_size))
+
+        # Obtener la posición para centrar el logo
+        img_width, img_height = img.size
+        logo_width, logo_height = logo.size
+        position = ((img_width - logo_width) // 2, (img_height - logo_height) // 2)
+
+        img.paste(logo, position, logo)
+
+        # Guardar la imagen
+        image_path = os.path.join(settings.MEDIA_ROOT, 'qr_codes_division', f'Espacio_{espacio.nombre_espacio}_id_{espacio.id_espacio}.png')
+        os.makedirs(os.path.dirname(image_path), exist_ok=True)
+        img.save(image_path)
+        espacio.qr_code = image_path
+        espacio.save()
+
+        return redirect('vista_espacios')
+
+    return render(request, 'forms/registro_espacio.html', {'localidad': localidad
+                                                           ,'tipo_espacio':tipo_espacio})
+
+def vista_espacios(request):
+    vista = Espacio.objects.all().order_by('id_espacio')
+    return render(request, 'vistas_datos/vista_espacios.html', {'vista': vista})
 
 
-def editar_parcela(request, id_parcela):
-    parcela = get_object_or_404(Parcela, id_parcela=id_parcela)
+def editar_parcela(request, id_espacio):
+    espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
 
     localidad = Localidad.objects.all()
 
     if request.method == 'POST':
-        parcela.id_localidad = Localidad.objects.get(id_localidad=request.POST['val_localidad_p'])
-        parcela.nombre_parcela = request.POST['val_nombre_p']
-        parcela.direccion_parcela = request.POST['val_direccion_p']
-        parcela.zona = request.POST['numero_zona']
-        parcela.hemisferio = request.POST['hemisferio']
-        parcela.easting = request.POST['falso_este']
-        parcela.northing = request.POST['falso_norte']
+        espacio.id_localidad = Localidad.objects.get(id_localidad=request.POST['val_localidad_p'])
+        espacio.nombre_parcela = request.POST['val_nombre_p']
+        espacio.direccion_parcela = request.POST['val_direccion_p']
+        espacio.zona = request.POST['numero_zona']
+        espacio.hemisferio = request.POST['hemisferio']
+        espacio.easting = request.POST['falso_este']
+        espacio.northing = request.POST['falso_norte']
 
         # Verificar si se ha subido una nueva imagen
         if 'input-imagen' in request.FILES:
             # Eliminar la imagen anterior si existe
-            if parcela.imagen_parcela:
+            if espacio.imagen_parcela:
                 try:
-                    if os.path.exists(parcela.imagen_parcela.path):
-                        os.remove(parcela.imagen_parcela.path)
+                    if os.path.exists(espacio.imagen_parcela.path):
+                        os.remove(espacio.imagen_parcela.path)
                 except Exception as e:
                     print(f"Error al intentar eliminar la imagen anterior: {e}")
             
             # Asignar la nueva imagen
-            parcela.imagen_parcela = request.FILES['input-imagen']
-        parcela.save()
+            espacio.imagen_espacio = request.FILES['input-imagen']
+        espacio.save()
         messages.success(request, "La parcela ha sido editada exitosamente.")
-        return redirect('vista_parcelas')
+        return redirect('vista_espacios')
 
-    return render(request, 'forms/registro_parcela.html', {'parcela': parcela, 'localidad': localidad})
+    return render(request, 'forms/registro_espacio.html', {'espacio': espacio, 'localidad': localidad})
 
-def eliminar_parcela(request, id_parcela):
-    parcela = get_object_or_404(Parcela, id_parcela=id_parcela)
-    parcela.delete()
+def eliminar_parcela(request, id_espacio):
+    espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
+    espacio.delete()
     messages.success(request, "La parcela ha sido eliminada exitosamente.")
 
-    return redirect('vista_parcelas')  
+    return redirect('vista_espacios')  
 
 
 
-def detalle_parcela(request, id_parcela):
+def detalle_parcela(request, id_espacio):
     # Obtener la parcela correspondiente a 'id_parcela'
-    dato = get_object_or_404(Parcela, id_parcela=id_parcela)
-    division = DivisionParcela.objects.filter(id_parcela=dato)
+    dato = get_object_or_404(Espacio, id_espacio=id_espacio)
+    division = DivisionEspacio.objects.filter(id_espacio=dato)
 
     # Pasar los detalles de la parcela a la plantilla
-    return render(request, 'vistas_datos/vista_parcela.html', {'dato': dato,'division': division})
+    return render(request, 'vistas_datos/vista_espacio.html', {'dato': dato,'division': division})
 
 
 #------------forms------------------------
@@ -147,50 +208,7 @@ def modal_view(request):
             if existe:
                 return HttpResponse("Ya existe ese número asignado.")
             else:
-                data = "https://www.youtube.com/watch?v=xvFZjo5PgG0&ab_channel=Duran"
-                logo_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'icon.png')
 
-                # Crear el objeto QR
-                qr = qrcode.QRCode(
-                    version=1,
-                    error_correction=qrcode.constants.ERROR_CORRECT_H,
-                    box_size=10,
-                    border=4,
-                )
-                qr.add_data(data)
-                qr.make(fit=True)
-
-                # Crear la imagen QR con color verde
-                img = qr.make_image(fill='green', back_color='white')
-
-                # Convertir la imagen a un objeto de Pillow
-                img = img.convert('RGB')
-
-                # Redimensionar y colocar el logo
-                width, height = img.size
-                for x in range(width):
-                    for y in range(height):
-                        pixel = img.getpixel((x, y))
-                        if pixel != (255, 255, 255):
-                            img.putpixel((x, y), (123, 187, 4))
-
-                logo = Image.open(logo_path)
-                if logo.mode != 'RGBA':
-                    logo = logo.convert('RGBA')
-                logo_size = int(img.size[0] * 0.3)
-                logo = logo.resize((logo_size, logo_size))
-
-                # Obtener la posición para centrar el logo
-                img_width, img_height = img.size
-                logo_width, logo_height = logo.size
-                position = ((img_width - logo_width) // 2, (img_height - logo_height) // 2)
-
-                img.paste(logo, position, logo)
-
-                # Guardar la imagen
-                image_path = os.path.join(settings.MEDIA_ROOT, 'qr_codes_division', f'Division_parcela{id_parcela}_N°{identificador_division}.png')
-                os.makedirs(os.path.dirname(image_path), exist_ok=True)
-                img.save(image_path)
 
                 # Crear la DivisionParcela
                 DivisionParcela.objects.create(

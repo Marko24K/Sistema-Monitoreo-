@@ -81,7 +81,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Humedal2',
+        'NAME': 'BIOMET',
         'USER':'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',

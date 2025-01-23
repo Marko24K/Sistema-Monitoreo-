@@ -24,15 +24,15 @@ from django.urls import path
 urlpatterns = [
     #forms
     path('home2/', views.home2, name = 'home2'),
-    path('registro_parcela/', views.registro_parcela, name='registro_parcela'),
+    path('registro_espacio/', views.registro_espacio, name='registro_parcela'),
     path('registro_planta/', views.registro_planta, name='registro_planta'),
     path('tipo_planta/', views.tipo_planta, name='tipo_planta'),
     
     #vistas
-    path('vista_parcelas/', views.vista_parcelas, name='vista_parcelas'),
-    path('detalle_parcela/<int:id_parcela>/', views.detalle_parcela, name='detalle_parcela'),
-    path('editar_parcela/<int:id_parcela>/', views.editar_parcela, name='editar_parcela'),
-    path('eliminar_parcela/<int:id_parcela>/', views.eliminar_parcela, name='eliminar_parcela'),
+    path('vista_espacios/', views.vista_espacios, name='vista_espacios'),
+    path('detalle_espacio/<int:id_espacio>/', views.detalle_parcela, name='detalle_espacio'),
+    path('editar_espacio/<int:id_espacio>/', views.editar_parcela, name='editar_espacio'),
+    path('eliminar_espacio/<int:id_espacio>/', views.eliminar_parcela, name='eliminar_espacio'),
 
     path('modal/', views.modal_view, name='modal_view'),
     
