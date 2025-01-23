@@ -30,9 +30,9 @@ urlpatterns = [
     
     #vistas
     path('vista_espacios/', views.vista_espacios, name='vista_espacios'),
-    path('detalle_espacio/<int:id_espacio>/', views.detalle_parcela, name='detalle_espacio'),
-    path('editar_espacio/<int:id_espacio>/', views.editar_parcela, name='editar_espacio'),
-    path('eliminar_espacio/<int:id_espacio>/', views.eliminar_parcela, name='eliminar_espacio'),
+    path('detalle_espacio/<int:id_espacio>/', views.detalle_espacio, name='detalle_espacio'),
+    path('editar_espacio/<int:id_espacio>/', views.editar_espacio, name='editar_espacio'),
+    path('eliminar_espacio/<int:id_espacio>/', views.eliminar_espacio, name='eliminar_espacio'),
 
     path('modal/', views.modal_view, name='modal_view'),
     

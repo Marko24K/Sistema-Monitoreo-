@@ -104,7 +104,7 @@ def vista_espacios(request):
     return render(request, 'vistas_datos/vista_espacios.html', {'vista': vista})
 
 
-def editar_Espacio(request, id_espacio):
+def editar_parcela(request, id_espacio):
     espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
 
     localidad = Localidad.objects.all()
@@ -136,15 +136,17 @@ def editar_Espacio(request, id_espacio):
 
     return render(request, 'forms/registro_espacio.html', {'espacio': espacio, 'localidad': localidad})
 
-def eliminar_Espacio(request, id_espacio):
+def eliminar_espacio(request, id_espacio):
     espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
     espacio.delete()
     messages.success(request, "La Espacio ha sido eliminada exitosamente.")
 
     return redirect('vista_espacios')  
 
-def detalle_Espacio(request, id_espacio):
-    # Obtener la Espacio correspondiente a 'id_Espacio'
+
+
+def detalle_espacio(request, id_espacio):
+    # Obtener la parcela correspondiente a 'id_parcela'
     dato = get_object_or_404(Espacio, id_espacio=id_espacio)
     division = DivisionEspacio.objects.filter(id_espacio=dato)
 
