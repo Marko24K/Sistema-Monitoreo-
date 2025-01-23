@@ -3,7 +3,7 @@
     {% load static %}
 <head>
     <meta charset="UTF-8">
-    <title>Registrar parcelas</title>
+    <title>Registrar espacios</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,57 +19,57 @@
         {% block content %}
         <section class="mb-5">
             <div class="card shadow-sm p-4">
-                <form id="form_parcela" enctype="multipart/form-data" method="POST">
+                <form id="form_espacio" enctype="multipart/form-data" method="POST">
                     {% csrf_token %}
                     <div class="row text-center">
-                        <!-- Datos de la parcela -->
+                        <!-- Datos de la espacio -->
                         <div class="col-lg-6 mb-4">
-                            <h3>Datos de la parcela</h3>
+                            <h3>Datos de la espacio</h3>
                             <div class="mb-3">
-                                <select class="form-select" id="val_localidad_p" name="val_localidad_p" aria-label="Provincia/comuna donde está ubicada la parcela">
-                                    <option selected disabled>Localidad donde está ubicada la parcela</option>
+                                <label for="val_localidad_p" class="form-label">Localidad donde está ubicado el espacio</label>
+                                <select class="form-select" id="val_localidad_p" name="val_localidad_p" aria-label="Provincia/comuna donde está ubicada la espacio">
+                                    <option selected disabled>Localidad</option>
                                     {% for l in localidad %}
                                         <option value="{{ l.id_localidad }}">{{ l.nombre_localidad }}</option>
                                     {% empty %}
-                                        <option disabled>No hay localidades disponibles</option>
+                                        <option disabled>No hay localidades registradas</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="val_nombre_p" class="form-label">Nombre parcela</label>
+                                <label for="val_nombre_p" class="form-label">Nombre espacio</label>
                                 <input type="text" class="form-control" id="val_nombre_p" name="val_nombre_p" 
-                                       required maxlength="50" placeholder="Ejemplo nombre de parcela" 
+                                       required maxlength="50" placeholder="Ej: Invernadero sede de Ingenieria UPLA" 
                                        pattern="^[A-Za-z]+(?: [A-Za-z]+)*$" title="Solo se permiten caracteres alfabéticos">
                             </div>
                             <div class="mb-3">
-                                <label for="val_direccion_p" class="form-label">Dirección de la parcela</label>
+                                <label for="val_direccion_p" class="form-label">Dirección se encuentra el espacio</label>
                                 <input type="text" class="form-control" id="val_direccion_p" name="val_direccion_p" 
                                        required maxlength="50" placeholder="EJ: Subida Leopoldo Carvallo 270, Valparaíso">
                             </div>
                             <div class="mb-3">
-                                <label for="val_direccion_p" class="form-label">utm</label>
+                                <label for="val_direccion_p" class="form-label">Ingrese las coordenadas segun UTM</label>
                                 <input type="text" class="form-control" id="utm" name="utm" 
-                                required maxlength="50" >
+                                required maxlength="50" placeholder="Ej: Zona 14N 500000mE 4649776mN">
                             </div>
                             
+                            <label for="tipo_espacio" class="form-label">Seleccione el tipo de espacio</label>
+                            <select class="form-select" id="tipo_espacio" name="tipo_espacio" aria-label="Provincia/comuna donde está ubicada la espacio">
+                                <option selected disabled>Seleccione</option>
+                                {% for t in tipo_espacio %}
+                                    <option value="{{t.id_tipo_espacio}}">{{ t.nombre_tipo_espacio }}</option>
+                                {% empty %}
+                                    <option disabled>No hay tipos de espacio disponibles</option>
+                                {% endfor %}
+                            </select>
 
-                            <div class="col-md-6">
-                                <select class="form-select" id="tipo_espacio" name="tipo_espacio" aria-label="Provincia/comuna donde está ubicada la parcela">
-                                    <option selected disabled>Seleccione tipo de espacio</option>
-                                    {% for t in tipo_espacio %}
-                                        <option value="{{t.id_tipo_espacio}}">{{ t.nombre_tipo_espacio }}</option>
-                                    {% empty %}
-                                        <option disabled>No hay tipos de espacio disponibles</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <label for="input-imagen" class="form-label">Imagen de Parcela</label>
+                            <label for="input-imagen" class="form-label">Imagen de espacio</label>
                             <input type="file" id="input-imagen" name="input-imagen" accept="image/*" class="form-control mt-3">
                         </div>
 
-                        <!-- Imagen de la parcela -->
+                        <!-- Imagen de la espacio -->
                         <div class="col-lg-6 mb-4">
-                            <h3>Imagen de la parcela</h3>
+                            <h3>Imagen de la espacio</h3>
                             <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
                                 <!-- La imagen se mostrará aquí -->
                             </div>

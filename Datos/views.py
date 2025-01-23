@@ -14,11 +14,8 @@ from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
 
-
-
 def home2(request):
     return render(request, 'home2.html')
-#--------------------Espacio -----------------------------
 
 def registro_espacio(request):
     localidad = Localidad.objects.all()
@@ -103,8 +100,7 @@ def vista_espacios(request):
     vista = Espacio.objects.all().order_by('id_espacio')
     return render(request, 'vistas_datos/vista_espacios.html', {'vista': vista})
 
-
-def editar_parcela(request, id_espacio):
+def editar_espacio(request, id_espacio):
     espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
 
     localidad = Localidad.objects.all()
@@ -143,17 +139,14 @@ def eliminar_espacio(request, id_espacio):
 
     return redirect('vista_espacios')  
 
-
-
 def detalle_espacio(request, id_espacio):
-    # Obtener la parcela correspondiente a 'id_parcela'
+    # Obtener la espacio correspondiente a 'id_espacio'
     dato = get_object_or_404(Espacio, id_espacio=id_espacio)
     division = DivisionEspacio.objects.filter(id_espacio=dato)
 
     # Pasar los detalles de la Espacio a la plantilla
     return render(request, 'vistas_datos/vista_espacio.html', {'dato': dato,'division': division})
 
-#------------forms------------------------
 def registro_planta(request):
     if request.method == 'POST':
         RegistroPlanta.objects.create(
@@ -171,7 +164,6 @@ def registro_planta(request):
         )
     return render(request, 'forms/registro_planta.html')
 
-
 def modal_view(request):
     form_type = request.GET.get('form_type', '')  # Obtener el tipo de formulario de la URL
 
@@ -184,8 +176,8 @@ def modal_view(request):
     context = {}
 
     if form_type == 'division_Espacio':
-        Espacios = Espacio.objects.all()  # Obtener las Espacios
-        context['Espacios'] = Espacios
+        espacios = Espacio.objects.all()  # Obtener las espacios
+        context['espacios'] = espacios
 
         if request.method == 'POST':
             id_Espacio = request.POST['id_Espacio']
@@ -214,7 +206,7 @@ def modal_view(request):
                     #codigoqr=os.path.relpath(image_path, settings.MEDIA_ROOT),
                 )
 
-            return redirect('vista_Espacios')
+            return redirect('vista_espacios')
     
     elif form_type == 'modelo_sensor':
         if request.method == 'POST':
@@ -228,11 +220,11 @@ def modal_view(request):
                 descripcion=descripcion_sensor,
             )
             
-            return redirect('vista_Espacios') 
+            return redirect('vista_espacios') 
         
     elif form_type == 'arduino':
-        Espacios = Espacio.objects.all()  
-        context['Espacios'] = Espacios
+        espacios = Espacio.objects.all()  
+        context['espacios'] = espacios
         
         if request.method == 'POST':
             modelo_arduino = request.POST['modelo_arduino']
@@ -247,15 +239,15 @@ def modal_view(request):
                 id_Espacio_id=id_Espacio,
                 estado=estado,            
                 )
-            return redirect('vista_Espacios') 
+            return redirect('vista_espacios') 
         
     elif form_type == 'planta':
         if request.method == 'POST':
-            return redirect('vista_Espacios')
+            return redirect('vista_espacios')
         
     elif form_type == 'sensor':
         if request.method == 'POST':
-            return redirect('vista_Espacios') 
+            return redirect('vista_espacios') 
 
 
     try:
@@ -274,7 +266,6 @@ def tipo_planta(request):
         )
     return render(request, 'forms/tipo_planta.html')
 
-#---------------------------------------------------------------------------------
 @api_view(['POST'])
 def guardar_datos_sensor(request):
     if request.method == 'POST':
