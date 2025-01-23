@@ -28,66 +28,46 @@
             <div class="p-6">
               <h3>Imagen de la parcela</h3>
               <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
-                {{dato.imagen_parcela}}
-              </div>
+                {% if espacio.imagen_espacio %}
+                    <!-- Si hay una imagen, la mostramos -->
+                    <img src="{{ espacio.imagen_espacio.url }}" alt="Imagen del espacio" class="img-fluid">
+                {% else %}
+                    <!-- Si no hay imagen, mostramos un mensaje -->
+                    <p>No hay imagen registrada.</p>
+                {% endif %}
+            </div>
             </div>
           </div>
-
+  
           <div class="col-6">
             <!-- Columna para el resto del formulario -->
-            <h3>Datos de la parcela</h3>
+            <h3>Datos del espacio</h3>
             <!-- localidad_parcela -->
-            <label for="val_localidad_p" class="form-label"><strong>localidad de la parcela</strong></label>
+            <label for="val_localidad_p" class="form-label"><strong>Localidad de la parcela</strong></label>
             <div style="background-color:cyan;border-radius: 15px;">
-              {{dato.id_localidad_id.nombre_localidad}}
+              {{ dato.id_localidad_id.nombre_localidad }}
             </div>
-
+  
             <!-- Nombre parcela -->
             <label for="val_nombre_p" class="form-label"><strong>Nombre parcela</strong></label>
             <div style="background-color:cyan;border-radius: 15px;">
-              {{dato.nombre_parcela}}
+              {{ dato.nombre_espacio }}
             </div>
-                            
-            <!-- direccion parcela -->
-            <label for="val_direccion_p" class="form-label"><strong>Direccion de la parcela</strong></label>
+                              
+            <!-- Direccion parcela -->
+            <label for="val_direccion_p" class="form-label"><strong>Dirección de la parcela</strong></label>
             <div style="background-color:cyan;border-radius: 15px;">
-              {{dato.direccion_parcela}}
+              {{ dato.direccion_espacio }}
             </div>
-                            
-            <div class="row" style="text-align: center">
-              <div class="col-6">
-                <label for="numero_zona" class="form-label"> <strong>numero de la zona</strong></label>
-                <div style="background-color:cyan;border-radius: 15px;">
-                  {{dato.zona}}
-                </div>
-              </div>
-
-              <div class="col-6">
-                <label for="hemisferio" class="form-label"><strong>Hemisferio</strong></label>
-                <div style="background-color:cyan;border-radius: 15px;">
-                  {{dato.hemisferio}}
-                </div>
-              </div>
-            </div>
-
-            <div class="row" style="text-align: center">
-              <div class="col-6">
-                <label for="falso_este" class="form-label"><strong>Falso este</strong></label>
-                <div style="background-color:cyan;border-radius: 15px;">
-                  {{dato.easting}}
-                </div>
-              </div>
-
-              <div class="col-6">
-                <label for="falso_norte" class="form-label"><strong>Falso norte</strong></label>
-                <div style="background-color:cyan;border-radius: 15px;">
-                  {{dato.northing}}
-                </div>
-              </div>
+            
+            <!-- UTM -->
+            <label for="val_direccion_p" class="form-label"><strong>UTM</strong></label>
+            <div style="background-color:cyan;border-radius: 15px;">
+              {{ dato.utm }}
             </div>
           </div>
-
-          <div class="row justify-content-md-center"style="margin-top: 20px;">
+  
+          <div class="row justify-content-md-center" style="margin-top: 20px;">
             <button class="btn btn-success col-4" data-form-type="division_parcela">Registrar division parcela</button>
             <button class="btn btn-success col-4" data-form-type="arduino">Registrar nuevo arduino</button>
             <a class="btn btn-success col-4" href="{% url 'registro_planta' %}" class="btn btn-info">Registrar una Plantación</a>
@@ -95,22 +75,23 @@
         </div>
       </div>
     </section>
-
-    <!-- Tabla -->
+  
+    <!-- Informacion sobre las divisiones (solo si no es humedal) -->
+    {% if dato.id_tipo_espacio.nombre_tipo_espacio != 'Humedal' %}
     <section class="mb-5">
-      <h2>Informacion sobre las divisiones</h2>
+      <h2>Información sobre las divisiones</h2>
       <ul class="responsive-table">
         <li class="table-header">
-          <div class="col col-1">ID division Parcela</div>
-          <div class="col col-3">Tipo division</div>
+          <div class="col col-1">ID división Espacio</div>
+          <div class="col col-3">Tipo división</div>
           <div class="col col-4">Identificador</div>
-          <div class="col col-6">Acciones</div> <!-- Columna para el botón de acción -->
+          <div class="col col-6">Acciones</div>
         </li>
-          
+        
         {% for d in division %}
           <li class="table-row">
-            <div class="col col-1" data-label="ID division Parcela">{{ d.id_division_parcela }}</div>
-            <div class="col col-3" data-label="Tipo division">{{ d.tipo_division }}</div>
+            <div class="col col-1" data-label="ID división Parcela">{{ d.id_division_espacio }}</div>
+            <div class="col col-3" data-label="Tipo división">{{ d.tipo_division }}</div>
             <div class="col col-4" data-label="Identificador">{{ d.identificador }}</div>
             <div class="col col-6" data-label="Acciones">
               <button class="btn btn-warning" data-form-type="division_parcela"><i class="fas fa-edit"></i></button>
@@ -118,69 +99,64 @@
             </div>
           </li>
         {% empty %}
-          <li class="table-row"><div class="col" colspan="6">No parcelas o divisiones registradas</div></li>
+          <li class="table-row"><div class="col" colspan="6">No divisiones registradas</div></li>
         {% endfor %}
       </ul>
-      <!-- Modal y overlay -->
-      <div class="overlay" id="overlay" aria-hidden="true"></div>
-      <div id="modalContainer" aria-hidden="true"></div>
     </section>
-
+    {% endif %}
+  
+    <!-- Información sobre las plantas (solo si no es humedal) -->
+    {% if dato.id_tipo_espacio.nombre_tipo_espacio != 'Humedal' %}
     <section class="mb-5">
-      <h2>Informacion sobre las plantas</h2>
+      <h2>Información sobre las plantas</h2>
       <ul class="responsive-table">
         <li class="table-header">
           <div class="col col-1">ID</div>
-
-          <div class="col col-6">Acciones</div> <!-- Columna para el botón de acción -->
+          <div class="col col-6">Acciones</div>
         </li>
-          
-        {% for v in vista %}
-        <li class="table-row">
-          <div class="col col-1" data-label=""></div>
-
-          <div class="col col-6" data-label="Acciones">
-            <button class="btn btn-warning" data-form-type="division_parcela"><i class="fas fa-edit"></i></button>
-            <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
-          </div>
-        </li>
-        {% empty %}
-        <li class="table-row"><div class="col" colspan="6">No parcelas o divisiones registradas</div></li>
-        {% endfor %}
+        
+       
+          <li class="table-row">
+            <div class="col col-1" data-label="ID Planta">{{ p.id_planta }}</div>
+            <div class="col col-6" data-label="Acciones">
+              <button class="btn btn-warning" data-form-type="plantacion"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
+            </div>
+          </li>
+       
+          <li class="table-row"><div class="col" colspan="6">No plantas registradas</div></li>
+       
       </ul>
-      <!-- Modal y overlay -->
-      <div class="overlay" id="overlay" aria-hidden="true"></div>
-      <div id="modalContainer" aria-hidden="true"></div>
     </section>
-
+    {% endif %}
+  
     <section class="mb-5">
-      <h2>Informacion sobre sensore</h2>
+      <h2>Información sobre sensores</h2>
       <ul class="responsive-table">
         <li class="table-header">
           <div class="col col-1">ID arduino</div>
           <div class="col col-2">Modelo</div>
           <div class="col col-3">Estado</div>
-          <div class="col col-4">Acciones</div> <!-- Columna para el botón de acción -->
+          <div class="col col-4">Acciones</div>
         </li>
-          
-        {% for v in vista %}
-        <li class="table-row">
-          <div class="col col-1" data-label="ID arduino"></div>
-          <div class="col col-1" data-label="Modelo"></div>
-          <div class="col col-1" data-label="Estado"></div>
-          <div class="col col-6" data-label="Acciones">
-            <button class="btn btn-warning" data-form-type="division_parcela"><i class="fas fa-edit"></i></button>
-            <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
-          </div>
-        </li>
+        
+        {% for a in arduino %}
+          <li class="table-row">
+            <div class="col col-1" data-label="ID arduino">{{ a.id_arduino }}</div>
+            <div class="col col-2" data-label="Modelo">{{ a.modelo_arduino }}</div>
+            <div class="col col-3" data-label="Estado">{{ a.estado }}</div>
+            <div class="col col-4" data-label="Acciones">
+              <button class="btn btn-warning" data-form-type="arduino"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
+            </div>
+          </li>
         {% empty %}
-        <li class="table-row"><div class="col" colspan="6">No parcelas o divisiones registradas</div></li>
+          <li class="table-row"><div class="col" colspan="6">No sensores registrados</div></li>
         {% endfor %}
       </ul>
-      <!-- Modal y overlay -->
-      <div class="overlay" id="overlay" aria-hidden="true"></div>
-      <div id="modalContainer" aria-hidden="true"></div>
     </section>
+ 
+    
     {% endblock %}
   </main>
 
