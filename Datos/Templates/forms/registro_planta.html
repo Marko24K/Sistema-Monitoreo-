@@ -75,27 +75,35 @@
                                     </select>
                                 </div>
                             </div>
+                            <label for="vitalidad" class="form-label">Indique el estado de la planta</label>
+                            <input  type="text" 
+                                    class="form-control" 
+                                    id="vitalidad"
+                                    name="vitalidad"
+                                    required
+                                    pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" >
+
                         </div>
                         <!-- Segunda columna -->
                         <div class="col-12 col-lg-6">
                             <h3 class="text-center mb-3">Formulario de Plagas</h3>
                             <div class="mb-3">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="plagas" id="negativo" value="1" checked>
+                                    <input class="form-check-input" type="radio" name="plaga_enfermedad" id="negativo" value="1" checked>
                                     <label class="form-check-label" for="negativo">Sin plagas</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="plagas" id="afirmativo" value="0">
+                                    <input class="form-check-input" type="radio" name="plaga_enfermedad" id="afirmativo" value="0">
                                     <label class="form-check-label" for="afirmativo">Se detectaron plagas</label>
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="Descripcion_plaga_enfermedad" class="form-label">Descripción de la plaga</label>
-                                <textarea class="form-control" id="Descripcion_plaga_enfermedad" name="Descripcion_plaga_enfermedad"></textarea>
+                                <label for="descripcion_plaga_enfermedad" class="form-label">Descripción de la plaga</label>
+                                <textarea class="form-control" id="descripcion_plaga_enfermedad" name="descripcion_plaga_enfermedad"></textarea>
                             </div>
                             <div class="mb-3">
-                                <label for="Observaciones_registro" class="form-label">Observaciones</label>
-                                <textarea class="form-control" id="Observaciones_registro" name="Observaciones_registro"></textarea>
+                                <label for="observaciones_registro" class="form-label">Observaciones</label>
+                                <textarea class="form-control" id="observaciones_registro" name="observaciones_registro" required></textarea>
                             </div>
                         </div>
                     </div>

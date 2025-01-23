@@ -42,7 +42,6 @@ def vista_parcelas(request):
     vista = Parcela.objects.all().order_by('id_parcela')
     return render(request, 'vistas_datos/vista_parcelas.html', {'vista': vista})
 
-
 def editar_parcela(request, id_parcela):
     parcela = get_object_or_404(Parcela, id_parcela=id_parcela)
 
@@ -82,8 +81,6 @@ def eliminar_parcela(request, id_parcela):
 
     return redirect('vista_parcelas')  
 
-
-
 def detalle_parcela(request, id_parcela):
     # Obtener la parcela correspondiente a 'id_parcela'
     dato = get_object_or_404(Parcela, id_parcela=id_parcela)
@@ -92,26 +89,24 @@ def detalle_parcela(request, id_parcela):
     # Pasar los detalles de la parcela a la plantilla
     return render(request, 'vistas_datos/vista_parcela.html', {'dato': dato,'division': division})
 
-
 #------------forms------------------------
-
-
 def registro_planta(request):
     if request.method == 'POST':
         RegistroPlanta.objects.create(
-            numero_planta = request.POST['numero_planta'],
-            altura = request.POST['altura'],
-            largo = request.POST['largo '],
-            ancho = request.POST['ancho'],
-            grosor = request.POST['grosor'],
-            vigor = request.POST['vigor'],
-            turgencia = request.POST['turgencia'],
-            vitalidad = request.POST['vitalidad'],
-            plaga_enfermedad = request.POST['plaga_enfermedad'],
-            descripcion_plaga_enfermedad = request.POST['descripcion_plaga_enfermedad'],
-            observaciones_Registro = request.POST['observaciones_Registro'],
+            numero_planta=request.POST.get('numero_planta'),
+            altura=request.POST.get('altura'),
+            largo=request.POST.get('largo'),
+            ancho=request.POST.get('ancho'),
+            grosor=request.POST.get('grosor'),
+            vigor=request.POST.get('vigor'),
+            turgencia=request.POST.get('turgencia'),
+            vitalidad=request.POST.get('vitalidad'),
+            plaga_enfermedad=request.POST.get('plaga_enfermedad'),
+            descripcion_plaga_enfermedad=request.POST.get('descripcion_plaga_enfermedad', None),
+            observaciones_registro=request.POST.get('observaciones_registro',),
         )
     return render(request, 'forms/registro_planta.html')
+
 
 def modal_view(request):
     form_type = request.GET.get('form_type', '')  # Obtener el tipo de formulario de la URL
@@ -200,7 +195,7 @@ def modal_view(request):
                     codigoqr=os.path.relpath(image_path, settings.MEDIA_ROOT),
                 )
 
-            return redirect('bt_varios')
+            return redirect('vista_parcelas')
     
     elif form_type == 'modelo_sensor':
         if request.method == 'POST':
@@ -214,7 +209,7 @@ def modal_view(request):
                 descripcion=descripcion_sensor,
             )
             
-            return redirect('bt_varios') 
+            return redirect('vista_parcelas') 
         
     elif form_type == 'arduino':
         parcelas = Parcela.objects.all()  
@@ -233,15 +228,15 @@ def modal_view(request):
                 id_parcela_id=id_parcela,
                 estado=estado,            
                 )
-            return redirect('bt_varios') 
+            return redirect('vista_parcelas') 
         
     elif form_type == 'planta':
         if request.method == 'POST':
-            return redirect('bt_varios')
+            return redirect('vista_parcelas')
         
     elif form_type == 'sensor':
         if request.method == 'POST':
-            return redirect('bt_varios') 
+            return redirect('vista_parcelas') 
 
 
     try:
@@ -249,7 +244,6 @@ def modal_view(request):
     except Exception as e:
         print(f"Error al cargar la plantilla {template_path}: {e}")
         return render(request, 'mini_forms/arduino.html')
-
 
 def tipo_planta(request):
     if request.method == 'POST':

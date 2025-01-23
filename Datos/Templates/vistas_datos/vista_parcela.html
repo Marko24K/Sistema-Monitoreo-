@@ -63,7 +63,7 @@
               </div>
 
               <div class="col-6">
-                <label for="hemisferio" class="form-label"><strong>Seleccione un hemisferio</strong></label>
+                <label for="hemisferio" class="form-label"><strong>Hemisferio</strong></label>
                 <div style="background-color:cyan;border-radius: 15px;">
                   {{dato.hemisferio}}
                 </div>
@@ -88,7 +88,9 @@
           </div>
 
           <div class="row justify-content-md-center"style="margin-top: 20px;">
-            <button class="btn btn-success" data-form-type="division_parcela">Registrar division parcela</button>
+            <button class="btn btn-success col-4" data-form-type="division_parcela">Registrar division parcela</button>
+            <button class="btn btn-success col-4" data-form-type="arduino">Registrar nuevo arduino</button>
+            <a class="btn btn-success col-4" href="{% url 'registro_planta' %}" class="btn btn-info">Registrar una Plantación</a>
           </div>
         </div>
       </div>
@@ -155,14 +157,17 @@
       <h2>Informacion sobre sensore</h2>
       <ul class="responsive-table">
         <li class="table-header">
-          <div class="col col-1">ID</div>
-
-          <div class="col col-6">Acciones</div> <!-- Columna para el botón de acción -->
+          <div class="col col-1">ID arduino</div>
+          <div class="col col-2">Modelo</div>
+          <div class="col col-3">Estado</div>
+          <div class="col col-4">Acciones</div> <!-- Columna para el botón de acción -->
         </li>
           
         {% for v in vista %}
         <li class="table-row">
-
+          <div class="col col-1" data-label="ID arduino"></div>
+          <div class="col col-1" data-label="Modelo"></div>
+          <div class="col col-1" data-label="Estado"></div>
           <div class="col col-6" data-label="Acciones">
             <button class="btn btn-warning" data-form-type="division_parcela"><i class="fas fa-edit"></i></button>
             <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
