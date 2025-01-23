@@ -26,11 +26,14 @@
                         <div class="col-lg-6 mb-4">
                             <h3>Datos de la parcela</h3>
                             <div class="mb-3">
-                                <label for="val_localidad_p" class="form-label">Localidad de la parcela</label>
-                                <input type="text" class="form-control" id="val_localidad_p" name="val_localidad_p" 
-                                       required maxlength="50" placeholder="Provincia/comuna donde está ubicada la parcela" 
-                                       pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" 
-                                       title="Solo se permiten caracteres alfabéticos y numéricos">
+                                <select class="form-select" id="val_localidad_p" name="val_localidad_p" aria-label="Provincia/comuna donde está ubicada la parcela">
+                                    <option selected disabled>Localidad donde está ubicada la parcela</option>
+                                    {% for l in localidad %}
+                                        <option value="{{ l.id_localidad }}">{{ l.nombre_localidad }}</option>
+                                    {% empty %}
+                                        <option disabled>No hay localidades disponibles</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="mb-3">
                                 <label for="val_nombre_p" class="form-label">Nombre parcela</label>
@@ -43,39 +46,24 @@
                                 <input type="text" class="form-control" id="val_direccion_p" name="val_direccion_p" 
                                        required maxlength="50" placeholder="EJ: Subida Leopoldo Carvallo 270, Valparaíso">
                             </div>
-                            <!-- Zona y hemisferio -->
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="numero_zona" class="form-label">Número de la zona</label>
-                                    <input type="number" class="form-control" id="numero_zona" name="numero_zona" 
-                                           required placeholder="Ingrese un número" pattern="^[0-9]+$" 
-                                           title="Solo se permiten caracteres numéricos positivos">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="hemisferio" class="form-label">Seleccione un hemisferio</label>
-                                    <select class="form-select" id="hemisferio" name="hemisferio" required>
-                                        <option selected disabled value="">Hemisferio</option>
-                                        <option value="N">Hemisferio norte</option>
-                                        <option value="S">Hemisferio sur</option>
-                                    </select>
-                                </div>
+                            <div class="mb-3">
+                                <label for="val_direccion_p" class="form-label">utm</label>
+                                <input type="text" class="form-control" id="utm" name="utm" 
+                                required maxlength="50" >
                             </div>
-                            <!-- Falso este y falso norte -->
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="falso_este" class="form-label">Falso este</label>
-                                    <input type="number" class="form-control" id="falso_este" name="falso_este" 
-                                           required min="0" max="1000000" step="0.01" 
-                                           title="Solo se permiten caracteres numéricos positivos">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="falso_norte" class="form-label">Falso norte</label>
-                                    <input type="number" class="form-control" id="falso_norte" name="falso_norte" 
-                                           required min="0" max="10000000" step="0.01" 
-                                           title="Solo se permiten caracteres numéricos positivos">
-                                </div>
+                            
+
+                            <div class="col-md-6">
+                                <select class="form-select" id="tipo_espacio" name="tipo_espacio" aria-label="Provincia/comuna donde está ubicada la parcela">
+                                    <option selected disabled>Seleccione tipo de espacio</option>
+                                    {% for t in tipo_espacio %}
+                                        <option value="{{t.id_tipo_espacio}}">{{ t.nombre_tipo_espacio }}</option>
+                                    {% empty %}
+                                        <option disabled>No hay tipos de espacio disponibles</option>
+                                    {% endfor %}
+                                </select>
                             </div>
-                            <label for="input-imagen" class="form-label">Inserte una imagen de la parcela</label>
+                            <label for="input-imagen" class="form-label">Imagen de Parcela</label>
                             <input type="file" id="input-imagen" name="input-imagen" accept="image/*" class="form-control mt-3">
                         </div>
 

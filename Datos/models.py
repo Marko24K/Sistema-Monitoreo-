@@ -70,7 +70,7 @@ class City(models.Model):
 class Localidad(models.Model):
     id_localidad = models.AutoField(primary_key=True)
     id_city = models.ForeignKey(City, on_delete=models.CASCADE)  # Relación con Region
-    nombre_localidad= models.CharField(max_length=100)
+    nombre_localidad = models.CharField(max_length=100)
     estado_localidad = models.CharField(max_length=100)
     fecha_creado = models.DateTimeField(auto_now_add=True)
     fecha_editado = models.DateTimeField(auto_now=True)
@@ -79,30 +79,33 @@ class Localidad(models.Model):
         db_table = 'localidad'
 
 
-class Parcela(models.Model):
-    id_parcela = models.AutoField(primary_key=True)
-    id_localidad = models.ForeignKey(Localidad, on_delete=models.CASCADE)
-    nombre_parcela = models.CharField(max_length=50)
-    direccion_parcela = models.CharField(max_length=50)
-    zona = models.PositiveSmallIntegerField()
-    hemisferio = models.CharField(max_length=1, choices=[('N', 'Norte'), ('S', 'Sur')])
-    easting = models.DecimalField(max_digits=10, decimal_places=2)
-    northing = models.DecimalField(max_digits=10, decimal_places=2)
-    uuid_parcela = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    imagen_parcela = models.ImageField(upload_to='imagenes_parcelas/', null=True, blank=True)
+class TipoEspacio(models.Model):
+    id_tipo_espacio = models.AutoField(primary_key=True)
+    nombre_tipo_espacio = models.CharField(max_length=100) #humedal, parcela o invernadero
 
     class Meta:
-        db_table = 'parcela'
+        db_table = 'tipo_espacio'
 
-class DivisionParcela(models.Model):
-    id_division_parcela = models.AutoField(primary_key=True)
-    id_parcela = models.ForeignKey(Parcela, on_delete=models.CASCADE)
-    tipo_division = models.CharField(max_length=100)  
+class Espacio(models.Model): #refiere a el lugar fisico donde se realizaran las mediciones 
+    id_espacio = models.AutoField(primary_key=True) 
+    id_localidad = models.ForeignKey(Localidad, on_delete=models.CASCADE) 
+    id_tipo_espacio = models.ForeignKey(TipoEspacio, on_delete=models.CASCADE) 
+    nombre_espacio = models.CharField(max_length=50) 
+    direccion_espacio = models.CharField(max_length=50) 
+    utm = models.CharField(max_length=50) 
+    uuid_espacio = models.UUIDField(default=uuid.uuid4 , editable=False, unique=True)
+    imagen_espacio = models.ImageField(upload_to='imagenes_espacios/', null=True, blank=True)
+    codigoqr = models.CharField(max_length=50, null=True, blank=True) 
+    class Meta:
+        db_table = 'espacio'
+
+class DivisionEspacio(models.Model):
+    id_division_espacio = models.AutoField(primary_key=True)
+    id_espacio = models.ForeignKey(Espacio, on_delete=models.CASCADE)
+    tipo_division = models.CharField(max_length=50)  
     identificador = models.IntegerField()
-    codigoqr = models.CharField(max_length=255)
-
     class Meta:
-        db_table = 'division_parcela'
+        db_table = 'division_espacio'
 
 
 class TipoPlanta(models.Model):
@@ -131,7 +134,7 @@ class Planta(models.Model):
 
 class RegistroPlanta(models.Model):
     id_registro_planta = models.AutoField(primary_key=True)
-    id_division_parcela = models.ForeignKey(DivisionParcela, on_delete=models.CASCADE)
+    id_division_espacio = models.ForeignKey(DivisionEspacio, on_delete=models.CASCADE)
     id_planta = models.ForeignKey(Planta, on_delete=models.CASCADE)
     numero_planta = models.IntegerField()
     altura = models.FloatField()
@@ -152,7 +155,7 @@ class RegistroPlanta(models.Model):
 
 class Arduino(models.Model):
     id_arduino = models.AutoField(primary_key=True)
-    id_parcela = models.ForeignKey(Parcela, on_delete=models.CASCADE)
+    id_espacio = models.ForeignKey(Espacio, on_delete=models.CASCADE)
     modelo_arduino = models.CharField(max_length=50)
     estado = models.IntegerField()
     uuid_arduino=models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
