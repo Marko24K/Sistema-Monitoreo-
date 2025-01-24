@@ -3,6 +3,10 @@
 
     <form id="arduinoForm" method="POST" action="{% url 'modal_view' %}?form_type=arduino">
         {% csrf_token %}
+        <!-- Campo oculto para el id_espacio -->
+        <input type="hidden" name="id_espacio" value="{{ dato.id_espacio }}">
+
+        
         <div class="col 8">
             <select style="margin-bottom: 5%;" class="form-select" id="modelo_arduino" name="modelo_arduino" aria-label="Seleccione un arduino">
                 <option selected disabled>Seleccione un arduino</option>
@@ -11,19 +15,10 @@
                 <option value="Nano">Nano</option>
                 <option value="Esp32">Esp32</option>
             </select>
-            <select style="margin-bottom: 5%;" class="form-select" id="parcela" name="parcela"aria-label="Seleccione una parcela">
-                <option selected disabled>Seleccione la parcela donde se va a instalar</option>
-                {% for parcela in parcelas %}
-                    <option value="{{ parcela.id_parcela }}">{{ parcela.nombre_parcela }}</option>
-                {% empty %}
-                    <option disabled>No hay parcelas disponibles</option>
-                {% endfor %}
-            </select>
-
-            <input type="radio" class="btn-check" name="options" id="option1" values ="option1" autocomplete="off" checked>
+            <input type="radio" class="btn-check" name="options" id="option1" values ="1" autocomplete="off" checked>
             <label class="btn btn-outline-success" for="option1">Arduino activo</label>
 
-            <input type="radio" class="btn-check" name="options" values="option2" id="option2" autocomplete="off">
+            <input type="radio" class="btn-check" name="options" values="0" id="option2" autocomplete="off">
             <label class="btn btn-outline-danger" for="option2">Arduino inactivo</label>
         </div>
             <button type="submit">Enviar</button>

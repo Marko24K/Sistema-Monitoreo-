@@ -4,9 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const openModalButtons = document.querySelectorAll("[data-form-type]");
 
     // Cargar contenido del modal por AJAX
-    const loadModalContent = async (formType) => {
+    const loadModalContent = async (formType, idEspacio) => {
         try {
-            const response = await fetch(`/modal/?form_type=${formType}`);
+            // Si es un formulario de división de espacio, agregamos el id_espacio
+            const response = await fetch(`/modal/?form_type=${formType}&id_espacio=${idEspacio || ''}`);
             if (response.ok) {
                 const modalContent = await response.text();
                 modalContainer.innerHTML = modalContent;
@@ -23,11 +24,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-
+    // Escuchar el clic en los botones con data-form-type
     openModalButtons.forEach(button => {
-        button.addEventListener("click", () => {
+        button.addEventListener("click", (e) => {
+            e.preventDefault();  // Evitar la acción predeterminada (la redirección)
+            
             const formType = button.getAttribute("data-form-type");
-            loadModalContent(formType);
+            const idEspacio = button.getAttribute("data-id-espacio");
+
+            loadModalContent(formType, idEspacio);
         });
     });
 
