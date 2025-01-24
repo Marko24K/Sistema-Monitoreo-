@@ -100,7 +100,7 @@ def registro_espacio(request):
                                                            ,'tipo_espacio':tipo_espacio})
 
 def vista_espacios(request):
-    vista = Espacio.objects.all().order_by('id_espacio')
+    vista = Espacio.objects.all()
     return render(request, 'vistas_datos/vista_espacios.html', {'vista': vista})
 
 

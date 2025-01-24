@@ -27,14 +27,14 @@
           <div class="col-6">
             <div class="p-6">
               <h3>Imagen de la parcela</h3>
-              <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
-                {% if espacio.imagen_espacio %}
-                    <!-- Si hay una imagen, la mostramos -->
-                    <img src="{{ espacio.imagen_espacio.url }}" alt="Imagen del espacio" class="img-fluid">
-                {% else %}
-                    <!-- Si no hay imagen, mostramos un mensaje -->
-                    <p>No hay imagen registrada.</p>
-                {% endif %}
+            <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
+              {% if dato.imagen_espacio %}
+                <!-- Si hay una imagen-->
+                <img src="{{ dato.imagen_espacio.url }}" alt="Imagen del espacio" class="img-fluid">
+              {% else %}
+                <!-- Si no hay imagen, mostrar un mensaje -->
+                <p>No hay imagen registrada.</p>
+              {% endif %}
             </div>
             </div>
           </div>

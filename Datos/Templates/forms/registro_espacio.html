@@ -28,7 +28,7 @@
                             <div class="mb-3">
                                 <label for="val_localidad_p" class="form-label">Localidad donde está ubicado el espacio</label>
                                 <select class="form-select" id="val_localidad_p" name="val_localidad_p" aria-label="Provincia/comuna donde está ubicada el espacio">
-                                    <option disabled>Localidad</option>
+                                    <option selected disabled>Seleccione la localidad</option>
                                     {% for l in localidad %}
                                         <option value="{{ l.id_localidad }}" {% if l.id_localidad == espacio.id_localidad.id_localidad %} selected {% endif %}>{{ l.nombre_localidad }}</option>
                                     {% empty %}
@@ -58,7 +58,7 @@
     
                             <label for="tipo_espacio" class="form-label">Seleccione el tipo de espacio</label>
                             <select class="form-select" id="tipo_espacio" name="tipo_espacio" aria-label="Tipo de espacio">
-                                <option disabled>Seleccione</option>
+                                <option selected disabled>Seleccione tipo de espacio</option>
                                 {% for t in tipo_espacio %}
                                     <option value="{{t.id_tipo_espacio}}" {% if t.id_tipo_espacio == espacio.id_tipo_espacio.id_tipo_espacio %} selected {% endif %}>
                                         {{ t.nombre_tipo_espacio }}
