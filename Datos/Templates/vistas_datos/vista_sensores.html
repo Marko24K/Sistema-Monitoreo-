@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Plantas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilo_tabla.css' %}">
+
+    <script src="{% static 'js/vista_imagen.js'%}"></script>
+    <script src="{% static 'js/form_emergente.js' %}"></script>
+</head>
+<body>
+  {% include 'header.html' %}
+  <main class="container my-4">
+    {% block content %}
+    <!--muestra de datos-->
+    <section class="mb-5">
+      <div class="card shadow-sm p-4">
+        {% csrf_token %}
+        <div class="row" style="text-align: center">
+            <div class="col-6" style="background-color:cyan;">
+                <h2>informacion espacio</h2>
+            </div>
+            <div class="col-6" style="background-color:cyan;">
+                <h2>informacion arduino y sensores</h2>
+            </div>
+            <div class="row justify-content-md-center" style="margin-top: 20px;">
+                <button class="btn btn-success col-5" style="margin:20px" data-form-type="modelo_sensor">Añadir un sensor</button>
+                <button class="btn btn-success col-5" style="margin:20px" data-form-type="tipo_dato">Añadir un tipo de dato</button>
+                <!--
+                <button class="btn btn-success col-3" style="margin:20px" data-form-type="modelo_sensor">Añadir un sensor</button>
+                <button class="btn btn-success col-3" style="margin:20px" data-form-type="sensor">Añadir un sensor</button>
+                <button class="btn btn-success col-3" style="margin:20px" data-form-type="tipo_dato">Añadir un tipo de dato</button>
+                -->
+            </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Informacion sobre las divisiones (solo si no es humedal) -->
+    {% if dato.id_tipo_espacio.nombre_tipo_espacio != 'Humedal' %}
+    <section class="mb-5">
+      <h2>Información sobre los sensores</h2>
+      <ul class="responsive-table">
+        <li class="table-header">
+          <div class="col col-1">ID</div>
+          <div class="col col-6">Acciones</div>
+        </li>
+        
+        {% for d in division %}
+          <li class="table-row">
+            <div class="col col-1" data-label="ID"> </div>
+            <div class="col col-6" data-label="Acciones">
+              <button class="btn btn-warning" data-form-type="division_parcela"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
+            </div>
+          </li>
+        {% empty %}
+          <li class="table-row"><div class="col" colspan="6">No divisiones registradas</div></li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+
+    <!-- Modal y overlay No borrar-->
+    <div class="overlay" id="overlay" aria-hidden="true"></div>
+    <div id="modalContainer" aria-hidden="true"></div>
+    {% endblock %}
+  </main>
+
+  {% include 'footer.html' %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

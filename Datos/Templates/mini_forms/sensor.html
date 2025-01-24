@@ -3,11 +3,11 @@
     {% csrf_token %}
     <form id="sensorForm" method="POST" action="{% url 'modal_view' %}?form_type=sensor">
         <div class="col 8">
-            <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off" checked>
-            <label class="btn btn-outline-success" for="option1">Activo</label>
+            <input type="radio" class="btn-check" name="options" id="sensor_activo" values="1" autocomplete="off" checked>
+            <label class="btn btn-outline-success" for="sensor_activo">sensor activo</label>
 
-            <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
-            <label class="btn btn-outline-danger" for="option2">Inactivo</label>
+            <input type="radio" class="btn-check" name="options" id="sensor_inactivo" values="0" autocomplete="off">
+            <label class="btn btn-outline-danger" for="sensor_inactivo">sensor inactivo</label>
         </div>
         <button type="submit">Enviar</button>
         <button type="button" id="closeModal">Cerrar</button>

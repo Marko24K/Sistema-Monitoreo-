@@ -19,6 +19,8 @@ from .serializer import RegistroSensorSerializer
 def home2(request):
     return render(request, 'home2.html')
 #--------------------Espacio -----------------------------
+def vista_sensores(request):
+    return render(request, 'vistas_datos/vista_sensores.html')
 
 def registro_espacio(request):
     localidad = Localidad.objects.all()
@@ -103,7 +105,6 @@ def vista_espacios(request):
     vista = Espacio.objects.all()
     return render(request, 'vistas_datos/vista_espacios.html', {'vista': vista})
 
-
 def editar_espacio(request, id_espacio):
     espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
     tipo_espacio = TipoEspacio.objects.all()
@@ -156,7 +157,6 @@ def detalle_espacio(request, id_espacio):
                     'arduino':arduino,
                     'id_espacio': id_espacio})
 
-#------------forms------------------------
 def registro_planta(request):
     if request.method == 'POST':
         RegistroPlanta.objects.create(
@@ -173,7 +173,6 @@ def registro_planta(request):
             observaciones_registro=request.POST.get('observaciones_registro',),
         )
     return render(request, 'forms/registro_planta.html')
-
 
 def modal_view(request):
     form_type = request.GET.get('form_type', '')
@@ -275,7 +274,6 @@ def tipo_planta(request):
         )
     return render(request, 'forms/tipo_planta.html')
 
-#---------------------------------------------------------------------------------
 @api_view(['POST'])
 def guardar_datos_sensor(request):
     if request.method == 'POST':
@@ -444,7 +442,6 @@ def datos_recientes(request):
         'temp_recent': temp_serializer.data,  # Últimos 10 datos de temperatura
         'hum_recent': hum_serializer.data  # Últimos 10 datos de humedad
     })
-
 
 #ver_mas.html
 def detalle_dato(request):
