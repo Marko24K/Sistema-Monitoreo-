@@ -14,10 +14,6 @@ from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
 
-
-
-def home2(request):
-    return render(request, 'home2.html')
 #--------------------Espacio -----------------------------
 def vista_plantacion(request):
     return render(request, 'vistas_datos/vista_plantacion.html')
@@ -387,7 +383,7 @@ def home(request):
     temp_serializer = RegistroSensorSerializer(temp_recent, many=True)
     hum_serializer = RegistroSensorSerializer(hum_recent , many=True)
 
-    return render(request, 'forms/home2.html', {
+    return render(request, 'home.html', {
         'latest_temperature': temp_data,  
         'latest_humidity': humidity_data,        
         'temp_max': temp_stats['max_value'],
@@ -474,8 +470,6 @@ def detalle_dato(request):
             'table_data': serializer.data,  # Usamos los datos serializados para la tabla
         })
 
-
-
     return render(request, 'ver_mas.html', {
         'dato': dato,
         'unidad': tipo_dato.unidad_medida,
@@ -485,7 +479,3 @@ def detalle_dato(request):
         } for data in serializer.data]),  #  datos serializados para el gráfico
         'recent_data': serializer.data,  # Enviar los datos serializados a la plantilla
     })
-
-def mapa(request):
-    return render(request, 'mapa.html')
-
