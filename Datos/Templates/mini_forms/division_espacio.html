@@ -1,17 +1,12 @@
-<!-- mini_forms/division_espacio.html -->
 <div class="modal">
     <h2>Formulario división de los espacios</h2>
 
     <form id="divisionespacioForm" method="POST" action="{% url 'modal_view' %}?form_type=division_espacio">
         {% csrf_token %}
-        
+
         <select class="form-select" id="id_espacio" name="id_espacio" aria-label="Seleccione un espacio" required>
             <option selected disabled>Seleccione un espacio</option>
-            {% for espacio in espacios %}
-                <option value="{{ espacio.id_espacio }}" {% if espacio.id_espacio == id_espacio %}selected{% endif %}>{{ espacio.nombre_espacio }}</option>
-            {% empty %}
-                <option disabled>No hay espacios disponibles</option>
-            {% endfor %}
+            <option value="{{ espacio.id_espacio }}" {% if espacio.id_espacio == id_espacio %}selected{% endif %}>{{ espacio.nombre_espacio }}</option>
         </select>
 
         <!-- Los siguientes inputs pertenecen a division_espacio-->
@@ -19,7 +14,7 @@
             <label for="tipo_division" class="form-label">Tipo de división</label>
             <input type="text" class="form-control" id="tipo_division" name="tipo_division" required maxlength="50">
         </div>
-        
+
         <div class="col-12">
             <label for="identificador_division" class="form-label">Ingrese un número identificador de la división</label>
             <input type="number" class="form-control" id="identificador_division" name="identificador_division" required pattern="\d+" title="Debe ser un número entero">

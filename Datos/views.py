@@ -144,7 +144,6 @@ def eliminar_espacio(request, id_espacio):
     messages.success(request, "La Espacio ha sido eliminada exitosamente.")
 
     return redirect('vista_espacios')  
-
 def detalle_espacio(request, id_espacio):
     # Obtener la parcela correspondiente a 'id_parcela'
     dato = get_object_or_404(Espacio, id_espacio=id_espacio)
@@ -160,6 +159,38 @@ def detalle_espacio(request, id_espacio):
                     'arduino':arduino,
                     'id_espacio': id_espacio})
 
+
+
+def editar_division(request, id_division_espacio, id_espacio):
+    # Obtener la división de espacio que se desea editar
+    division = get_object_or_404(DivisionEspacio, id_division_espacio=id_division_espacio)
+    
+    # Obtener todos los espacios disponibles
+    espacios = Espacio.objects.all()
+
+    if request.method == 'POST':
+        # Recuperar los datos del formulario
+        id_espacio = request.POST.get('id_espacio')  # Ahora se obtiene desde el formulario
+        tipo_division = request.POST.get('tipo_division')
+        identificador_division = request.POST.get('identificador_division')
+
+        # Actualizar la instancia de la división de espacio
+        division.id_espacio = Espacio.objects.get(id_espacio=id_espacio)
+        division.tipo_division = tipo_division
+        division.identificador = identificador_division
+
+        # Guardar los cambios
+        division.save()
+
+        # Redirigir al detalle del espacio con el id correspondiente
+        return redirect('detalle_espacio', id_espacio=id_espacio)
+
+    # Si es un GET, mostrar el formulario con los datos de la división de espacio
+    return render(request, 'mini_forms/division_espacio.html', {
+        'espacios': espacios,
+        'division': division,  # Pasar la instancia de la división para pre-llenar los campos
+        'id_espacio': id_espacio,  # Pasar id_espacio a la plantilla
+    })
 def registro_planta(request):
     if request.method == 'POST':
         RegistroPlanta.objects.create(
@@ -177,9 +208,16 @@ def registro_planta(request):
         )
     return render(request, 'forms/registro_planta.html')
 
+def eliminar_division(request, id_division_espacio, id_espacio):
+    division = get_object_or_404(DivisionEspacio, id_division_espacio=id_division_espacio)
+    division.delete()
+    messages.success(request, "La Espacio ha sido eliminada exitosamente.")
+
+    return redirect('detalle_espacio', id_espacio=id_espacio)  
+
+
 def modal_view(request):
     form_type = request.GET.get('form_type', '')
-    id_espacio = request.GET.get('id_espacio', None)
 
     context = {}  # Añadimos id_espacio al contexto
 
@@ -191,37 +229,42 @@ def modal_view(request):
 
     if form_type == 'division_espacio':
         if request.method == 'POST':
-            # Lógica para manejar el formulario de división de espacio
+            # Verificar que los campos requeridos no estén vacíos
+            id_espacio = request.POST.get('id_espacio')
             tipo_division = request.POST.get('tipo_division')
             identificador_division = request.POST.get('identificador_division')
-            id_espacio = request.POST.get('id_espacio')
 
-            # Validación de los datos recibidos
-            if not tipo_division or not identificador_division or not id_espacio:
+            if not id_espacio or not tipo_division or not identificador_division:
                 return HttpResponse("Todos los campos son obligatorios", status=400)
 
-            # Crear un objeto DivisionEspacio
+            # Verificar si el identificador ya existe en ese espacio
+            if DivisionEspacio.objects.filter(identificador=identificador_division, id_espacio_id=id_espacio).exists():
+                return HttpResponse("El identificador de la división ya existe para este espacio", status=400)
+
             try:
                 espacio = Espacio.objects.get(id_espacio=id_espacio)
             except Espacio.DoesNotExist:
                 return HttpResponse("Espacio no encontrado", status=404)
 
-            # Guardar la nueva división en la base de datos
+            # Crear la nueva división
             nueva_division = DivisionEspacio.objects.create(
                 id_espacio=espacio,
                 tipo_division=tipo_division,
                 identificador=identificador_division
             )
-            
-            # Redirigir o mostrar mensaje de éxito
+
+            # Redirigir a la vista de detalle del espacio
             return redirect('detalle_espacio', id_espacio=espacio.id_espacio)
+
+        # Si no es un POST, simplemente retornar el formulario vacío con el id_espacio
+        id_espacio = request.GET.get('id_espacio')
+        try:
+            espacio = Espacio.objects.get(id_espacio=id_espacio)
+        except Espacio.DoesNotExist:
+            return HttpResponse("Espacio no encontrado", status=404)
+
+        return render(request, 'mini_forms/division_espacio.html', {'espacio': espacio, 'id_espacio': id_espacio})
         
-        # Si es un GET, mostrar el formulario con los espacios disponibles
-        espacios = Espacio.objects.all()  # Trae todos los espacios
-        return render(request, 'mini_forms/division_espacio.html', {'espacios': espacios, 'id_espacio': id_espacio})
-        
-    
-    
     elif form_type == 'modelo_sensor':
         if request.method == 'POST':
             nombre_sensor = request.POST['nombre_sensor']
