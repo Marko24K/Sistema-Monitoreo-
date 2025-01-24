@@ -1,8 +1,14 @@
 <div class="modal">
     <h2>Formulario planta</h2>
-    {% csrf_token %}
     <form id="plantaForm" method="POST" action="{% url 'modal_view' %}?form_type=planta">
+        {% csrf_token %}
         <div class="row">
+            <select class="form-select" id="id_espacio" name="id_espacio" aria-label="Seleccione una espacio">
+                <option selected disabled>Seleccione un tipo de planta</option>
+                    <option value=""></option>
+                    <option disabled>No hay plantas registradas</option>
+            </select>
+
             <div class="col-6">
                 <label class="text-normal text-dark form-label">Descripcion</label><br>
                 <textarea id="descripcion_planta" name="descripcion_planta" rows="4" required></textarea>
