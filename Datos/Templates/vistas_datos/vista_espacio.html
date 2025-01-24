@@ -39,7 +39,7 @@
               </div>            
             </div>
           </div>
-          <input type="hidden" id="id_espacio" value="{{id_espacio }}">
+          <input type="hidden" id="id_espacio" value="{{id_espacio}}">
           <div class="col-6">
             <!-- Columna para el resto del formulario -->
             <h3>Datos del espacio</h3>
@@ -110,8 +110,10 @@
             <div class="col col-3" data-label="Tipo división">{{ d.tipo_division }}</div>
             <div class="col col-4" data-label="Identificador">{{ d.identificador }}</div>
             <div class="col col-6" data-label="Acciones">
-              <button class="btn btn-warning" data-form-type="division_parcela"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
+              <a href="{% url 'editar_division' d.id_division_espacio id_espacio%}"  class="btn btn-warning">
+                <i class="fas fa-edit"></i></a>
+              <a href="{% url 'eliminar_division' d.id_division_espacio id_espacio%}" class="btn btn-danger">
+              <i class="fas fa-trash-alt"></i></a>
             </div>
           </li>
         {% empty %}
@@ -142,6 +144,7 @@
           <div class="col col-4">descripcion planta</div>
           <div class="col col-6" data-label="Acciones">
             <button class="btn btn-warning" data-form-type="plantacion"><i class="fas fa-edit"></i></button>
+            
             <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
           </div>
         </li>
