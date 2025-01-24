@@ -1,19 +1,19 @@
-<!-- mini_forms/division_parcela.html -->
+<!-- mini_forms/division_espacio.html -->
 <div class="modal">
-    <h2>Formulario división de las parcelas</h2>
+    <h2>Formulario división de las espacios</h2>
     
-    <form id="divisionParcelaForm" method="POST" action="{% url 'modal_view' %}?form_type=division_parcela">
+    <form id="divisionespacioForm" method="POST" action="{% url 'modal_view' %}?form_type=division_espacio">
         {% csrf_token %}
-        <select class="form-select" id="id_parcela" name="id_parcela" aria-label="Seleccione una parcela">
-            <option selected disabled>Seleccione una parcela</option>
-            {% for parcela in parcelas %}
-                <option value="{{ parcela.id_parcela }}">{{ parcela.nombre_parcela }}</option>
+        <select class="form-select" id="id_espacio" name="id_espacio" aria-label="Seleccione una espacio">
+            <option selected disabled>Seleccione una espacio</option>
+            {% for espacio in espacios %}
+                <option value="{{ espacio.id_espacio }}">{{ espacio.nombre_espacio }}</option>
             {% empty %}
-                <option disabled>No hay parcelas disponibles</option>
+                <option disabled>No hay espacios disponibles</option>
             {% endfor %}
         </select>
 
-        <!-- Los siguientes inputs pertenecen a division_parcela-->
+        <!-- Los siguientes inputs pertenecen a division_espacio-->
         <div class="col-12">
             <label for="tipo_division" class="form-label">Tipo de división</label>
             <input type="text" class="form-control" id="tipo_division" name="tipo_division" required maxlength="50">
