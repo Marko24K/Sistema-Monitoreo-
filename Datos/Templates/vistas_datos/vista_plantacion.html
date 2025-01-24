@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Plantas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilo_tabla.css' %}">
+
+    <script src="{% static 'js/vista_imagen.js'%}"></script>
+</head>
+<body>
+  {% include 'header.html' %}
+  <main class="container my-4">
+    {% block content %}
+    <!--muestra de datos-->
+    <section class="mb-5">
+      <div class="card shadow-sm p-4">
+        {% csrf_token %}
+        <div class="row" style="text-align: center">
+          <div class="col-6">
+            <div class="p-6">
+              <h3>Imagen de la parcela</h3>
+              <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
+                {% if dato.imagen_espacio %}
+                    <img id="imagen-actual" src="" alt="Imagen del espacio" class="img-fluid">
+                {% else %}
+                    <p>No hay imagen registrada.</p>
+                    <img id="imagen-actual" src="/static/img/img_planta.png" alt="Imagen predeterminada" class="img-fluid">
+                {% endif %}
+              </div>            
+            </div>
+          </div>
+  
+          <div class="col-6">
+            <!-- Columna para el resto del formulario -->
+            <h3>Datos del plantaciones</h3>
+          </div>
+  
+          <div class="row justify-content-md-center" style="margin-top: 20px;">
+            <a class="btn btn-success col-6" style="margin:20px" href="{% url 'registro_planta' %}" class="btn btn-info">Registrar una Plantación</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <section class="mb-5">
+      <h2>Información sobre sensores</h2>
+      <ul class="responsive-table">
+        <li class="table-header">
+          <div class="col col-1">ID arduino</div>
+          <div class="col col-4">Acciones</div>
+        </li>
+        
+        
+        <li class="table-row">
+            <div class="col col-1" data-label="ID"></div>
+            <div class="col col-4" data-label="Acciones"></div>
+        </li>
+      </ul>
+    </section>
+      <!-- Modal y overlay No borrar-->
+      <div class="overlay" id="overlay" aria-hidden="true"></div>
+      <div id="modalContainer" aria-hidden="true"></div>
+    {% endblock %}
+  </main>
+
+  {% include 'footer.html' %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

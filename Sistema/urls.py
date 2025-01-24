@@ -29,6 +29,7 @@ urlpatterns = [
     path('tipo_planta/', views.tipo_planta, name='tipo_planta'),
     
     #vistas
+    path('vista_plantacion/', views.vista_plantacion, name='vista_plantacion'),
     path('vista_sensores/', views.vista_sensores, name='vista_sensores'),
     path('vista_espacios/', views.vista_espacios, name='vista_espacios'),
     path('detalle_espacio/<int:id_espacio>/', views.detalle_espacio, name='detalle_espacio'),

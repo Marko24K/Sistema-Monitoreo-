@@ -19,6 +19,9 @@ from .serializer import RegistroSensorSerializer
 def home2(request):
     return render(request, 'home2.html')
 #--------------------Espacio -----------------------------
+def vista_plantacion(request):
+    return render(request, 'vistas_datos/vista_plantacion.html')
+
 def vista_sensores(request):
     return render(request, 'vistas_datos/vista_sensores.html')
 
