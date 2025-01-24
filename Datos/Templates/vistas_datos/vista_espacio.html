@@ -27,18 +27,19 @@
         <div class="row" style="text-align: center">
           <div class="col-6">
             <div class="p-6">
-              <h3>Imagen de la parcela</h3>
+              <h3>Imagen del espacio</h3>
+              <!-- Parte de vista_espacio -->
               <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
                 {% if dato.imagen_espacio %}
                     <img id="imagen-actual" src="{{dato.imagen_espacio.url}}" alt="Imagen del espacio" class="img-fluid">
                 {% else %}
-                    <p>No hay imagen registrada.</p>
-                    <img id="imagen-actual" src="/static/img/img_parcela.png" alt="Imagen predeterminada" class="img-fluid">
+                  <p>No hay imagen registrada.</p>
+                  <img id="imagen-actual" src="/static/img/img_parcela.png" alt="Imagen predeterminada" class="img-fluid">
                 {% endif %}
               </div>            
             </div>
           </div>
-  
+          <input type="hidden" id="id_espacio" value="{{id_espacio }}">
           <div class="col-6">
             <!-- Columna para el resto del formulario -->
             <h3>Datos del espacio</h3>
@@ -47,7 +48,8 @@
             <div style="background-color:cyan;border-radius: 15px;">
               {{ dato.id_localidad_id.nombre_localidad }}
             </div>
-  
+               <!-- Campo oculto donde se va a asignar el valor de id_espacio mediante JavaScript -->
+              <input type="hidden" id="id_espacio_form" name="id_espacio" value="{{ dato.id_espacio }}">
             <!-- Nombre parcela -->
             <label for="val_nombre_p" class="form-label"><strong>Nombre parcela</strong></label>
             <div style="background-color:cyan;border-radius: 15px;">
@@ -68,9 +70,23 @@
           </div>
   
           <div class="row justify-content-md-center" style="margin-top: 20px;">
-            <button class="btn btn-success col-3" style="margin:20px" data-form-type="division_espacio">Añadir una division espacio</button>
-            <button class="btn btn-success col-3" style="margin:20px" data-form-type="arduino">Añadir un nuevo arduino</button>
-            <button class="btn btn-success col-3" style="margin:20px" data-form-type="planta">Añadir una nueva plantacion</button>
+            <!-- Botón para abrir el modal de división de espacio -->
+            <button class="btn btn-success col-3" style="margin:20px" 
+                    data-form-type="division_espacio"
+                    data-id-espacio="{{ dato.id_espacio }}">
+                Registrar división espacio
+            </button>
+            
+            <!-- Botón para abrir el modal de registro de nuevo arduino -->
+            <button class="btn btn-success col-3" style="margin:20px" 
+                    data-form-type="arduino">
+                Registrar nuevo arduino
+            </button>
+            
+            <!-- Enlace para redirigir a la página de registro de plantación -->
+            <button class="btn btn-success col-3" style="margin:20px" data-form-type="planta">
+              Añadir una nueva plantacion
+            </button>
           </div>
         </div>
       </div>

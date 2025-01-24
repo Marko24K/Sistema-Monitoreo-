@@ -153,7 +153,12 @@ def detalle_espacio(request, id_espacio):
     arduino = Arduino.objects.filter(id_espacio=dato)
 
     # Pasar los detalles de la Espacio a la plantilla
-    return render(request, 'vistas_datos/vista_espacio.html', {'dato': dato,'division': division, 'plantas': plantas, 'arduino':arduino})
+    return render(request, 'vistas_datos/vista_espacio.html',
+                   {'dato': dato,
+                    'division': division,
+                    'plantas': plantas, 
+                    'arduino':arduino,
+                    'id_espacio': id_espacio})
 
 def registro_planta(request):
     if request.method == 'POST':
@@ -173,7 +178,10 @@ def registro_planta(request):
     return render(request, 'forms/registro_planta.html')
 
 def modal_view(request):
-    form_type = request.GET.get('form_type', '')  # Obtener el tipo de formulario de la URL
+    form_type = request.GET.get('form_type', '')
+    id_espacio = request.GET.get('id_espacio', None)
+
+    context = {}  # Añadimos id_espacio al contexto
 
     if not form_type:
         return Http404("Formulario no especificado")
@@ -181,40 +189,38 @@ def modal_view(request):
     # Ruta de la plantilla correspondiente
     template_path = f'mini_forms/{form_type}.html'
 
-    context = {}
-
-    if form_type == 'division_Espacio':
-        Espacios = Espacio.objects.all()  # Obtener las Espacios
-        context['Espacios'] = Espacios
-
+    if form_type == 'division_espacio':
         if request.method == 'POST':
-            id_Espacio = request.POST['id_Espacio']
-            tipo_division = request.POST['tipo_division'].strip()
-            print(f"Tipo de división recibido: {tipo_division} (longitud: {len(tipo_division)})")
+            # Lógica para manejar el formulario de división de espacio
+            tipo_division = request.POST.get('tipo_division')
+            identificador_division = request.POST.get('identificador_division')
+            id_espacio = request.POST.get('id_espacio')
 
-            identificador_division = request.POST['identificador_division']
+            # Validación de los datos recibidos
+            if not tipo_division or not identificador_division or not id_espacio:
+                return HttpResponse("Todos los campos son obligatorios", status=400)
 
-            # Validar que identificador_division es un número entero
+            # Crear un objeto DivisionEspacio
             try:
-                identificador_division = int(identificador_division)
-            except ValueError:
-                return HttpResponse("El identificador debe ser un número entero.")
+                espacio = Espacio.objects.get(id_espacio=id_espacio)
+            except Espacio.DoesNotExist:
+                return HttpResponse("Espacio no encontrado", status=404)
 
-            # Verificar si el identificador ya existe
-            existe = DivisionEspacio.objects.filter(id_Espacio=id_Espacio, identificador=identificador_division).exists()
-
-            if existe:
-                return HttpResponse("Ya existe ese número asignado.")
-            else:
-                # Crear la DivisionEspacio
-                DivisionEspacio.objects.create(
-                    id_Espacio_id=id_Espacio,
-                    tipo_division=tipo_division,
-                    identificador=identificador_division,
-                    
-                )
-
-            return redirect('vista_Espacios')
+            # Guardar la nueva división en la base de datos
+            nueva_division = DivisionEspacio.objects.create(
+                id_espacio=espacio,
+                tipo_division=tipo_division,
+                identificador=identificador_division
+            )
+            
+            # Redirigir o mostrar mensaje de éxito
+            return redirect('detalle_espacio', id_espacio=espacio.id_espacio)
+        
+        # Si es un GET, mostrar el formulario con los espacios disponibles
+        espacios = Espacio.objects.all()  # Trae todos los espacios
+        return render(request, 'mini_forms/division_espacio.html', {'espacios': espacios, 'id_espacio': id_espacio})
+        
+    
     
     elif form_type == 'modelo_sensor':
         if request.method == 'POST':
@@ -231,23 +237,20 @@ def modal_view(request):
             return redirect('vista_Espacios') 
         
     elif form_type == 'arduino':
-        Espacios = Espacio.objects.all()  
-        context['Espacios'] = Espacios
-        
         if request.method == 'POST':
             modelo_arduino = request.POST['modelo_arduino']
-            id_Espacio = request.POST['Espacio']
-            estado = 1 if request.POST['options'] == 'option1' else 0  # 1 para activo, 0 para inactivo
+            id_espacio = request.POST['id_espacio']  # Obtiene el id_espacio
+            estado = 1 if request.POST['options'] == '1' else 0  # 1 para activo, 0 para inactivo
 
-            if not modelo_arduino or not id_Espacio:
+            if not modelo_arduino or not id_espacio:
                 return HttpResponse("Por favor, complete todos los campos del formulario.")
-
+            
             Arduino.objects.create(
                 modelo_arduino=modelo_arduino,
-                id_Espacio_id=id_Espacio,
-                estado=estado,            
-                )
-            return redirect('vista_Espacios') 
+                id_espacio_id=id_espacio,
+                estado=estado,
+            )
+            return redirect('detalle_espacio', id_espacio=id_espacio) 
         
     elif form_type == 'planta':
         if request.method == 'POST':
