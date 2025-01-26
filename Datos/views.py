@@ -6,7 +6,7 @@ from django.contrib import messages
 import traceback
 from django.shortcuts import  redirect, render, get_object_or_404
 from Sistema.settings import BACKUP_DIR
-from .models import Arduino, RegistroSensor, Sensor, TipoDato, Espacio, TipoPlanta, ModeloSensor,RegistroPlanta, DivisionEspacio, Localidad,TipoEspacio
+from .models import Arduino, RegistroSensor, Sensor, TipoDato, Espacio, TipoPlanta,Planta, ModeloSensor,RegistroPlanta, DivisionEspacio, Localidad,TipoEspacio
 from django.http import Http404, HttpResponse, JsonResponse
 from django.db.models import Avg, Max, Min
 import json
@@ -18,8 +18,24 @@ from .serializer import RegistroSensorSerializer
 def vista_plantacion(request):
     return render(request, 'vistas_datos/vista_plantacion.html')
 
-def vista_sensores(request):
-    return render(request, 'vistas_datos/vista_sensores.html')
+def vista_sensores(request, id_arduino):
+    # Obtener el Arduino relacionado con el id_arduino
+    arduinos = Arduino.objects.filter(id_arduino=id_arduino)
+
+    # Obtener los sensores relacionados con esos arduinos
+    sensores = Sensor.objects.filter(id_arduino__in=arduinos)
+
+    # Obtener los modelos de sensores
+    modelos_sensores = ModeloSensor.objects.filter(id_modelo_sensor__in=sensores.values('id_modelo_sensor'))
+
+    # Crear un diccionario de modelos de sensores y los sensores asociados
+    modelos_sensores_dict = {}
+    for modelo_sensor in modelos_sensores:
+        # Filtrar los sensores relacionados con este modelo de sensor
+        sensores_relacionados = sensores.filter(id_modelo_sensor=modelo_sensor)
+        modelos_sensores_dict[modelo_sensor] = sensores_relacionados
+
+    return render(request, 'vistas_datos/vista_sensores.html', {'modelos_sensores_dict': modelos_sensores_dict})
 
 def registro_espacio(request):
     localidad = Localidad.objects.all()
@@ -144,7 +160,7 @@ def detalle_espacio(request, id_espacio):
     # Obtener la parcela correspondiente a 'id_parcela'
     dato = get_object_or_404(Espacio, id_espacio=id_espacio)
     division = DivisionEspacio.objects.filter(id_espacio=dato)
-    plantas = RegistroPlanta.objects.filter(id_division_espacio__id_espacio=dato)
+    plantas = Planta.objects.filter(registroplanta__id_division_espacio__id_espacio=dato)
     arduino = Arduino.objects.filter(id_espacio=dato)
 
     # Pasar los detalles de la Espacio a la plantilla

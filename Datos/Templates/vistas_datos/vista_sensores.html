@@ -44,30 +44,34 @@
       </div>
     </section>
   
-    <!-- Informacion sobre las divisiones (solo si no es humedal) -->
-    {% if dato.id_tipo_espacio.nombre_tipo_espacio != 'Humedal' %}
     <section class="mb-5">
-      <h2>Información sobre los sensores</h2>
+      <h2>Información sobre los modelos sensores</h2>
       <ul class="responsive-table">
         <li class="table-header">
           <div class="col col-1">ID</div>
+          <div class="col col-1">MODELO</div>
+          <div class="col col-1">DESCRIPCION</div>
           <div class="col col-6">Acciones</div>
         </li>
-        
-        {% for d in division %}
+    
+        {% for modelo_sensor, sensores in modelos_sensores_dict.items %}
           <li class="table-row">
-            <div class="col col-1" data-label="ID"> </div>
+            <div class="col col-1" data-label="ID">{{ modelo_sensor.id_modelo_sensor }}</div>
+            <div class="col col-1" data-label="MODELO">{{ modelo_sensor.nombre_sensor }}</div>
+            <div class="col col-1" data-label="DESCRIPCION">{{ modelo_sensor.descripcion }}</div>
             <div class="col col-6" data-label="Acciones">
-              <button class="btn btn-warning" data-form-type="division_parcela"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-warning" data-form-type="modelo_sensor"><i class="fas fa-edit"></i></button>
               <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
             </div>
           </li>
+          
+          
         {% empty %}
-          <li class="table-row"><div class="col" colspan="6">No divisiones registradas</div></li>
+          <li class="table-row"><div class="col" colspan="6">No hay modelos de sensores para este Arduino.</div></li>
         {% endfor %}
       </ul>
     </section>
-    {% endif %}
+   
 
     <!-- Modal y overlay No borrar-->
     <div class="overlay" id="overlay" aria-hidden="true"></div>

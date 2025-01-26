@@ -30,13 +30,13 @@ urlpatterns = [
     
     #vistas
     path('vista_plantacion/', views.vista_plantacion, name='vista_plantacion'),
-    path('vista_sensores/', views.vista_sensores, name='vista_sensores'),
+    path('vista_sensores/<int:id_arduino>/', views.vista_sensores, name='vista_sensores'),
     path('vista_espacios/', views.vista_espacios, name='vista_espacios'),
     path('detalle_espacio/<int:id_espacio>/', views.detalle_espacio, name='detalle_espacio'),
     path('editar_espacio/<int:id_espacio>/', views.editar_espacio, name='editar_espacio'),
     path('eliminar_espacio/<int:id_espacio>/', views.eliminar_espacio, name='eliminar_espacio'),
     path('eliminar_division/<int:id_division_espacio>/<int:id_espacio>', views.eliminar_division, name='eliminar_division'),
-     path('editar_division/<int:id_division_espacio>/<int:id_espacio>', views.editar_division, name='editar_division'),
+    path('editar_division/<int:id_division_espacio>/<int:id_espacio>', views.editar_division, name='editar_division'),
     path('modal/', views.modal_view, name='modal_view'),
     
     #otros
