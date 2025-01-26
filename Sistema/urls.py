@@ -25,7 +25,7 @@ urlpatterns = [
     #forms
     path('home2/', views.home2, name = 'home2'),
     path('registro_espacio/', views.registro_espacio, name='registro_parcela'),
-    path('registro_planta/', views.registro_planta, name='registro_planta'),
+    path('registro_planta/<int:id_espacio>', views.registro_planta, name='registro_planta'),
     path('tipo_planta/', views.tipo_planta, name='tipo_planta'),
     
     #vistas
@@ -34,8 +34,10 @@ urlpatterns = [
     path('vista_espacios/', views.vista_espacios, name='vista_espacios'),
     path('detalle_espacio/<int:id_espacio>/', views.detalle_espacio, name='detalle_espacio'),
     path('editar_espacio/<int:id_espacio>/', views.editar_espacio, name='editar_espacio'),
+    
     path('eliminar_espacio/<int:id_espacio>/', views.eliminar_espacio, name='eliminar_espacio'),
     path('eliminar_division/<int:id_division_espacio>/<int:id_espacio>', views.eliminar_division, name='eliminar_division'),
+    path('eliminar_arduino/<int:id_arduino>/<int:id_espacio>/', views.eliminar_arduino, name='eliminar_arduino'),
     path('editar_division/<int:id_division_espacio>/<int:id_espacio>', views.editar_division, name='editar_division'),
     path('modal/', views.modal_view, name='modal_view'),
     

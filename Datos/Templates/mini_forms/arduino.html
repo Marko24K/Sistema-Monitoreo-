@@ -4,7 +4,7 @@
     <form id="arduinoForm" method="POST" action="{% url 'modal_view' %}?form_type=arduino">
         {% csrf_token %}
         <!-- Campo oculto para el id_espacio -->
-        <input type="hidden" name="id_espacio" value="{{ dato.id_espacio }}">
+        <input type="hidden" id="id_espacio" name = "id_espacio" value="{{espacio.id_espacio}}">
 
         
         <div class="col 8">
@@ -15,7 +15,7 @@
                 <option value="Nano">Nano</option>
                 <option value="Esp32">Esp32</option>
             </select>
-            <input type="radio" class="btn-check" name="options" id="option1" values ="1" autocomplete="off" checked>
+            <input type="radio" class="btn-check" name="options" id="option1" values ="1" autocomplete="off" >
             <label class="btn btn-outline-success" for="option1">Arduino activo</label>
 
             <input type="radio" class="btn-check" name="options" values="0" id="option2" autocomplete="off">

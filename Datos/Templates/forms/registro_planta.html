@@ -19,11 +19,29 @@
         <section class="mb-5">
             <div class="card shadow-sm p-4">
                 <form id="form_registro_planta" method="POST">
+                    
                     {% csrf_token %}
                     <h2 class="text-center mb-4">Registro de la Plantación</h2>
                     <div class="row g-3">
                         <!-- Primera columna -->
                         <div class="col-12 col-lg-6">
+                            division a registrar plantacion
+                            <select class="form-select " id="division" name="division" aria-label="plantacion">
+                            {% for d in division %}
+                                <option value="{{ d.id_division_espacio }}" selected disabled>{{ d.tipo_division }}</option>
+                            {% empty %}
+                                <option disabled>No hay divisiones registradas</option>
+                            {% endfor %}
+                            </select>
+                            Registrar plantacion
+                            <select class="form-select " id="plantacion" name="plantacion" aria-label="plantacion">
+                                <option selected disabled>Seleccione la plantacion</option>
+                                {% for d in plantacion %}
+                                    <option value="{{ d.id_planta}}" >{{ d.descripcion_planta }}</option>
+                                {% empty %}
+                                    <option disabled>No hay localidades registradas</option>
+                                {% endfor %}
+                            </select>
                             <div class="row g-3">
                                 <div class="col-6">
                                     <label for="numero_planta" class="form-label">Número de la planta</label>
@@ -103,13 +121,17 @@
                             </div>
                             <div class="mb-3">
                                 <label for="observaciones_registro" class="form-label">Observaciones</label>
-                                <textarea class="form-control" id="observaciones_registro" name="observaciones_registro" required></textarea>
+                                <textarea class="form-control" id="observaciones_registro" name="observaciones_registro" ></textarea>
                             </div>
+                            <label for="input-imagen" class="form-label mt-3">Inserte una imagen de la planta</label>
+                            <input type="file" id="input-imagen" name="input-imagen" accept="image/*" class="form-control">
+                        
                         </div>
                     </div>
                     <div class="text-center mt-4">
                         <button class="btn btn-primary" type="submit">Confirmar Registro</button>
                     </div>
+                    
                 </form>
             </div>
         </section>

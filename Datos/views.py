@@ -203,7 +203,11 @@ def editar_division(request, id_division_espacio, id_espacio):
         'division': division,  # Pasar la instancia de la división para pre-llenar los campos
         'id_espacio': id_espacio,  # Pasar id_espacio a la plantilla
     })
-def registro_planta(request):
+def registro_planta(request, id_espacio):
+    dato = get_object_or_404(Espacio, id_espacio=id_espacio)
+    division = DivisionEspacio.objects.filter(id_espacio=dato)
+    plantacion = Planta.objects.all()
+    
     if request.method == 'POST':
         RegistroPlanta.objects.create(
             numero_planta=request.POST.get('numero_planta'),
@@ -216,21 +220,35 @@ def registro_planta(request):
             vitalidad=request.POST.get('vitalidad'),
             plaga_enfermedad=request.POST.get('plaga_enfermedad'),
             descripcion_plaga_enfermedad=request.POST.get('descripcion_plaga_enfermedad', None),
-            observaciones_registro=request.POST.get('observaciones_registro',),
+            observaciones_registro=request.POST.get('observaciones_registro',None),
+            imagen_registro_planta = request.FILES.get('input-imagen', None),
+            id_division_espacio = DivisionEspacio.objects.get(id_division_espacio = request.POST.get('division')),
+            id_planta = Planta.objects.get(id_planta = request.POST.get('plantacion'))
+            
         )
-    return render(request, 'forms/registro_planta.html')
+    return render(request, 'forms/registro_planta.html' ,
+                  {'division':division, 'plantacion': plantacion})
 
 def eliminar_division(request, id_division_espacio, id_espacio):
+    
     division = get_object_or_404(DivisionEspacio, id_division_espacio=id_division_espacio)
     division.delete()
-    messages.success(request, "La Espacio ha sido eliminada exitosamente.")
-
     return redirect('detalle_espacio', id_espacio=id_espacio)  
+
+def eliminar_arduino(request,id_arduino, id_espacio):
+    # Obtener el objeto Arduino por su id_arduino
+    arduino = get_object_or_404(Arduino, id_arduino=id_arduino)
+
+    # Eliminar el Arduino
+    arduino.delete()
+
+    # Redirigir a la vista del espacio correspondiente
+    return redirect('detalle_espacio', id_espacio=id_espacio)
 
 
 def modal_view(request):
     form_type = request.GET.get('form_type', '')
-
+    id_espacio = request.POST.get('id_espacio')
     context = {}  # Añadimos id_espacio al contexto
 
     if not form_type:
@@ -242,7 +260,7 @@ def modal_view(request):
     if form_type == 'division_espacio':
         if request.method == 'POST':
             # Verificar que los campos requeridos no estén vacíos
-            id_espacio = request.POST.get('id_espacio')
+            
             tipo_division = request.POST.get('tipo_division')
             identificador_division = request.POST.get('identificador_division')
 
@@ -294,22 +312,35 @@ def modal_view(request):
     elif form_type == 'arduino':
         if request.method == 'POST':
             modelo_arduino = request.POST['modelo_arduino']
-            id_espacio = request.POST['id_espacio']  # Obtiene el id_espacio
             estado = 1 if request.POST['options'] == '1' else 0  # 1 para activo, 0 para inactivo
 
             if not modelo_arduino or not id_espacio:
                 return HttpResponse("Por favor, complete todos los campos del formulario.")
+            try:
+                espacio = Espacio.objects.get(id_espacio=id_espacio)
+            except Espacio.DoesNotExist:
+                return HttpResponse("Espacio no encontrado", status=404)
             
             Arduino.objects.create(
                 modelo_arduino=modelo_arduino,
                 id_espacio_id=id_espacio,
                 estado=estado,
             )
-            return redirect('detalle_espacio', id_espacio=id_espacio) 
+            return redirect('detalle_espacio', id_espacio=espacio.id_espacio) 
+        # Si no es un POST, simplemente retornar el formulario vacío con el id_espacio
+        id_espacio = request.GET.get('id_espacio')
+        try:
+            espacio = Espacio.objects.get(id_espacio=id_espacio)
+        except Espacio.DoesNotExist:
+            return HttpResponse("Espacio no encontrado", status=404)
+
+        return render(request, 'mini_forms/arduino.html', {'espacio': espacio, 'id_espacio': id_espacio})
         
     elif form_type == 'planta':
+        tipo_p = TipoPlanta.objects.all()
         if request.method == 'POST':
             return redirect('vista_Espacios')
+        return render(request, 'mini_forms/planta.html', {'tipo_p': tipo_p, 'id_espacio': id_espacio})
         
     elif form_type == 'sensor':
         if request.method == 'POST':
@@ -323,13 +354,23 @@ def modal_view(request):
         return render(request, 'mini_forms/arduino.html')
 
 def tipo_planta(request):
+    imagen_planta = request.FILES.get('input-imagen', None)
     if request.method == 'POST':
-        TipoPlanta.objects.create(
-            nombre_comun = request.POST['nombre_comun'],
-            nombre_cientifico = request.POST['nombre_cientifico'],
-            descripcion = request.POST['descripcion_planta'],
-            imagen_tipo_planta = request.FILES['input-imagen'],
-        )
+        if imagen_planta:
+            TipoPlanta.objects.create(
+                nombre_comun = request.POST['nombre_comun'],
+                nombre_cientifico = request.POST['nombre_cientifico'],
+                descripcion = request.POST['descripcion_planta'],
+                imagen_tipo_planta = request.FILES['input-imagen'],
+            )
+        else:
+            TipoPlanta.objects.create(
+                nombre_comun = request.POST['nombre_comun'],
+                nombre_cientifico = request.POST['nombre_cientifico'],
+                descripcion = request.POST['descripcion_planta'],
+                imagen_tipo_planta = None,
+            )
+            
     return render(request, 'forms/tipo_planta.html')
 
 @api_view(['POST'])
