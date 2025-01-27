@@ -156,6 +156,7 @@ def eliminar_espacio(request, id_espacio):
     messages.success(request, "La Espacio ha sido eliminada exitosamente.")
 
     return redirect('vista_espacios')  
+
 def detalle_espacio(request, id_espacio):
     # Obtener la parcela correspondiente a 'id_parcela'
     dato = get_object_or_404(Espacio, id_espacio=id_espacio)
@@ -170,8 +171,6 @@ def detalle_espacio(request, id_espacio):
                     'plantas': plantas, 
                     'arduino':arduino,
                     'id_espacio': id_espacio})
-
-
 
 def editar_division(request, id_division_espacio, id_espacio):
     # Obtener la división de espacio que se desea editar
@@ -203,6 +202,7 @@ def editar_division(request, id_division_espacio, id_espacio):
         'division': division,  # Pasar la instancia de la división para pre-llenar los campos
         'id_espacio': id_espacio,  # Pasar id_espacio a la plantilla
     })
+
 def registro_planta(request, id_espacio):
     dato = get_object_or_404(Espacio, id_espacio=id_espacio)
     division = DivisionEspacio.objects.filter(id_espacio=dato)
@@ -244,7 +244,6 @@ def eliminar_arduino(request,id_arduino, id_espacio):
 
     # Redirigir a la vista del espacio correspondiente
     return redirect('detalle_espacio', id_espacio=id_espacio)
-
 
 def modal_view(request):
     form_type = request.GET.get('form_type', '')
@@ -339,7 +338,7 @@ def modal_view(request):
     elif form_type == 'planta':
         tipo_p = TipoPlanta.objects.all()
         if request.method == 'POST':
-            return redirect('vista_Espacios')
+            return redirect('vista_espacios')
         return render(request, 'mini_forms/planta.html', {'tipo_p': tipo_p, 'id_espacio': id_espacio})
         
     elif form_type == 'sensor':
