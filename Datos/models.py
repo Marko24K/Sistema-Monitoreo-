@@ -45,7 +45,6 @@ class SubRegion(models.Model):
     class Meta:
         db_table = 'sub_region'
 
-
 class City(models.Model):
     id_city = models.AutoField(primary_key=True)
     id_region = models.ForeignKey(Region, on_delete=models.CASCADE)  # Relación con Region
@@ -78,7 +77,6 @@ class Localidad(models.Model):
     class Meta:
         db_table = 'localidad'
 
-
 class TipoEspacio(models.Model):
     id_tipo_espacio = models.AutoField(primary_key=True)
     nombre_tipo_espacio = models.CharField(max_length=100) #humedal, parcela o invernadero
@@ -90,12 +88,12 @@ class Espacio(models.Model): #refiere a el lugar fisico donde se realizaran las 
     id_espacio = models.AutoField(primary_key=True) 
     id_localidad = models.ForeignKey(Localidad, on_delete=models.CASCADE) 
     id_tipo_espacio = models.ForeignKey(TipoEspacio, on_delete=models.CASCADE) 
-    nombre_espacio = models.CharField(max_length=50) 
-    direccion_espacio = models.CharField(max_length=50) 
-    utm = models.CharField(max_length=50) 
+    nombre_espacio = models.CharField(max_length=100) 
+    direccion_espacio = models.CharField(max_length=100) 
+    utm = models.CharField(max_length=100) 
     uuid_espacio = models.UUIDField(default=uuid.uuid4 , editable=False, unique=True)
     imagen_espacio = models.ImageField(upload_to='imagenes_espacios/', null=True, blank=True)
-    codigoqr = models.CharField(max_length=50, null=True, blank=True) 
+    codigoqr = models.CharField(max_length=100, null=True, blank=True) 
     class Meta:
         db_table = 'espacio'
 
@@ -157,7 +155,7 @@ class Arduino(models.Model):
     id_arduino = models.AutoField(primary_key=True)
     id_espacio = models.ForeignKey(Espacio, on_delete=models.CASCADE)
     modelo_arduino = models.CharField(max_length=50)
-    estado = models.IntegerField()
+    estado = models.CharField(max_length=50)
     uuid_arduino=models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     class Meta:
