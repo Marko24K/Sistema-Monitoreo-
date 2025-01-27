@@ -1,13 +1,21 @@
-<div class="modal" id="myModal" aria-hidden="true">
+<div class="modal" id="myModal" aria-hidden="true" style="display: none;">
     <h2>Formulario</h2>
-
     <form id="modeloSensorForm" method="POST" action="{% url 'modal_view' %}?form_type=modelo_sensor">
         {% csrf_token %}
         <label for="nombre_sensor" class="form-label">Inserte el nombre del sensor</label>
-        <input type="text" class="form-control" id="nombre_sensor" name="nombre_sensor" required maxlength="50" pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" title="Solo se permiten caracteres alfabéticos, numéricos">
+        <input type="text" class="form-control" id="nombre_sensor" name="nombre_sensor" required maxlength="50" 
+               pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" title="Solo se permiten caracteres alfabéticos y numéricos.">
+        
+        <input type="hidden" name="id_arduino" value="{{ id_arduino }}">
+        
+        <input type="radio" class="btn-check" name="options" id="option1" values ="1" autocomplete="off" >
+            <label class="btn btn-outline-success" for="option1">Estado activo</label>
+
+            <input type="radio" class="btn-check" name="options" values="0" id="option2" autocomplete="off">
+            <label class="btn btn-outline-danger" for="option2">Estado inactivo</label>
 
         <div class="col-6">
-            <label class="text-normal text-dark form-label">Descripcion del sensor</label><br>
+            <label class="text-normal text-dark form-label">Descripción del sensor</label><br>
             <textarea id="Descripcion_sensor" name="Descripcion_sensor" rows="6" required></textarea>
         </div>
 

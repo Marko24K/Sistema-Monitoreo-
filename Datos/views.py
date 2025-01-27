@@ -35,7 +35,7 @@ def vista_sensores(request, id_arduino):
         sensores_relacionados = sensores.filter(id_modelo_sensor=modelo_sensor)
         modelos_sensores_dict[modelo_sensor] = sensores_relacionados
 
-    return render(request, 'vistas_datos/vista_sensores.html', {'modelos_sensores_dict': modelos_sensores_dict})
+    return render(request, 'vistas_datos/vista_sensores.html', {'modelos_sensores_dict': modelos_sensores_dict, 'id_arduino': id_arduino })
 
 def registro_espacio(request):
     localidad = Localidad.objects.all()
@@ -204,11 +204,17 @@ def editar_division(request, id_division_espacio, id_espacio):
         'id_espacio': id_espacio,  # Pasar id_espacio a la plantilla
     })
 def registro_planta(request, id_espacio):
+    # Obtener el espacio y las divisiones asociadas
     dato = get_object_or_404(Espacio, id_espacio=id_espacio)
     division = DivisionEspacio.objects.filter(id_espacio=dato)
     plantacion = Planta.objects.all()
     
     if request.method == 'POST':
+        # Obtener los valores del formulario
+        id_division_espacio = request.POST.get('id_division_espacio')
+        division_obj = get_object_or_404(DivisionEspacio, id_division_espacio=id_division_espacio)
+
+        # Crear el registro de la planta
         RegistroPlanta.objects.create(
             numero_planta=request.POST.get('numero_planta'),
             altura=request.POST.get('altura'),
@@ -220,14 +226,17 @@ def registro_planta(request, id_espacio):
             vitalidad=request.POST.get('vitalidad'),
             plaga_enfermedad=request.POST.get('plaga_enfermedad'),
             descripcion_plaga_enfermedad=request.POST.get('descripcion_plaga_enfermedad', None),
-            observaciones_registro=request.POST.get('observaciones_registro',None),
-            imagen_registro_planta = request.FILES.get('input-imagen', None),
-            id_division_espacio = DivisionEspacio.objects.get(id_division_espacio = request.POST.get('division')),
-            id_planta = Planta.objects.get(id_planta = request.POST.get('plantacion'))
-            
+            observaciones_registro=request.POST.get('observaciones_registro', None),
+            imagen_registro_planta=request.FILES.get('input-imagen', None),
+            id_division_espacio=division_obj,
+            id_planta=Planta.objects.get(id_planta=request.POST.get('plantacion'))
         )
-    return render(request, 'forms/registro_planta.html' ,
-                  {'division':division, 'plantacion': plantacion})
+
+    # Renderizar la plantilla con los datos necesarios
+    return render(request, 'forms/registro_planta.html', {
+        'division': division,
+        'plantacion': plantacion
+    })
 
 def eliminar_division(request, id_division_espacio, id_espacio):
     
@@ -299,15 +308,45 @@ def modal_view(request):
         if request.method == 'POST':
             nombre_sensor = request.POST['nombre_sensor']
             descripcion_sensor = request.POST['Descripcion_sensor']
-            
+            id_arduino = request.POST.get('id_arduino')  # ID del Arduino al que se va a enlazar
+            estado = 1 if request.POST['options'] == '1' else 0  # 1 para activo, 0 para inactivo
 
-            # Crear el modelo de sensor
-            ModeloSensor.objects.create(
+            if not nombre_sensor or not descripcion_sensor or not id_arduino:
+                return HttpResponse("Todos los campos son obligatorios.", status=400)
+
+            try:
+                # Obtener el Arduino al que se va a enlazar
+                arduino = Arduino.objects.get(id_arduino=id_arduino)
+            except Arduino.DoesNotExist:
+                return HttpResponse("Arduino no encontrado.", status=404)
+
+            # Crear el modelo de sensor y enlazarlo al Arduino
+            modelo_sensor = ModeloSensor.objects.create(
                 nombre_sensor=nombre_sensor,
-                descripcion=descripcion_sensor,
+                descripcion=descripcion_sensor
             )
-            
-            return redirect('vista_Espacios') 
+
+            # Enlazar el sensor al Arduino (suponiendo que hay una tabla Sensor para eso)
+            Sensor.objects.create(
+                id_arduino=arduino,
+                id_modelo_sensor=modelo_sensor,
+                estado = estado
+            )
+
+            # Redirigir de vuelta a la vista de sensores
+            return redirect('vista_sensores', id_arduino=arduino.id_arduino)
+
+        # Si no es un POST, renderizar el formulario vacío
+        id_arduino = request.GET.get('id_arduino')  # Obtener el ID del Arduino desde el GET
+        if not id_arduino:
+            return HttpResponse("ID del Arduino no proporcionado.", status=400)
+
+        try:
+            arduino = Arduino.objects.get(id_arduino=id_arduino)
+        except Arduino.DoesNotExist:
+            return HttpResponse("Arduino no encontrado.", status=404)
+
+        return render(request, 'mini_forms/modelo_sensor.html', {'arduino': arduino, 'id_arduino': id_arduino})
         
     elif form_type == 'arduino':
         if request.method == 'POST':
@@ -352,7 +391,59 @@ def modal_view(request):
     except Exception as e:
         print(f"Error al cargar la plantilla {template_path}: {e}")
         return render(request, 'mini_forms/arduino.html')
+    
 
+# Vista para mostrar los sensores y sus datos
+def datos_por_sensor(request):
+    sensores = Sensor.objects.all()  # Obtenemos todos los sensores
+
+    context = {
+        'sensores': sensores,
+    }
+    return render(request, 'vistas_datos/datos_por_sensor.html', context)
+
+# Vista para obtener los datos de un sensor
+def obtener_datos_sensor(request):
+    sensor_id = request.GET.get('sensor_id')  # Obtener el ID del sensor seleccionado desde el GET
+
+    if sensor_id:
+        # Obtener el sensor seleccionado
+        sensor = get_object_or_404(Sensor, id_sensor=sensor_id)
+
+        # Obtener el modelo de sensor asociado
+        modelo_sensor = sensor.id_modelo_sensor
+
+        if modelo_sensor.nombre_sensor == "DHT22":
+            # Sensor DHT22: obtener registros de temperatura y humedad del mismo sensor
+            registro_temperatura = RegistroSensor.objects.filter(
+                id_sensor=sensor, id_tipo_dato=1  # Tipo de dato 1 = Temperatura
+            ).order_by('-fecha_registro').first()
+
+            registro_humedad = RegistroSensor.objects.filter(
+                id_sensor=sensor, id_tipo_dato=2  # Tipo de dato 2 = Humedad
+            ).order_by('-fecha_registro').first()
+
+            response = {
+                'tipo': 'DHT22',
+                'temperatura': registro_temperatura.valor if registro_temperatura else "No disponible",
+                'humedad': registro_humedad.valor if registro_humedad else "No disponible",
+            }
+        else:
+            # Otros sensores: obtener el registro más reciente (independiente del tipo de dato)
+            registro_sensor = RegistroSensor.objects.filter(
+                id_sensor=sensor
+            ).order_by('-fecha_registro').first()
+
+            response = {
+                'tipo': 'otro',
+                'valor': registro_sensor.valor if registro_sensor else "No disponible",
+                'tipo_dato': registro_sensor.id_tipo_dato.nombre_dato if registro_sensor else "No disponible",
+            }
+
+        return JsonResponse(response)
+    else:
+        return JsonResponse({'error': 'Sensor no válido'}, status=400)
+    
 def tipo_planta(request):
     imagen_planta = request.FILES.get('input-imagen', None)
     if request.method == 'POST':

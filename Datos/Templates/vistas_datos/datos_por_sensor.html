@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos por Sensor</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <div>
+        <h3>Seleccione un sensor:</h3>
+        <select id="sensorSelect">
+            <option value="">Seleccione un sensor...</option>
+            {% for sensor in sensores %}
+                <option value="{{ sensor.id_sensor }}">{{ sensor.id_modelo_sensor.nombre_sensor }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div id="sensorData">
+        <p>Selecciona un sensor para ver sus datos.</p>
+    </div>
+    <script>
+        document.getElementById('sensorSelect').addEventListener('change', function () {
+            const sensorId = this.value;
+    
+            if (sensorId) {
+                fetch(`{% url 'obtener_datos_sensor' %}?sensor_id=${sensorId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const sensorDataDiv = document.getElementById('sensorData');
+    
+                        if (data.error) {
+                            sensorDataDiv.innerHTML = `<p>${data.error}</p>`;
+                        } else if (data.tipo === 'DHT22') {
+                            // Mostrar datos específicos para DHT22
+                            sensorDataDiv.innerHTML = `
+                                <p><strong>Sensor:</strong> DHT22</p>
+                                <p><strong>Temperatura:</strong> ${data.temperatura}°C</p>
+                                <p><strong>Humedad:</strong> ${data.humedad}%</p>
+                            `;
+                        } else {
+                            // Mostrar datos para otros sensores
+                            sensorDataDiv.innerHTML = `
+                                <p><strong>Sensor:</strong> ${data.tipo_dato}</p>
+                                <p><strong>Valor:</strong> ${data.valor}</p>
+                            `;
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error al obtener datos del sensor:", error);
+                        document.getElementById('sensorData').innerHTML = `
+                            <p>Hubo un error al obtener los datos del sensor.</p>
+                        `;
+                    });
+            } else {
+                document.getElementById('sensorData').innerHTML = `
+                    <p>Selecciona un sensor para ver sus datos.</p>
+                `;
+            }
+        });
+    </script>
+
+</body>
+</html>

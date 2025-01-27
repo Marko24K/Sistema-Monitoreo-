@@ -32,8 +32,12 @@
                 <h2>informacion arduino y sensores</h2>
             </div>
             <div class="row justify-content-md-center" style="margin-top: 20px;">
-                <button class="btn btn-success col-5" style="margin:20px" data-form-type="modelo_sensor">Añadir un sensor</button>
-                <button class="btn btn-success col-5" style="margin:20px" data-form-type="tipo_dato">Añadir un tipo de dato</button>
+              <button class="btn btn-success col-5" style="margin:20px" onclick="loadModalContent('modelo_sensor', '', '{{id_arduino}}')">
+                Añadir un sensor
+              </button>
+              
+                   
+      <button class="btn btn-success col-5" style="margin:20px" data-form-type="tipo_dato">Añadir un tipo de dato</button>
                 <!--
                 <button class="btn btn-success col-3" style="margin:20px" data-form-type="modelo_sensor">Añadir un sensor</button>
                 <button class="btn btn-success col-3" style="margin:20px" data-form-type="sensor">Añadir un sensor</button>

@@ -78,10 +78,8 @@
               </button>
             {% if dato.id_tipo_espacio.nombre_tipo_espacio != 'Humedal' %}
               <!-- Botón para abrir el modal de división de espacio -->
-              <button class="btn btn-success col-3" style="margin:20px" 
-                      data-form-type="division_espacio"
-                      data-id-espacio="{{ dato.id_espacio }}">
-                  Registrar división espacio
+              <button class="btn btn-success col-3" style="margin:20px" onclick="loadModalContent('division_espacio', '{{dato.id_espacio}}')" >
+                Añadir división de espacio
               </button>
             <!-- Enlace para redirigir a la página de agregar una plantacion -->
             <button class="btn btn-success col-3" style="margin:20px" data-form-type="planta">

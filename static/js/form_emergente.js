@@ -3,21 +3,41 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalContainer = document.getElementById("modalContainer");
     const openModalButtons = document.querySelectorAll("[data-form-type]");
 
-    // Cargar contenido del modal por AJAX
-    const loadModalContent = async (formType, idEspacio) => {
+    window.loadModalContent = async (formType, idEspacio = '', idArduino = '') => {
         try {
-            // Si es un formulario de división de espacio, agregamos el id_espacio
-            const response = await fetch(`/modal/?form_type=${formType}&id_espacio=${idEspacio || ''}`);
+            let url = `/modal/?form_type=${formType}`;
+            
+            if (formType === 'modelo_sensor') {
+                if (!idArduino) {
+                    console.error("El ID del Arduino es obligatorio para modelo_sensor.");
+                    return;
+                }
+                url += `&id_arduino=${idArduino}`;
+            }
+            
+            if (idEspacio) {
+                url += `&id_espacio=${idEspacio}`;
+            }
+            
+            const response = await fetch(url);
             if (response.ok) {
                 const modalContent = await response.text();
                 modalContainer.innerHTML = modalContent;
-                modalContainer.querySelector(".modal").style.display = "block";
-                overlay.style.display = "block";
-
-                const closeModalButton = modalContainer.querySelector("#closeModal");
-                closeModalButton.addEventListener("click", closeModal);
+    
+                const modal = modalContainer.querySelector(".modal");
+                if (modal) {
+                    modal.style.display = "block";
+                    overlay.style.display = "block";
+    
+                    const closeModalButton = modal.querySelector("#closeModal");
+                    if (closeModalButton) {
+                        closeModalButton.addEventListener("click", closeModal);
+                    }
+                } else {
+                    console.error("No se encontró el elemento modal dentro del contenido cargado.");
+                }
             } else {
-                console.error("No se pudo cargar el modal");
+                console.error("No se pudo cargar el contenido del modal:", response.statusText);
             }
         } catch (error) {
             console.error("Error al cargar el modal:", error);
