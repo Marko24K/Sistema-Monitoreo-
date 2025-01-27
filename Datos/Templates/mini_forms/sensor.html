@@ -3,6 +3,13 @@
     {% csrf_token %}
     <form id="sensorForm" method="POST" action="{% url 'modal_view' %}?form_type=sensor">
         <div class="col 8">
+            <!-- añadir un enlace con modelo_sensor-->
+            <select style="margin-bottom: 5%;" class="form-select" id="añadir_sensor" name="añadir_sensor" aria-label="Seleccione un sensor">
+                <option selected disabled>Seleccione un sensor</option>
+                <option value="___">___</option>
+            <!--<option value="[el id del modelo_sensor]">[Nombre del sensor]</option>-->
+            </select>
+
             <input type="radio" class="btn-check" name="options" id="sensor_activo" values="1" autocomplete="off" checked>
             <label class="btn btn-outline-success" for="sensor_activo">sensor activo</label>
 
