@@ -23,11 +23,18 @@ from django.urls import path
 
 urlpatterns = [
     #forms
-    path('home2/', views.home2, name = 'home2'),
     path('registro_espacio/', views.registro_espacio, name='registro_parcela'),
     path('registro_planta/<int:id_espacio>', views.registro_planta, name='registro_planta'),
     path('tipo_planta/', views.tipo_planta, name='tipo_planta'),
     
+    #mini_forms
+    path('arduino/', views.arduino, name='arduino'),
+    path('division_espacio/', views.division_espacio, name='division_espacio'),
+    path('modelo_sensor/', views.modelo_sensor, name='modelo_sensor'),
+    path('planta/', views.planta, name='planta'),
+    path('sensor/', views.sensor, name='sensor'),
+    path('tipo_dato/', views.tipo_dato, name='tipo_dato'),
+
     #vistas
     path('vista_plantacion/', views.vista_plantacion, name='vista_plantacion'),
     path('vista_sensores/<int:id_arduino>/', views.vista_sensores, name='vista_sensores'),
@@ -39,7 +46,6 @@ urlpatterns = [
     path('eliminar_division/<int:id_division_espacio>/<int:id_espacio>', views.eliminar_division, name='eliminar_division'),
     path('eliminar_arduino/<int:id_arduino>/<int:id_espacio>/', views.eliminar_arduino, name='eliminar_arduino'),
     path('editar_division/<int:id_division_espacio>/<int:id_espacio>', views.editar_division, name='editar_division'),
-    path('modal/', views.modal_view, name='modal_view'),
     
     #otros
     path('admin/', admin.site.urls),

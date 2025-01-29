@@ -14,6 +14,31 @@ from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
 
+#-----------------------mini forms-----------------------
+def arduino(request):
+    if request.method =='POST':
+        return redirect('vistas_datos/vista_espacios.html')
+    return render(request, 'mini_forms/arduino.html')
+
+def division_espacio(request):
+    if request.method =='POST':
+        return redirect('vistas_datos/vista_espacios.html')
+    return render(request, 'mini_forms/division_espacio.html')
+
+def modelo_sensor(request):
+    return render(request, 'mini_forms/modelo_sensor.html')
+
+def planta(request):
+    if request.method =='POST':
+        return redirect('vistas_datos/vista_espacios.html')
+    return render(request, 'mini_forms/planta.html')
+
+def sensor(request):
+    return render(request, 'mini_forms/sensor.html')
+
+def tipo_dato(request):
+    return render(request, 'mini_forms/tipo_dato.html')
+
 #--------------------Espacio -----------------------------
 def vista_plantacion(request):
     return render(request, 'vistas_datos/vista_plantacion.html')
@@ -253,145 +278,6 @@ def eliminar_arduino(request,id_arduino, id_espacio):
 
     # Redirigir a la vista del espacio correspondiente
     return redirect('detalle_espacio', id_espacio=id_espacio)
-
-def modal_view(request):
-    form_type = request.GET.get('form_type', '')
-    id_espacio = request.POST.get('id_espacio')
-    context = {}  # Añadimos id_espacio al contexto
-
-    if not form_type:
-        return Http404("Formulario no especificado")
-
-    # Ruta de la plantilla correspondiente
-    template_path = f'mini_forms/{form_type}.html'
-
-    if form_type == 'division_espacio':
-        if request.method == 'POST':
-            # Verificar que los campos requeridos no estén vacíos
-            
-            tipo_division = request.POST.get('tipo_division')
-            identificador_division = request.POST.get('identificador_division')
-
-            if not id_espacio or not tipo_division or not identificador_division:
-                return HttpResponse("Todos los campos son obligatorios", status=400)
-
-            # Verificar si el identificador ya existe en ese espacio
-            if DivisionEspacio.objects.filter(identificador=identificador_division, id_espacio_id=id_espacio).exists():
-                return HttpResponse("El identificador de la división ya existe para este espacio", status=400)
-
-            try:
-                espacio = Espacio.objects.get(id_espacio=id_espacio)
-            except Espacio.DoesNotExist:
-                return HttpResponse("Espacio no encontrado", status=404)
-
-            # Crear la nueva división
-            nueva_division = DivisionEspacio.objects.create(
-                id_espacio=espacio,
-                tipo_division=tipo_division,
-                identificador=identificador_division
-            )
-
-            # Redirigir a la vista de detalle del espacio
-            return redirect('detalle_espacio', id_espacio=espacio.id_espacio)
-
-        # Si no es un POST, simplemente retornar el formulario vacío con el id_espacio
-        id_espacio = request.GET.get('id_espacio')
-        try:
-            espacio = Espacio.objects.get(id_espacio=id_espacio)
-        except Espacio.DoesNotExist:
-            return HttpResponse("Espacio no encontrado", status=404)
-
-        return render(request, 'mini_forms/division_espacio.html', {'espacio': espacio, 'id_espacio': id_espacio})
-        
-    elif form_type == 'modelo_sensor':
-        if request.method == 'POST':
-            nombre_sensor = request.POST['nombre_sensor']
-            descripcion_sensor = request.POST['Descripcion_sensor']
-            id_arduino = request.POST.get('id_arduino')  # ID del Arduino al que se va a enlazar
-            estado = 1 if request.POST['options'] == '1' else 0  # 1 para activo, 0 para inactivo
-
-            if not nombre_sensor or not descripcion_sensor or not id_arduino:
-                return HttpResponse("Todos los campos son obligatorios.", status=400)
-
-            try:
-                # Obtener el Arduino al que se va a enlazar
-                arduino = Arduino.objects.get(id_arduino=id_arduino)
-            except Arduino.DoesNotExist:
-                return HttpResponse("Arduino no encontrado.", status=404)
-
-            # Crear el modelo de sensor y enlazarlo al Arduino
-            modelo_sensor = ModeloSensor.objects.create(
-                nombre_sensor=nombre_sensor,
-                descripcion=descripcion_sensor
-            )
-
-            # Enlazar el sensor al Arduino (suponiendo que hay una tabla Sensor para eso)
-            Sensor.objects.create(
-                id_arduino=arduino,
-                id_modelo_sensor=modelo_sensor,
-                estado = estado
-            )
-
-            # Redirigir de vuelta a la vista de sensores
-            return redirect('vista_sensores', id_arduino=arduino.id_arduino)
-
-        # Si no es un POST, renderizar el formulario vacío
-        id_arduino = request.GET.get('id_arduino')  # Obtener el ID del Arduino desde el GET
-        if not id_arduino:
-            return HttpResponse("ID del Arduino no proporcionado.", status=400)
-
-        try:
-            arduino = Arduino.objects.get(id_arduino=id_arduino)
-        except Arduino.DoesNotExist:
-            return HttpResponse("Arduino no encontrado.", status=404)
-
-        return render(request, 'mini_forms/modelo_sensor.html', {'arduino': arduino, 'id_arduino': id_arduino})
-        
-    elif form_type == 'arduino':
-        if request.method == 'POST':
-            modelo_arduino = request.POST['modelo_arduino']
-            estado = 1 if request.POST['options'] == '1' else 0  # 1 para activo, 0 para inactivo
-
-            if not modelo_arduino or not id_espacio:
-                return HttpResponse("Por favor, complete todos los campos del formulario.")
-            try:
-                espacio = Espacio.objects.get(id_espacio=id_espacio)
-            except Espacio.DoesNotExist:
-                return HttpResponse("Espacio no encontrado", status=404)
-            
-            Arduino.objects.create(
-                modelo_arduino=modelo_arduino,
-                id_espacio_id=id_espacio,
-                estado=estado,
-            )
-            return redirect('detalle_espacio', id_espacio=espacio.id_espacio) 
-        # Si no es un POST, simplemente retornar el formulario vacío con el id_espacio
-        id_espacio = request.GET.get('id_espacio')
-        try:
-            espacio = Espacio.objects.get(id_espacio=id_espacio)
-        except Espacio.DoesNotExist:
-            return HttpResponse("Espacio no encontrado", status=404)
-
-        return render(request, 'mini_forms/arduino.html', {'espacio': espacio, 'id_espacio': id_espacio})
-        
-    elif form_type == 'planta':
-        tipo_p = TipoPlanta.objects.all()
-        if request.method == 'POST':
-            return redirect('vista_espacios')
-        return render(request, 'mini_forms/planta.html', {'tipo_p': tipo_p, 'id_espacio': id_espacio})
-        
-    elif form_type == 'sensor':
-        if request.method == 'POST':
-            return redirect('vista_Espacios') 
-
-
-    try:
-        return render(request, template_path, context)
-    except Exception as e:
-        print(f"Error al cargar la plantilla {template_path}: {e}")
-        return render(request, 'mini_forms/arduino.html')
-    
-
 # Vista para mostrar los sensores y sus datos
 def datos_por_sensor(request):
     sensores = Sensor.objects.all()  # Obtenemos todos los sensores
@@ -400,7 +286,6 @@ def datos_por_sensor(request):
         'sensores': sensores,
     }
     return render(request, 'vistas_datos/datos_por_sensor.html', context)
-
 # Vista para obtener los datos de un sensor
 def obtener_datos_sensor(request):
     sensor_id = request.GET.get('sensor_id')  # Obtener el ID del sensor seleccionado desde el GET
@@ -542,97 +427,7 @@ def guardar_datos_sensor(request):
             return JsonResponse({'error': f'Error inesperado en el servidor: {str(e)}'}, status=500)
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)
-    
-def home2(request):
-    return render(request, 'forms/home2.html')
-#------visualizacion en home
-def home(request):
 
-    # Obtener los datos más recientes de temperatura y humedad
-    temp_data = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Temperatura').order_by('-fecha_registro')[:1]
-    humidity_data = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Humedad').order_by('-fecha_registro')[:1]
-
-    # Obtener las estadísticas para temperatura
-    temp_stats = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Temperatura').aggregate(
-        max_value=Max('valor'),
-        min_value=Min('valor'),
-        avg_value=Avg('valor')
-    )
-
-    # Obtener las estadísticas para humedad
-    hum_stats = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Humedad').aggregate(
-        max_value=Max('valor'),
-        min_value=Min('valor'),
-        avg_value=Avg('valor')
-    )
-
-    # Obtener los datos recientes de temperatura y humedad (últimos 5)
-    temp_recent = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato="Temperatura").order_by('-fecha_registro')[:10]
-    hum_recent = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato="Humedad").order_by('-fecha_registro')[:10]
-
-    temp_serializer = RegistroSensorSerializer(temp_recent, many=True)
-    hum_serializer = RegistroSensorSerializer(hum_recent , many=True)
-
-    return render(request, 'home.html', {
-        'latest_temperature': temp_data,  
-        'latest_humidity': humidity_data,        
-        'temp_max': temp_stats['max_value'],
-        'temp_min': temp_stats['min_value'],
-        'temp_avg': temp_stats['avg_value'],
-        'hum_max': hum_stats['max_value'],
-        'hum_min': hum_stats['min_value'],
-        'hum_avg': hum_stats['avg_value'],
-        'temp_recent': temp_serializer.data,
-        'hum_recent': hum_serializer.data
-    })
-
-@api_view(['GET']) 
-def datos_recientes(request):
-    # Obtener los datos más recientes de temperatura y humedad (solo los 1 más recientes)
-    temp_data = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Temperatura').order_by('-fecha_registro')[:1]
-    humidity_data = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Humedad').order_by('-fecha_registro')[:1]
-
-    # Obtener las estadísticas para temperatura
-    temp_stats = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Temperatura').aggregate(
-        max_value=Max('valor'),
-        min_value=Min('valor'),
-        avg_value=Avg('valor')
-    )
-
-    # Obtener las estadísticas para humedad
-    hum_stats = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato='Humedad').aggregate(
-        max_value=Max('valor'),
-        min_value=Min('valor'),
-        avg_value=Avg('valor')
-    )
-
-    # Obtener los datos recientes de temperatura y humedad (últimos 10)
-    temp_recent = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato="Temperatura").order_by('-fecha_registro')[:10]
-    hum_recent = RegistroSensor.objects.filter(id_tipo_dato__nombre_dato="Humedad").order_by('-fecha_registro')[:10]
-
-    # Serializar los datos recientes
-    temp_serializer = RegistroSensorSerializer(temp_recent, many=True)
-    hum_serializer = RegistroSensorSerializer(hum_recent, many=True)
-
-    # Serializar los datos más recientes de temperatura y humedad (los 1 más recientes)
-    temp_data_serializer = RegistroSensorSerializer(temp_data, many=True)
-    humidity_data_serializer = RegistroSensorSerializer(humidity_data, many=True)
-
-    # Devolver los datos en formato JSON
-    return JsonResponse({
-        'latest_temperature': temp_data_serializer.data,  # Datos más recientes de temperatura
-        'latest_humidity': humidity_data_serializer.data,  # Datos más recientes de humedad
-        'temp_max': temp_stats['max_value'],  # Máximo de temperatura
-        'temp_min': temp_stats['min_value'],  # Mínimo de temperatura
-        'temp_avg': temp_stats['avg_value'],  # Promedio de temperatura
-        'hum_max': hum_stats['max_value'],  # Máximo de humedad
-        'hum_min': hum_stats['min_value'],  # Mínimo de humedad
-        'hum_avg': hum_stats['avg_value'],  # Promedio de humedad
-        'temp_recent': temp_serializer.data,  # Últimos 10 datos de temperatura
-        'hum_recent': hum_serializer.data  # Últimos 10 datos de humedad
-    })
-
-#ver_mas.html
 def detalle_dato(request):
     dato = request.GET.get('dato', None)
     if dato not in ['Temperatura', 'Humedad','Humedad_suelo','CO2','TDS']:
@@ -669,3 +464,70 @@ def detalle_dato(request):
         } for data in serializer.data]),  #  datos serializados para el gráfico
         'recent_data': serializer.data,  # Enviar los datos serializados a la plantilla
     })
+#pruebas
+def obtener_estadisticas(id_tipo_dato):
+    """
+    Función auxiliar para obtener estadísticas de un tipo de dato.
+    """
+    return RegistroSensor.objects.filter(id_tipo_dato_id=id_tipo_dato).aggregate(
+        max_value=Max('valor'),
+        min_value=Min('valor'),
+        avg_value=Avg('valor')
+    )
+
+
+def home(request):
+    # Obtener todos los tipos de datos
+    tipos_dato = TipoDato.objects.values('id_tipo_dato', 'nombre_dato')
+
+    # Generar estadísticas para cada tipo de dato
+    estadisticas = {}
+    for tipo in tipos_dato:
+        id_tipo = tipo['id_tipo_dato']
+        nombre = tipo['nombre_dato']
+
+        # Obtener estadísticas y datos recientes
+        stats = obtener_estadisticas(id_tipo)
+        datos_recientes = RegistroSensor.objects.filter(id_tipo_dato_id=id_tipo).order_by('-fecha_registro')[:10]
+
+        # Serializar los datos recientes
+        datos_serializer = RegistroSensorSerializer(datos_recientes, many=True)
+
+        # Guardar en el diccionario
+        estadisticas[nombre] = {
+            'max': stats['max_value'],
+            'min': stats['min_value'],
+            'avg': stats['avg_value'],
+            'datos_recientes': datos_serializer.data,
+        }
+
+    return render(request, 'home.html', {'estadisticas': estadisticas})
+
+
+@api_view(['GET'])
+def datos_recientes(request):
+    # Obtener todos los tipos de datos
+    tipos_dato = TipoDato.objects.values('id_tipo_dato', 'nombre_dato')
+
+    # Generar estadísticas para cada tipo de dato
+    estadisticas = {}
+    for tipo in tipos_dato:
+        id_tipo = tipo['id_tipo_dato']
+        nombre = tipo['nombre_dato']
+
+        # Obtener estadísticas y datos recientes
+        stats = obtener_estadisticas(id_tipo)
+        datos_recientes = RegistroSensor.objects.filter(id_tipo_dato_id=id_tipo).order_by('-fecha_registro')[:10]
+
+        # Serializar los datos recientes
+        datos_serializer = RegistroSensorSerializer(datos_recientes, many=True)
+
+        # Guardar en el diccionario
+        estadisticas[nombre] = {
+            'max': stats['max_value'],
+            'min': stats['min_value'],
+            'avg': stats['avg_value'],
+            'datos_recientes': datos_serializer.data,
+        }
+
+    return JsonResponse({'estadisticas': estadisticas})

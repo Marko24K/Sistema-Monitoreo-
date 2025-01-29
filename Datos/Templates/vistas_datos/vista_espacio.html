@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="{% static 'css/estilo_tabla.css' %}">
 
     <script src="{% static 'js/vista_imagen.js'%}"></script>
-    <script src="{% static 'js/form_emergente.js' %}"></script>
 </head>
 <body>
   {% include 'header.html' %}
@@ -69,25 +68,21 @@
           </div>
             
 
-            <div class="row justify-content-md-center" style="margin-top: 20px;">
+          <div class="row justify-content-md-center" style="margin-top: 20px;">
               <!-- Botón para abrir el modal de registro de nuevo arduino -->
-              <button class="btn btn-success col-3" style="margin:20px" 
-              data-form-type="arduino"
-              data-id-espacio="{{ dato.id_espacio }}">
-              Registrar nuevo arduino
-              </button>
-            {% if dato.id_tipo_espacio.nombre_tipo_espacio != 'Humedal' %}
+              <a href="{% url 'arduino'%}" style="margin: 15px;" class="btn btn-success col-3">
+                Registrar nuevo arduino
+              </a>
+              {% if dato.id_tipo_espacio.nombre_tipo_espacio != 'Humedal' %}
               <!-- Botón para abrir el modal de división de espacio -->
-              <button class="btn btn-success col-3" style="margin:20px" onclick="loadModalContent('division_espacio', '{{dato.id_espacio}}')" >
+              <a href="{% url 'division_espacio'%}" style="margin: 15px;" class="btn btn-success col-3">
                 Añadir división de espacio
-              </button>
-            <!-- Enlace para redirigir a la página de agregar una plantacion -->
-            <button class="btn btn-success col-3" style="margin:20px" data-form-type="planta">
-              Añadir una nueva plantacion
-            </button>
-            <!-- Enlace para redirigir a la página de registro de plantación -->
-            <a href="{% url 'registro_planta' id_espacio %}" class="btn btn-success col-3">Realizar registro de plantación</a>
-
+              </a>
+              <!-- Enlace para redirigir a la página de agregar una plantacion -->
+              <a href="{% url 'planta'%}" style="margin: 15px;" class="btn btn-success col-3">
+                Añadir una nueva plantacion
+              </a>
+              <!-- Enlace para redirigir a la página de registro de plantación -->
             {% endif %}
           </div>
         </div>
@@ -186,9 +181,6 @@
         {% endfor %}
       </ul>
     </section>
-      <!-- Modal y overlay No borrar-->
-      <div class="overlay" id="overlay" aria-hidden="true"></div>
-      <div id="modalContainer" aria-hidden="true"></div>
     {% endblock %}
   </main>
 

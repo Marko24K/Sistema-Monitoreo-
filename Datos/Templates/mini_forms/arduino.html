@@ -1,27 +1,52 @@
-<div class="modal">
-    <h2>Formulario</h2>
-
-    <form id="arduinoForm" method="POST" action="{% url 'modal_view' %}?form_type=arduino">
-        {% csrf_token %}
-        <!-- Campo oculto para el id_espacio -->
-        <input type="hidden" id="id_espacio" name = "id_espacio" value="{{espacio.id_espacio}}">
-
-        
-        <div class="col 8">
-            <select style="margin-bottom: 5%;" class="form-select" id="modelo_arduino" name="modelo_arduino" aria-label="Seleccione un arduino">
-                <option selected disabled>Seleccione un arduino</option>
-                <option value="Mega">Mega</option>
-                <option value="Uno">Uno</option>
-                <option value="Nano">Nano</option>
-                <option value="Esp32">Esp32</option>
-            </select>
-            <input type="radio" class="btn-check" name="options" id="option1" values ="Activo" autocomplete="off" >
-            <label class="btn btn-outline-success" for="option1">Arduino activo</label>
-
-            <input type="radio" class="btn-check" name="options" values="Inactivo" id="option2" autocomplete="off">
-            <label class="btn btn-outline-danger" for="option2">Arduino inactivo</label>
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar plantas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilo_form.css' %}">
+</head>
+<body>
+    {% include 'header.html' %}
+    <main class="container my-4">
+        {% block content %}
+        <section class="mb-5">
+            <div class="card shadow-sm p-4">
+                <h2>Formulario</h2>
+            
+                <form id="arduinoForm" method="POST">
+                    {% csrf_token %}
+                    <!-- Campo oculto para el id_espacio -->
+                    <input type="hidden" id="id_espacio" name = "id_espacio" value="{{espacio.id_espacio}}">
+            
+                    <div class="col 6">
+                        <select style="margin-bottom: 5%;" class="form-select" id="modelo_arduino" name="modelo_arduino" aria-label="Seleccione un arduino">
+                            <option selected disabled>Seleccione un arduino</option>
+                            <option value="Mega">Mega</option>
+                            <option value="Uno">Uno</option>
+                            <option value="Nano">Nano</option>
+                            <option value="Esp32">Esp32</option>
+                        </select>
+                        <input type="radio" class="btn-check" name="options" id="option1" values ="Activo" autocomplete="off" >
+                        <label class="btn btn-outline-success" for="option1">Arduino activo</label>
+            
+                        <input type="radio" class="btn-check" name="options" values="Inactivo" id="option2" autocomplete="off">
+                        <label class="btn btn-outline-danger" for="option2">Arduino inactivo</label>
+                    </div>
+                    <button class="btn btn-outline-primary" style="margin: 10px;" type="submit">Enviar</button>
+                </form>
+            </div>
         </div>
-            <button type="submit">Enviar</button>
-            <button type="button" id="closeModal">Cerrar</button>
-    </form>
-</div>
+        {% endblock %}
+    </main>
+    {% include 'footer.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

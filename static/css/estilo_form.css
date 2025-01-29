@@ -65,6 +65,27 @@ h3 {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+button {
+    background-color: #007bff; /* Color de fondo */
+    color: white; /* Color del texto */
+    border: none; /* Sin bordes */
+    padding: 10px 20px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de la fuente */
+    cursor: pointer; /* Cambiar cursor al pasar el mouse */
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
+button:hover {
+    background-color: #0056b3; /* Color más oscuro al pasar el mouse */
+}
+
+button:disabled {
+    background-color: #cccccc; /* Color para botones deshabilitados */
+    cursor: not-allowed; /* Cursor prohibido */
+}
+
+
 /* Responsive utilities */
 @media (max-width: 992px) {
     h2 {

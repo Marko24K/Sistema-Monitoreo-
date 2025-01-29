@@ -1,25 +1,51 @@
-<div class="modal" id="myModal" aria-hidden="true" style="display: none;">
-    <h2>Formulario</h2>
-    <form id="modeloSensorForm" method="POST" action="{% url 'modal_view' %}?form_type=modelo_sensor">
-        {% csrf_token %}
-        <label for="nombre_sensor" class="form-label">Inserte el nombre del sensor</label>
-        <input type="text" class="form-control" id="nombre_sensor" name="nombre_sensor" required maxlength="50" 
-               pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" title="Solo se permiten caracteres alfabéticos y numéricos.">
-        
-        <input type="hidden" name="id_arduino" value="{{ id_arduino }}">
-        
-        <input type="radio" class="btn-check" name="options" id="option1" values ="1" autocomplete="off" >
-            <label class="btn btn-outline-success" for="option1">Estado activo</label>
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar plantas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilo_form.css' %}">
+</head>
+<body>
+    {% include 'header.html' %}
 
-            <input type="radio" class="btn-check" name="options" values="0" id="option2" autocomplete="off">
-            <label class="btn btn-outline-danger" for="option2">Estado inactivo</label>
+    <main class="container my-4">
+        {% block content %}
+        <section class="mb-5">
+            <div class="card shadow-sm p-4">
+                <h2>Formulario</h2>
+                <form id="modeloSensorForm" method="POST">
+                    {% csrf_token %}
+                    <label for="nombre_sensor" class="form-label">Inserte el nombre del sensor</label>
+                    <input type="text" class="form-control" id="nombre_sensor" name="nombre_sensor" required maxlength="50" 
+                        pattern="^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$" title="Solo se permiten caracteres alfabéticos y numéricos.">
+                    
+                    <input type="hidden" name="id_arduino" value="{{ id_arduino }}">
+                    
+                    <input type="radio" class="btn-check" name="options" id="option1" values ="1" autocomplete="off" >
+                        <label class="btn btn-outline-success" for="option1">Estado activo</label>
 
-        <div class="col-6">
-            <label class="text-normal text-dark form-label">Descripción del sensor</label><br>
-            <textarea id="Descripcion_sensor" name="Descripcion_sensor" rows="6" required></textarea>
-        </div>
+                        <input type="radio" class="btn-check" name="options" values="0" id="option2" autocomplete="off">
+                        <label class="btn btn-outline-danger" for="option2">Estado inactivo</label>
 
-        <button type="submit">Enviar</button>
-        <button type="button" id="closeModal">Cerrar</button>
-    </form>
-</div>
+                    <div class="col-6">
+                        <label class="text-normal text-dark form-label">Descripción del sensor</label><br>
+                        <textarea id="Descripcion_sensor" name="Descripcion_sensor" rows="6" required></textarea>
+                    </div>
+                    <button type="submit">Enviar</button>
+                </form>
+            </div>
+        </section>
+        {% endblock %}
+    </main>
+    {% include 'footer.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
