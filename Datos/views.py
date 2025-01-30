@@ -466,15 +466,28 @@ def detalle_dato(request):
     })
 #pruebas
 def obtener_estadisticas(id_tipo_dato):
-    """
-    Función auxiliar para obtener estadísticas de un tipo de dato.
-    """
+    
     return RegistroSensor.objects.filter(id_tipo_dato_id=id_tipo_dato).aggregate(
         max_value=Max('valor'),
         min_value=Min('valor'),
         avg_value=Avg('valor')
     )
 
+def visualizar_datos(request):
+    # Obtener todos los tipos de datos
+    tipos_dato = TipoDato.objects.all()
+    estadisticas = {}
+
+    for tipo in tipos_dato:
+        registros = RegistroSensor.objects.filter(id_tipo_dato=tipo).order_by("fecha_registro")
+
+        etiquetas = [registro.fecha_registro.strftime("%Y-%m-%d %H:%M") for registro in registros]
+        valores = [float(registro.valor) for registro in registros]  # Convertir a float
+
+        # Guardar en el diccionario con el nombre del tipo de dato
+        estadisticas[tipo.nombre_dato] = {"etiquetas": etiquetas, "valores": valores}
+
+    return render(request, "home.html", {"estadisticas": estadisticas})
 
 def home(request):
     # Obtener todos los tipos de datos
@@ -502,7 +515,6 @@ def home(request):
         }
 
     return render(request, 'home.html', {'estadisticas': estadisticas})
-
 
 @api_view(['GET'])
 def datos_recientes(request):

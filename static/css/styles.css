@@ -224,6 +224,39 @@ canvas {
     justify-content: space-around !important;
 }
 
+.custom-carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px; /* Aumenta el tamaño */
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+    border-radius: 50%; /* Botones redondeados */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-control-prev {
+    left: 20px; /* Mantiene el botón pegado a la izquierda */
+}
+
+.carousel-control-next {
+    right: 20px; /* Mantiene el botón pegado a la derecha */
+}
+
+/* Hace que los íconos sean más grandes y blancos */
+.custom-carousel-icon {
+    width: 30px;
+    height: 30px;
+    filter: invert(1); /* Hace que los íconos sean blancos */
+}
+
+/* Asegura que los botones no se vean afectados por otros estilos */
+.custom-carousel-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
 
 #cont-termometro {
     position: relative; /* Necesario para que el posicionamiento absoluto funcione en #termometro */

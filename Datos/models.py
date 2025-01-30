@@ -105,7 +105,6 @@ class DivisionEspacio(models.Model):
     class Meta:
         db_table = 'division_espacio'
 
-
 class TipoPlanta(models.Model):
     id_tipo_planta = models.AutoField(primary_key=True)
     nombre_comun = models.CharField(max_length=50)
@@ -117,7 +116,6 @@ class TipoPlanta(models.Model):
     class Meta:
         db_table = 'tipo_planta'
 
-
 class Planta(models.Model):
     id_planta = models.AutoField(primary_key=True)
     id_tipo_planta = models.ForeignKey(TipoPlanta, on_delete=models.CASCADE)
@@ -128,7 +126,6 @@ class Planta(models.Model):
 
     class Meta:
         db_table = 'planta'
-
 
 class RegistroPlanta(models.Model):
     id_registro_planta = models.AutoField(primary_key=True)
@@ -150,7 +147,6 @@ class RegistroPlanta(models.Model):
     class Meta:
         db_table = 'registro_planta'
 
-
 class Arduino(models.Model):
     id_arduino = models.AutoField(primary_key=True)
     id_espacio = models.ForeignKey(Espacio, on_delete=models.CASCADE)
@@ -169,14 +165,6 @@ class ModeloSensor(models.Model):
     class Meta:
         db_table = 'modelo_sensor'
 
-class TipoDato(models.Model):
-    id_tipo_dato = models.AutoField(primary_key=True)
-    nombre_dato = models.CharField(max_length=50)
-    unidad_medida = models.CharField(max_length=50)
-
-    class Meta:
-        db_table = 'tipo_dato'
-
 class Sensor(models.Model):
     id_sensor = models.AutoField(primary_key=True)
     id_arduino = models.ForeignKey(Arduino, on_delete=models.CASCADE)
@@ -185,6 +173,14 @@ class Sensor(models.Model):
 
     class Meta:
         db_table = 'sensor'
+
+class TipoDato(models.Model):
+    id_tipo_dato = models.AutoField(primary_key=True)
+    nombre_dato = models.CharField(max_length=50)
+    unidad_medida = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = 'tipo_dato'
 
 class RegistroSensor(models.Model):
     id_registro_sensor = models.AutoField(primary_key=True)
