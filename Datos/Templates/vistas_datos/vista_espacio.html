@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{% static 'css/estilo_tabla.css' %}">
 
     <script src="{% static 'js/vista_imagen.js'%}"></script>
+    <script src="{% static 'js/form_emergente.js' %}"></script>
 </head>
 <body>
   {% include 'header.html' %}
@@ -68,14 +69,17 @@
           </div>
             
 
-          <div class="row justify-content-md-center" style="margin-top: 20px;">
-              <!-- Botón para abrir el modal de registro de nuevo arduino -->
+            <div class="row justify-content-md-center" style="margin-top: 20px;">
+            
+
+            <div class="row justify-content-md-center" style="margin-top: 20px;">
+              <!-- enlace parar ir de registro de nuevo arduino -->
               <a href="{% url 'arduino'%}" style="margin: 15px;" class="btn btn-success col-3">
                 Registrar nuevo arduino
               </a>
               {% if dato.id_tipo_espacio.nombre_tipo_espacio != 'Humedal' %}
-              <!-- Botón para abrir el modal de división de espacio -->
-              <a href="{% url 'division_espacio'%}" style="margin: 15px;" class="btn btn-success col-3">
+              <!-- enlace a división de espacio -->
+              <a href="{% url 'division_espacio' id_espacio%}" style="margin: 15px;" class="btn btn-success col-3">
                 Añadir división de espacio
               </a>
               <!-- Enlace para redirigir a la página de agregar una plantacion -->
@@ -83,6 +87,11 @@
                 Añadir una nueva plantacion
               </a>
               <!-- Enlace para redirigir a la página de registro de plantación -->
+              
+            </div> 
+            <!-- Enlace para redirigir a la página de registro de plantación -->
+            <a href="{% url 'registro_planta' id_espacio %}" class="btn btn-success col-3">Realizar registro de plantación</a>
+
             {% endif %}
           </div>
         </div>
@@ -107,10 +116,8 @@
             <div class="col col-3" data-label="Tipo división">{{ d.tipo_division }}</div>
             <div class="col col-4" data-label="Identificador">{{ d.identificador }}</div>
             <div class="col col-6" data-label="Acciones">
-              <a href="{% url 'editar_division' d.id_division_espacio id_espacio%}"  class="btn btn-warning">
+              <a href="{% url 'division_espacio' id_espacio d.id_division_espacio%}"  class="btn btn-warning">
                 <i class="fas fa-edit"></i></a>
-              <a href="{% url 'eliminar_division' d.id_division_espacio id_espacio%}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar la division? borrarla causará que se borre todo lo relacionado a ello (Registro de plantaciones)');">
-              <i class="fas fa-trash-alt"></i></a>
             </div>
           </li>
         {% empty %}
@@ -136,12 +143,12 @@
           {% for planta in plantas %}
               <li class="table-row">
                   <div class="col col-1" data-label="ID Planta">{{ planta.id_planta }}</div>
-                  <div class="col col-2" data-label="ID Planta">{{ planta.fecha_siembra }}</div>
-                  <div class="col col-3" data-label="ID Planta">{{ planta.fecha_extraccion }}</div>
+                  <div class="col col-2" data-label="ID Planta">{{ planta.fecha_siembra |date:"Y-m-d"}}</div>
+                  <div class="col col-3" data-label="ID Planta">{{ planta.fecha_extraccion |date:"Y-m-d"}}</div>
                   <div class="col col-4" data-label="ID Planta">{{ planta.descripcion_planta }}</div>
                   <div class="col col-6" data-label="Acciones">
+                     <a href="{% url 'vista_plantacion' planta.id_planta%}" class="btn btn-info"><i class="fas fa-eye"></i></a>
                       <button class="btn btn-warning" data-form-type="plantacion"><i class="fas fa-edit"></i></button>
-                      <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
                   </div>
               </li>
           {% empty %}
@@ -154,33 +161,67 @@
     <section class="mb-5">
       <h2>Información sobre sensores</h2>
       <ul class="responsive-table">
-        <li class="table-header">
-          <div class="col col-1">ID arduino</div>
-          <div class="col col-2">Modelo</div>
-          <div class="col col-3">Estado</div>
-          <div class="col col-4">Acciones</div>
-        </li>
+ 
+        <!-- Iteración de los Arduinos -->
+        {% for item in arduino_sensores %}
         
-        {% for a in arduino %}
-          <li class="table-row">
-            <div class="col col-1" data-label="ID arduino">{{ a.id_arduino }}</div>
-            <div class="col col-2" data-label="Modelo">{{ a.modelo_arduino }}</div>
-            <div class="col col-3" data-label="Estado">{{ a.estado }}</div>
-            <div class="col col-4" data-label="Acciones">
-              <a href="{% url 'vista_sensores' a.id_arduino%}" class="btn btn-info"><i class="fas fa-eye"></i></a>
-              <button class="btn btn-warning" data-form-type="arduino"><i class="fas fa-edit"></i></button>
-              
-              <a href="{% url 'eliminar_arduino' a.id_arduino id_espacio %}"  class="btn btn-danger"  onclick="return confirm('¿Estás seguro de que deseas eliminar este Arduino? Al eliminarlo se borrarán los sensores adjuntos a este y además se borrarán los datos obtenidos.');">
-                <i class="fas fa-trash-alt"></i>
+          {% for sensor in item.sensores %}
+
+            <li class="table-row">
+              <!-- Solo mostrar ID y modelo de Arduino en la primera fila de sus sensores -->
+              {% if forloop.first %}
+                <div class="col col-2">ID Arduino</div>
+
+                <div class="col col-2" data-label="ID Arduino" rowspan="{{ item.sensores|length }}">
+                  {{ item.arduino.id_arduino }}
+                </div>
+                <div class="col col-3">Modelo Arduino</div>
+
+                <div class="col col-3" data-label="Modelo Arduino" rowspan="{{ item.sensores|length }}">
+                  {{ item.arduino.modelo_arduino }}
+                </div>
+                <a href="{% url 'cambiar_estado_arduino' item.arduino.id_arduino %}" class="btn btn-warning">
+                  <i class="fas fa-power-off"></i> 
               </a>
-           
-          </div>
-          </li>
+              {% endif %}
+            </li>
+            <li class="table-header">
+
+              <div class="col col-2">ID Sensor</div>
+              <div class="col col-3">Modelo Sensor</div>
+              <div class="col col-2">Estado</div>
+              <div class="col col-2">Acciones</div>
+            </li>
+            <li class="table-row">
+              <!-- Datos del Sensor -->
+              <div class="col col-2" data-label="ID Sensor">{{ sensor.id_sensor }}</div>
+              <div class="col col-3" data-label="Modelo Sensor">{{ sensor.id_modelo_sensor.nombre_sensor }}</div>
+              <div class="col col-2" data-label="Estado">
+                {% if sensor.estado == 1 %}
+                        Activo
+                      {% else %}
+                        Inactivo
+                      {% endif %}
+              </div>
+              <div class="col col-2" data-label="Acciones">
+                <!-- Botones de acción -->
+                <a href="{% url 'cambiar_estado_sensor' sensor.id_sensor %}" class="btn btn-danger">
+                  <i class="bi bi-arrow-repeat"></i>
+                </a>
+              </div>
+            </li>
+          {% endfor %}
         {% empty %}
-          <li class="table-row"><div class="col" colspan="6">No sensores registrados</div></li>
+          <!-- Mensaje si no hay Arduinos ni Sensores -->
+          <li class="table-row">
+            <div class="col" colspan="6">No hay sensores registrados para los Arduinos de este espacio.</div>
+          </li>
         {% endfor %}
       </ul>
     </section>
+      <!-- Modal y overlay No borrar-->
+      <div class="overlay" id="overlay" aria-hidden="true"></div>
+      <div id="modalContainer" aria-hidden="true"></div>
     {% endblock %}
   </main>
 

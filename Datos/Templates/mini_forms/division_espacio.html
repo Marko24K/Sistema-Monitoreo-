@@ -20,26 +20,31 @@
         {% block content %}
         <section class="mb-5">
             <div class="card shadow-sm p-4">
-                <h2>Formulario división de los espacios</h2>
-            
+                <h2>{% if division %}Editar{% else %}Crear{% endif %} división de espacio</h2>
+
                 <form id="divisionespacioForm" method="POST">
                     {% csrf_token %}
-                    <input type="hidden" id="id_espacio" name = "id_espacio" value="{{espacio.id_espacio}}">
-                    <!-- Los siguientes inputs pertenecen a division_espacio-->
+                    <input type="hidden" id="id_espacio" name="id_espacio" value="{{ espacio.id_espacio }}">
+                    
                     <div class="col-12">
                         <label for="tipo_division" class="form-label">Tipo de división</label>
-                        <input type="text" class="form-control" id="tipo_division" name="tipo_division" required maxlength="50">
+                        <input type="text" class="form-control" id="tipo_division" name="tipo_division"
+                            value="{{ division.tipo_division|default:'' }}" required maxlength="50">
                     </div>
-            
+
                     <div class="col-12">
-                        <label for="identificador_division" class="form-label">Ingrese un número identificador de la división</label>
-                        <input type="number" class="form-control" id="identificador_division" name="identificador_division" required pattern="\d+" title="Debe ser un número entero">
+                        <label for="identificador_division" class="form-label">Número identificador de la división</label>
+                        <input type="number" class="form-control" id="identificador_division" name="identificador_division"
+                            value="{{ division.identificador|default:'' }}" required pattern="\d+" 
+                            title="Debe ser un número entero">
                     </div>
-            
-                    <button type="submit" style="margin-top: 15px;" class="btn btn-outline-success">Enviar</button>
+
+                    <button type="submit" style="margin-top: 15px;" class="btn btn-outline-success">
+                        {% if division %}Actualizar{% else %}Crear{% endif %}
+                    </button>
                 </form>
             </div>
-        </section>        
+        </section>
         {% endblock %}
     </main>
     {% include 'footer.html' %}

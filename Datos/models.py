@@ -151,7 +151,7 @@ class Arduino(models.Model):
     id_arduino = models.AutoField(primary_key=True)
     id_espacio = models.ForeignKey(Espacio, on_delete=models.CASCADE)
     modelo_arduino = models.CharField(max_length=50)
-    estado = models.CharField(max_length=50)
+    estado = models.IntegerField()
     uuid_arduino=models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     class Meta:

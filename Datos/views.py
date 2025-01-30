@@ -1,4 +1,7 @@
+from django.db.models import Q
+from django.utils import timezone
 from datetime import datetime
+
 import os
 from PIL import Image
 import qrcode
@@ -15,18 +18,97 @@ from django.conf import settings
 from .serializer import RegistroSensorSerializer
 
 #-----------------------mini forms-----------------------
-def arduino(request):
+def arduino(request,id_espacio):
     if request.method =='POST':
         return redirect('vistas_datos/vista_espacios.html')
     return render(request, 'mini_forms/arduino.html')
 
-def division_espacio(request):
-    if request.method =='POST':
-        return redirect('vistas_datos/vista_espacios.html')
-    return render(request, 'mini_forms/division_espacio.html')
+def division_espacio(request, id_espacio, id_division=None):
+    espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
+    division = None
+    
+    if id_division:
+        division = get_object_or_404(DivisionEspacio, id_division_espacio=id_division)
+    
+    if request.method == 'POST':
+        tipo_division = request.POST.get('tipo_division')
+        identificador_division = request.POST.get('identificador_division')
+        
+        if not tipo_division or not identificador_division:
+            return HttpResponse("Todos los campos son obligatorios", status=400)
+        
+        identificador_division = int(identificador_division)
+        
+        # Validar si el identificador ya existe (excepto si es la misma división en edición)
+        if DivisionEspacio.objects.filter(
+            identificador=identificador_division, id_espacio=espacio
+        ).exclude(id_division_espacio=id_division).exists():
+            return HttpResponse("El identificador ya existe para este espacio", status=400)
+        
+        if division:
+            # Editar división existente
+            division.tipo_division = tipo_division
+            division.identificador = identificador_division
+            division.save()
+        else:
+            # Crear nueva división
+            division = DivisionEspacio.objects.create(
+                id_espacio=espacio,
+                tipo_division=tipo_division,
+                identificador=identificador_division
+            )
+        
+        return redirect('detalle_espacio', id_espacio=espacio.id_espacio)
+    
+    return render(request, 'mini_forms/division_espacio.html', {
+        'espacio': espacio,
+        'division': division
+    })
 
+"""
 def modelo_sensor(request):
-    return render(request, 'mini_forms/modelo_sensor.html')
+    if request.method == 'POST':
+    nombre_sensor = request.POST['nombre_sensor']
+    descripcion_sensor = request.POST['Descripcion_sensor']
+    id_arduino = request.POST.get('id_arduino')  # ID del Arduino al que se va a enlazar
+    estado = 1 if request.POST['options'] == '1' else 0  # 1 para activo, 0 para inactivo
+    if not nombre_sensor or not descripcion_sensor or not id_arduino:
+                return HttpResponse("Todos los campos son obligatorios.", status=400)
+
+            try:
+                # Obtener el Arduino al que se va a enlazar
+                arduino = Arduino.objects.get(id_arduino=id_arduino)
+            except Arduino.DoesNotExist:
+                return HttpResponse("Arduino no encontrado.", status=404)
+
+            # Crear el modelo de sensor y enlazarlo al Arduino
+            modelo_sensor = ModeloSensor.objects.create(
+                nombre_sensor=nombre_sensor,
+                descripcion=descripcion_sensor
+            )
+
+            # Enlazar el sensor al Arduino (suponiendo que hay una tabla Sensor para eso)
+            Sensor.objects.create(
+                id_arduino=arduino,
+                id_modelo_sensor=modelo_sensor,
+                estado = estado
+            )
+
+            # Redirigir de vuelta a la vista de sensores
+            return redirect('vista_sensores', id_arduino=arduino.id_arduino)
+
+        # Si no es un POST, renderizar el formulario vacío
+        id_arduino = request.GET.get('id_arduino')  # Obtener el ID del Arduino desde el GET
+        if not id_arduino:
+            return HttpResponse("ID del Arduino no proporcionado.", status=400)
+
+        try:
+            arduino = Arduino.objects.get(id_arduino=id_arduino)
+        except Arduino.DoesNotExist:
+            return HttpResponse("Arduino no encontrado.", status=404)
+
+        return render(request, 'mini_forms/modelo_sensor.html', {'arduino': arduino, 'id_arduino': id_arduino})
+    return render(request, 'mini_forms/modelo_sensor.html')"""
 
 def planta(request):
     if request.method =='POST':
@@ -40,8 +122,10 @@ def tipo_dato(request):
     return render(request, 'mini_forms/tipo_dato.html')
 
 #--------------------Espacio -----------------------------
-def vista_plantacion(request):
-    return render(request, 'vistas_datos/vista_plantacion.html')
+def vista_plantacion(request , id_planta):
+    planta = Planta.objects.filter(id_planta=id_planta)
+    registro = RegistroPlanta.objects.filter(id_planta=id_planta)
+    return render(request, 'vistas_datos/vista_plantacion.html', {'planta':planta, 'registro':registro})
 
 def vista_sensores(request, id_arduino):
     # Obtener el Arduino relacionado con el id_arduino
@@ -61,6 +145,36 @@ def vista_sensores(request, id_arduino):
         modelos_sensores_dict[modelo_sensor] = sensores_relacionados
 
     return render(request, 'vistas_datos/vista_sensores.html', {'modelos_sensores_dict': modelos_sensores_dict, 'id_arduino': id_arduino })
+
+def cambiar_estado_sensor(request, id_sensor):
+    sensor = get_object_or_404(Sensor, id_sensor=id_sensor)
+    sensor.estado = 0 if sensor.estado == 1 else 1  # Alternar entre activo e inactivo
+    sensor.save()
+    return redirect('detalle_espacio', id_espacio=sensor.id_arduino.id_espacio.id_espacio)
+
+def listado_arduinos_sensores(request):
+    arduinos = Arduino.objects.prefetch_related('sensor_set').all()
+    registros = list(RegistroSensor.objects.values('valor', 'fecha_registro'))
+        # Convertir fecha a string con un formato legible
+    for registro in registros:
+        registro['fecha_registro'] = registro['fecha_registro'].strftime('%d-%m-%Y %H:%M:%S')
+
+    return render(request, 'vistas_datos/listado_arduino_sensores.html', {'arduinos': arduinos, 'registros': registros})
+
+def cambiar_estado_arduino(request, id_arduino):
+    arduino = get_object_or_404(Arduino, id_arduino=id_arduino)
+
+    if arduino.estado == 1:
+        arduino.estado = 0
+        sensores_actualizados = Sensor.objects.filter(id_arduino=arduino.id_arduino).update(estado=0)
+        arduino.save()  # Guardamos el estado del Arduino primero
+    else:
+        arduino.estado = 1
+        sensores_actualizados = Sensor.objects.filter(id_arduino=arduino.id_arduino).update(estado=1)
+        arduino.save()  # Guardamos el nuevo estado del Arduino
+        messages.success(request, "El Arduino ha sido activado. Sus sensores deben activarse manualmente.")
+
+    return redirect('detalle_espacio', id_espacio=arduino.id_espacio.id_espacio)
 
 def registro_espacio(request):
     localidad = Localidad.objects.all()
@@ -175,27 +289,43 @@ def editar_espacio(request, id_espacio):
 
     return render(request, 'forms/registro_espacio.html', {'espacio': espacio, 'localidad': localidad ,'tipo_espacio':tipo_espacio})
 
-def eliminar_espacio(request, id_espacio):
-    espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
-    espacio.delete()
-    messages.success(request, "La Espacio ha sido eliminada exitosamente.")
-
-    return redirect('vista_espacios')  
 
 def detalle_espacio(request, id_espacio):
-    # Obtener la parcela correspondiente a 'id_parcela'
+    # Obtener el espacio correspondiente
     dato = get_object_or_404(Espacio, id_espacio=id_espacio)
     division = DivisionEspacio.objects.filter(id_espacio=dato)
-    plantas = Planta.objects.filter(registroplanta__id_division_espacio__id_espacio=dato)
+    tipo_espacio = dato.id_tipo_espacio.nombre_tipo_espacio 
+    plantas = Planta.objects.filter(registroplanta__id_division_espacio__id_espacio=dato).distinct()
     arduino = Arduino.objects.filter(id_espacio=dato)
 
-    # Pasar los detalles de la Espacio a la plantilla
-    return render(request, 'vistas_datos/vista_espacio.html',
-                   {'dato': dato,
-                    'division': division,
-                    'plantas': plantas, 
-                    'arduino':arduino,
-                    'id_espacio': id_espacio})
+
+    # Obtener la fecha actual con zona horaria
+    fecha_actual = timezone.localtime(timezone.now())  # Fecha y hora actual con zona horaria
+    fecha_actual = fecha_actual.date()  # Extraer solo la fecha para comparación
+
+    # Filtrar plantas dependiendo del tipo de espacio
+    if tipo_espacio == "Invernadero":
+        # Solo mostrar plantas dentro del rango de fechas en invernaderos
+        plantas = plantas.filter(
+            Q(fecha_siembra__date__lte=fecha_actual) &  # Asegurar que la fecha de siembra sea antes o igual a hoy
+            Q(fecha_extraccion__date__gte=fecha_actual)  # Asegurar que la fecha de extracción sea después o igual a hoy
+        )
+    # Estructurar los datos de los sensores por Arduino
+    arduino_sensores = []
+    for a in arduino:
+        sensores = Sensor.objects.filter(id_arduino=a, estado=1)  # Solo sensores activos
+        arduino_sensores.append({
+            'arduino': a,
+            'sensores': sensores
+        })
+    
+    return render(request, 'vistas_datos/vista_espacio.html', {
+        'dato': dato,
+        'division': division,
+        'plantas': plantas,
+        'arduino_sensores': arduino_sensores,
+        'id_espacio': id_espacio
+    })
 
 def editar_division(request, id_division_espacio, id_espacio):
     # Obtener la división de espacio que se desea editar
@@ -263,21 +393,10 @@ def registro_planta(request, id_espacio):
         'plantacion': plantacion
     })
 
-def eliminar_division(request, id_division_espacio, id_espacio):
-    
-    division = get_object_or_404(DivisionEspacio, id_division_espacio=id_division_espacio)
-    division.delete()
-    return redirect('detalle_espacio', id_espacio=id_espacio)  
 
-def eliminar_arduino(request,id_arduino, id_espacio):
-    # Obtener el objeto Arduino por su id_arduino
-    arduino = get_object_or_404(Arduino, id_arduino=id_arduino)
 
-    # Eliminar el Arduino
-    arduino.delete()
 
-    # Redirigir a la vista del espacio correspondiente
-    return redirect('detalle_espacio', id_espacio=id_espacio)
+
 # Vista para mostrar los sensores y sus datos
 def datos_por_sensor(request):
     sensores = Sensor.objects.all()  # Obtenemos todos los sensores
@@ -286,6 +405,7 @@ def datos_por_sensor(request):
         'sensores': sensores,
     }
     return render(request, 'vistas_datos/datos_por_sensor.html', context)
+
 # Vista para obtener los datos de un sensor
 def obtener_datos_sensor(request):
     sensor_id = request.GET.get('sensor_id')  # Obtener el ID del sensor seleccionado desde el GET
@@ -427,7 +547,11 @@ def guardar_datos_sensor(request):
             return JsonResponse({'error': f'Error inesperado en el servidor: {str(e)}'}, status=500)
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)
-
+def datos(request):
+    valores = RegistroSensor.objects.all()
+    registros = RegistroSensor.objects.values('fecha_registro', 'valor')  # Obtiene solo los campos necesarios
+    return render(request, '.html', {'registros': registros})
+    
 def detalle_dato(request):
     dato = request.GET.get('dato', None)
     if dato not in ['Temperatura', 'Humedad','Humedad_suelo','CO2','TDS']:

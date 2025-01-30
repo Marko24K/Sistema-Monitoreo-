@@ -48,14 +48,10 @@
                     
                     <a href="{% url 'editar_espacio' v.id_espacio %}" class="btn btn-warning" >
                       <i class="fas fa-edit"></i> 
-                    </a>                  
-
-                    <a href="{% url 'eliminar_espacio' v.id_espacio %}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar esta parcela?')">
-                      <i class="fas fa-trash-alt"></i> 
-                    </a>                  
+                    </a>                                    
                   </div>
                 </li>
-                {%endfor%}
+                {% endfor %}
             </ul>
             
             
