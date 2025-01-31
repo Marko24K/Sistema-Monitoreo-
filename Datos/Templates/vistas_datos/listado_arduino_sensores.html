@@ -20,6 +20,7 @@
     {% include 'header.html' %}
     <main class="container my-4">
         {% block content %}
+
         <h2>Listado de Arduinos y Sensores</h2>
         <table border="1">
             <thead>
@@ -27,6 +28,7 @@
                     <th>ID Arduino</th>
                     <th>Modelo</th>
                     <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,17 +42,29 @@
                             Inactivo
                         {% endif %}
                     </td>
+                    <td>
+                        <a href="{% url 'cambiar_estado_arduino' arduino.id_arduino %}" class="btn btn-primary">
+                            Cambiar Estado
+                        </a>
+                    </td>
                 </tr>
-                <hr>
-
                 <!-- Listado de Sensores relacionados -->
                 {% for sensor in arduino.sensor_set.all %}
                 <tr>
-                    <td colspan="2"> → Sensor: {{ sensor.id_sensor }} ({{ sensor.id_modelo_sensor.nombre_sensor }})</td>
+                    <td colspan="2"> → Sensor {{ sensor.id_sensor }} ({{ sensor.id_modelo_sensor.nombre_sensor }})</td>
                     <td>{% if sensor.estado == 1 %}
                             Activo
                         {% else %}
                             Inactivo
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if arduino.estado == 1 %}
+                            <a href="{% url 'cambiar_estado_sensor' sensor.id_sensor %}" class="btn btn-warning">
+                                Cambiar Estado
+                            </a>
+                        {% else %}
+                            <button class="btn btn-secondary" disabled>Arduino Apagado</button>
                         {% endif %}
                     </td>
                 </tr>
@@ -62,20 +76,7 @@
             </tbody>
         </table>
 
-        <h2>Lista de Registros</h2>
-            <table border="1">
-                <tr>
-                    <th>Valor</th>
-                    <th>Fecha de Registro</th>
-                </tr>
-                {% for registro in registros %}
-                <tr>
-                    <td>{{ registro.valor }}</td>
-                    <td>{{ registro.fecha_registro }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        {% endblock %}
+{% endblock %}
     </main>
     {% include 'footer.html' %}
 </body>
