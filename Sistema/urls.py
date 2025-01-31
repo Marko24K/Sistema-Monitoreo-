@@ -55,13 +55,9 @@ urlpatterns = [
     
     #otros
     path('admin/', admin.site.urls),
-    path('obtener_temperatura/', views.datos_recientes, name='datos_recientes'),
     path('', views.home, name = 'home'),
-    path('guardar_datos_sensor/', views.guardar_datos_sensor, name='guardar_datos_sensor'),
-    path('detalle_dato/', views.detalle_dato, name='detalle_dato'),
-    path('datos_recientes/', views.datos_recientes, name='datos_recientes'),
-    path('datos_por_sensor/', views.datos_por_sensor, name='datos_por_sensor'),
-    path('obtener_datos_sensor/', views.obtener_datos_sensor, name='obtener_datos_sensor'),
 
+    path('guardar_datos_sensor/', views.guardar_datos_sensor, name='guardar_datos_sensor'),
+    path('datos_recientes/', views.datos_recientes, name='datos_recientes'),
 
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

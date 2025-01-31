@@ -1,74 +1,82 @@
-{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Monitoreo de Humedal - Universidad de Playa Ancha</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 
-<h2>Listado de Arduinos y Sensores</h2>
-<table border="1">
-    <thead>
-        <tr>
-            <th>ID Arduino</th>
-            <th>Modelo</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for arduino in arduinos %}
-        <tr>
-            <td>{{ arduino.id_arduino }}</td>
-            <td>{{ arduino.modelo_arduino }}</td>
-            <td>{% if arduino.estado == 1 %}
-                    Activo
-                {% else %}
-                    Inactivo
-                {% endif %}
-            </td>
-            <td>
-                <a href="{% url 'cambiar_estado_arduino' arduino.id_arduino %}" class="btn btn-primary">
-                    Cambiar Estado
-                </a>
-            </td>
-        </tr>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body> 
+    {% include 'header.html' %}
+    <main class="container my-4">
+        {% block content %}
+        <h2>Listado de Arduinos y Sensores</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID Arduino</th>
+                    <th>Modelo</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for arduino in arduinos %}
+                <tr>
+                    <td>{{ arduino.id_arduino }}</td>
+                    <td>{{ arduino.modelo_arduino }}</td>
+                    <td>{% if arduino.estado == 1 %}
+                            Activo
+                        {% else %}
+                            Inactivo
+                        {% endif %}
+                    </td>
+                </tr>
+                <hr>
 
-        <!-- Listado de Sensores relacionados -->
-        {% for sensor in arduino.sensor_set.all %}
-        <tr>
-            <td colspan="2"> → Sensor {{ sensor.id_sensor }} ({{ sensor.id_modelo_sensor.nombre_sensor }})</td>
-            <td>{% if sensor.estado == 1 %}
-                    Activo
-                {% else %}
-                    Inactivo
-                {% endif %}
-            </td>
-            <td>
-                {% if arduino.estado == 1 %}
-                    <a href="{% url 'cambiar_estado_sensor' sensor.id_sensor %}" class="btn btn-warning">
-                        Cambiar Estado
-                    </a>
-                {% else %}
-                    <button class="btn btn-secondary" disabled>Arduino Apagado</button>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
+                <!-- Listado de Sensores relacionados -->
+                {% for sensor in arduino.sensor_set.all %}
+                <tr>
+                    <td colspan="2"> → Sensor: {{ sensor.id_sensor }} ({{ sensor.id_modelo_sensor.nombre_sensor }})</td>
+                    <td>{% if sensor.estado == 1 %}
+                            Activo
+                        {% else %}
+                            Inactivo
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
 
-        {% empty %}
-        <tr><td colspan="4">No hay Arduinos registrados.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+                {% empty %}
+                <tr><td colspan="4">No hay Arduinos registrados.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-<h2>Lista de Registros</h2>
-    <table border="1">
-        <tr>
-            <th>Valor</th>
-            <th>Fecha de Registro</th>
-        </tr>
-        {% for registro in registros %}
-        <tr>
-            <td>{{ registro.valor }}</td>
-            <td>{{ registro.fecha_registro }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-
-{% endblock %}
+        <h2>Lista de Registros</h2>
+            <table border="1">
+                <tr>
+                    <th>Valor</th>
+                    <th>Fecha de Registro</th>
+                </tr>
+                {% for registro in registros %}
+                <tr>
+                    <td>{{ registro.valor }}</td>
+                    <td>{{ registro.fecha_registro }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endblock %}
+    </main>
+    {% include 'footer.html' %}
+</body>
+</html>

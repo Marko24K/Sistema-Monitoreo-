@@ -1,4 +1,4 @@
-// Función para el carrusel
+/*
 $(document).ready(function() {
     let indice = 0; // índice de la sección inicial
 
@@ -39,36 +39,58 @@ $(document).ready(function() {
         actualizarCarrusel();
     });
 });
+*/
+$(document).ready(function() {
+    // Función para inicializar gráficos dinámicamente
+    $("canvas[id^='chart-']").each(function() {
+        let ctx = this.getContext('2d');
+        let labels = JSON.parse(this.getAttribute('data-labels'));
+        let values = JSON.parse(this.getAttribute('data-values'));
 
-document.addEventListener("DOMContentLoaded", function() {
-    const estadisticas = JSON.parse(document.getElementById("estadisticas-data").textContent);
-    
-    Object.keys(estadisticas).forEach(tipo => {
-        const ctx = document.getElementById(`chart_${tipo.replace(/\s+/g, '_')}`).getContext('2d');
         new Chart(ctx, {
-            type: 'line',
+            type: 'line', // Tipo de gráfico (puede ser 'line', 'bar', 'pie', etc.)
             data: {
-                labels: estadisticas[tipo].etiquetas,
+                labels: labels,
                 datasets: [{
-                    label: tipo,
-                    data: estadisticas[tipo].valores,
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    label: 'Valor',
+                    data: values,
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderWidth: 2,
-                    fill: true
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
                 }]
             },
             options: {
                 responsive: true,
                 scales: {
-                    x: { 
-                        title: { display: true, text: 'Fecha' }
-                    },
-                    y: { 
-                        title: { display: true, text: 'Valor' }
+                    y: {
+                        beginAtZero: true
                     }
                 }
             }
         });
     });
+
+    // Código del carrusel (sin cambios)
+    let indice = 0; // Índice de la sección inicial
+    function actualizarCarrusel() {
+        const anchoPantalla = $(window).width();
+        let seccionesVisibles = (anchoPantalla <= 425) ? 1 : 2;
+        $(".contenedor").css("transform", "translateX(-" + (indice * (100 / seccionesVisibles)) + "%)");
+    }
+    $("#siguiente").click(function() {
+        const anchoPantalla = $(window).width();
+        let seccionesVisibles = (anchoPantalla <= 425) ? 1 : 2;
+        if ((anchoPantalla <= 425 && indice < 5) || (anchoPantalla > 425 && indice < 3)) {
+            indice++;
+            actualizarCarrusel();
+        }
+    });
+    $("#anterior").click(function() {
+        if (indice > 0) {
+            indice--;
+            actualizarCarrusel();
+        }
+    });
+    actualizarCarrusel();
+    $(window).resize(actualizarCarrusel);
 });
