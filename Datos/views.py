@@ -53,12 +53,12 @@ def arduino(request,id_espacio,id_arduino = None):
         'arduino': arduino
     })
 
-def division_espacio(request, id_espacio, id_division=None):
+def division_espacio(request, id_espacio, id_division_espacio=None):
     espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
     division = None
     
-    if id_division:
-        division = get_object_or_404(DivisionEspacio, id_division_espacio=id_division)
+    if id_division_espacio:
+        division = get_object_or_404(DivisionEspacio, id_division_espacio=id_division_espacio)
     
     if request.method == 'POST':
         tipo_division = request.POST.get('tipo_division')
@@ -72,7 +72,7 @@ def division_espacio(request, id_espacio, id_division=None):
         # Validar si el identificador ya existe (excepto si es la misma división en edición)
         if DivisionEspacio.objects.filter(
             identificador=identificador_division, id_espacio=espacio
-        ).exclude(id_division_espacio=id_division).exists():
+        ).exclude(id_division_espacio=id_division_espacio).exists():
             return HttpResponse("El identificador ya existe para este espacio", status=400)
         
         if division:
@@ -96,47 +96,105 @@ def division_espacio(request, id_espacio, id_division=None):
     })
 
 
-def modelo_sensor(request, id_espacio):
-    espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
+def modelo_sensor(request, id_espacio, id_modelo_sensor=None):
+    modelo_sensor = None
+    sensor = None
+
+    if id_modelo_sensor:
+        modelo_sensor = get_object_or_404(ModeloSensor, id_modelo_sensor=id_modelo_sensor)
+        sensor = Sensor.objects.filter(id_modelo_sensor=modelo_sensor).first()
+    
     # Filtrar los arduinos que pertenecen a este espacio
-    arduinos = Arduino.objects.filter(id_espacio=espacio)
+    arduinos = Arduino.objects.filter(id_espacio=id_espacio)
 
     if request.method == 'POST':
         nombre_sensor = request.POST.get('nombre_sensor')
-        descripcion = request.POST.get('Descripcion_sensor')
-        estado = request.POST.get('options')
+        descripcion = request.POST.get('descripcion_sensor')
         id_arduino = request.POST.get('id_arduino')
+        estado = request.POST.get('estado')
 
-        if not nombre_sensor or not descripcion or estado is None or not id_arduino:
+        if not nombre_sensor or not descripcion or not id_arduino:
             return HttpResponse("Todos los campos son obligatorios", status=400)
 
-        estado = int(estado)
-        arduino = get_object_or_404(Arduino, id_arduino=id_arduino)
+        if modelo_sensor:
+            # Editar un modelo existente
+            modelo_sensor.nombre_sensor = nombre_sensor
+            modelo_sensor.descripcion = descripcion
+            modelo_sensor.save()
+            
+            if sensor:
+                sensor.id_arduino_id = id_arduino
+                sensor.estado = estado
+                sensor.save()
+        else:
+            # Crear un nuevo modelo
+            modelo_sensor = ModeloSensor.objects.create(
+                nombre_sensor=nombre_sensor,
+                descripcion=descripcion
+            )
+            
+            sensor = Sensor.objects.create(
+                id_modelo_sensor=modelo_sensor,
+                id_arduino_id=id_arduino,
+                estado=estado
+            )
 
-        # Crear modelo de sensor
-        modelo_sensor = ModeloSensor.objects.create(
-            nombre_sensor=nombre_sensor,
-            descripcion=descripcion
-        )
-
-        # Crear sensor y enlazarlo con Arduino
-        sensor = Sensor.objects.create(
-            id_arduino=arduino,
-            id_modelo_sensor=modelo_sensor,
-            estado=estado
-        )
-
-        return redirect('detalle_espacio', id_espacio=espacio.id_espacio)
+        return redirect('lista_modelos_sensores')
 
     return render(request, 'mini_forms/modelo_sensor.html', {
-        'espacio': espacio,
+        'modelo_sensor': modelo_sensor,
+        'sensor': sensor,
+        'id_espacio': id_espacio,
         'arduinos': arduinos
     })
 
-def planta(request):
-    if request.method =='POST':
-        return redirect('vistas_datos/vista_espacios.html')
-    return render(request, 'mini_forms/planta.html')
+
+def planta(request, id_planta=None):
+    planta = None
+    
+    # Si se pasa un id_planta, significa que estamos editando una planta
+    if id_planta:
+        planta = get_object_or_404(Planta, id_planta=id_planta)
+    
+    tipo_p = TipoPlanta.objects.all()  # Obtener todos los tipos de planta
+    
+    if request.method == 'POST':
+        # Obtener datos del formulario
+        tipo_planta = request.POST.get('id_espacio')  # Puede ser el id de tipo de planta
+        descripcion_planta = request.POST.get('descripcion_planta')
+        observaciones_planta = request.POST.get('observaciones_planta')
+        fecha_extraccion = request.POST.get('fecha_extraccion')
+        fecha_siembra = request.POST.get('fecha_siembra')
+        
+        # Validaciones simples
+        if not tipo_planta or not descripcion_planta or not fecha_extraccion or not fecha_siembra:
+            return HttpResponse("Todos los campos son obligatorios", status=400)
+        
+        # Si es una edición
+        if planta:
+            planta.tipo_planta_id = tipo_planta
+            planta.descripcion_planta = descripcion_planta
+            planta.observaciones_planta = observaciones_planta
+            planta.fecha_extraccion = fecha_extraccion
+            planta.fecha_siembra = fecha_siembra
+            planta.save()
+        else:
+            # Crear nueva planta
+            Planta.objects.create(
+                tipo_planta_id=tipo_planta,
+                descripcion_planta=descripcion_planta,
+                observaciones_planta=observaciones_planta,
+                fecha_extraccion=fecha_extraccion,
+                fecha_siembra=fecha_siembra
+            )
+        
+        # Redirigir después de la creación o edición
+        return redirect('vista_plantacion', id_planta=id_planta if id_planta else Planta.objects.latest('id_planta').id_planta)
+    
+    return render(request, 'mini_forms/planta.html', {
+        'planta': planta,
+        'tipo_p': tipo_p
+    })
 
 def sensor(request):
     return render(request, 'mini_forms/sensor.html')
@@ -175,7 +233,7 @@ def cambiar_estado_sensor(request, id_sensor):
     sensor.save()
     return redirect('detalle_espacio', id_espacio=sensor.id_arduino.id_espacio.id_espacio)
 
-def listado_arduinos_sensores(request):
+def listado_arduinos_sensores(request): #considerar si es posible
     arduinos = Arduino.objects.prefetch_related('sensor_set').all()
     registros = list(RegistroSensor.objects.values('valor', 'fecha_registro'))
         # Convertir fecha a string con un formato legible
@@ -350,36 +408,7 @@ def detalle_espacio(request, id_espacio):
         'id_espacio': id_espacio
     })
 
-def editar_division(request, id_division_espacio, id_espacio):
-    # Obtener la división de espacio que se desea editar
-    division = get_object_or_404(DivisionEspacio, id_division_espacio=id_division_espacio)
-    
-    # Obtener todos los espacios disponibles
-    espacios = Espacio.objects.all()
 
-    if request.method == 'POST':
-        # Recuperar los datos del formulario
-        id_espacio = request.POST.get('id_espacio')  # Ahora se obtiene desde el formulario
-        tipo_division = request.POST.get('tipo_division')
-        identificador_division = request.POST.get('identificador_division')
-
-        # Actualizar la instancia de la división de espacio
-        division.id_espacio = Espacio.objects.get(id_espacio=id_espacio)
-        division.tipo_division = tipo_division
-        division.identificador = identificador_division
-
-        # Guardar los cambios
-        division.save()
-
-        # Redirigir al detalle del espacio con el id correspondiente
-        return redirect('detalle_espacio', id_espacio=id_espacio)
-
-    # Si es un GET, mostrar el formulario con los datos de la división de espacio
-    return render(request, 'mini_forms/division_espacio.html', {
-        'espacios': espacios,
-        'division': division,  # Pasar la instancia de la división para pre-llenar los campos
-        'id_espacio': id_espacio,  # Pasar id_espacio a la plantilla
-    })
 
 def registro_planta(request, id_espacio):
     # Obtener el espacio y las divisiones asociadas

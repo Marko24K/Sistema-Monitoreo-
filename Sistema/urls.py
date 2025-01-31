@@ -31,14 +31,18 @@ urlpatterns = [
     path('arduino/<int:id_espacio>/', views.arduino, name='arduino'),
     path('arduino/<int:id_espacio>/<int:id_arduino>/', views.arduino, name='arduino'),
     path('division_espacio/<int:id_espacio>/', views.division_espacio, name='division_espacio'), #crear
-    path('division_espacio/<int:id_espacio>/<int:id_division_espacio>', views.division_espacio, name='editar_division_espacio'),
-    path('modelo_sensor/<int:id_espacio>/', views.modelo_sensor, name='modelo_sensor'),
+    path('division_espacio/<int:id_espacio>/<int:id_division_espacio>', views.division_espacio, name='division_espacio'),
+    path('modelo_sensor/<int:id_espacio>/', views.modelo_sensor, name='modelo_sensor'),    
+    path('modelo_sensor/<int:id_espacio>/<int:id_sensor>', views.modelo_sensor, name='modelo_sensor'),
+
     path('planta/', views.planta, name='planta'),
+    path('planta/<int:id_planta>/', views.planta, name='planta'),
+
     path('sensor/', views.sensor, name='sensor'),
     path('tipo_dato/', views.tipo_dato, name='tipo_dato'),
 
     #vistas
-    path('vista_plantacion/', views.vista_plantacion, name='vista_plantacion'),
+    path('vista_plantacion/<int:id_planta>', views.vista_plantacion, name='vista_plantacion'),
     path('vista_sensores/<int:id_arduino>/', views.vista_sensores, name='vista_sensores'),
     path('vista_espacios/', views.vista_espacios, name='vista_espacios'),
     path('detalle_espacio/<int:id_espacio>/', views.detalle_espacio, name='detalle_espacio'),
@@ -48,7 +52,6 @@ urlpatterns = [
     path('cambiar_estado_sensor/<int:id_sensor>/', views.cambiar_estado_sensor, name='cambiar_estado_sensor'),
     path('cambiar_estado_arduino/<int:id_arduino>/', views.cambiar_estado_arduino, name='cambiar_estado_arduino'),
     path('vista_plantacion/<int:id_planta>', views.vista_plantacion, name='vista_plantacion'),
-    path('editar_division/<int:id_division_espacio>/<int:id_espacio>', views.editar_division, name='editar_division'),
     
     #otros
     path('admin/', admin.site.urls),

@@ -3,7 +3,7 @@
     {% load static %}
 <head>
     <meta charset="UTF-8">
-    <title>Registrar Plantas</title>
+    <title>Espacio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -89,7 +89,6 @@
               <a href="{% url 'planta'%}" style="margin: 15px;" class="btn btn-success col-3">
                 Añadir una nueva plantacion
               </a>
-              <!-- Enlace para redirigir a la página de registro de plantación -->
               
             </div> 
             <!-- Enlace para redirigir a la página de registro de plantación -->
@@ -107,7 +106,6 @@
       <h2>Información sobre las divisiones</h2>
       <ul class="responsive-table">
         <li class="table-header">
-          <div class="col col-1">ID división Espacio</div>
           <div class="col col-3">Tipo división</div>
           <div class="col col-4">Identificador</div>
           <div class="col col-6">Acciones</div>
@@ -115,7 +113,6 @@
         
         {% for d in division %}
           <li class="table-row">
-            <div class="col col-1" data-label="ID división Parcela">{{ d.id_division_espacio }}</div>
             <div class="col col-3" data-label="Tipo división">{{ d.tipo_division }}</div>
             <div class="col col-4" data-label="Identificador">{{ d.identificador }}</div>
             <div class="col col-6" data-label="Acciones">
@@ -136,7 +133,6 @@
       <h2>Información sobre las plantas</h2>
       <ul class="responsive-table">
           <li class="table-header">
-              <div class="col col-1">ID</div>
               <div class="col col-2">Fecha siembra</div>
               <div class="col col-3">Fecha cosecha</div>
               <div class="col col-4">Descripción planta</div>
@@ -145,13 +141,12 @@
           
           {% for planta in plantas %}
               <li class="table-row">
-                  <div class="col col-1" data-label="ID Planta">{{ planta.id_planta }}</div>
-                  <div class="col col-2" data-label="ID Planta">{{ planta.fecha_siembra |date:"Y-m-d"}}</div>
-                  <div class="col col-3" data-label="ID Planta">{{ planta.fecha_extraccion |date:"Y-m-d"}}</div>
-                  <div class="col col-4" data-label="ID Planta">{{ planta.descripcion_planta }}</div>
+                  <div class="col col-2" data-label="fecha_siembra">{{ planta.fecha_siembra |date:"Y-m-d"}}</div>
+                  <div class="col col-3" data-label="fecha_extraccion">{{ planta.fecha_extraccion |date:"Y-m-d"}}</div>
+                  <div class="col col-4" data-label="planta.descripcion_planta">{{ planta.descripcion_planta }}</div>
                   <div class="col col-6" data-label="Acciones">
                      <a href="{% url 'vista_plantacion' planta.id_planta%}" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                      <button class="btn btn-warning" data-form-type="plantacion"><i class="fas fa-edit"></i></button>
+                     <a href="{% url 'planta' planta.id_planta %}"><i class="fas fa-edit"></i></a>
                   </div>
               </li>
           {% empty %}
@@ -164,65 +159,58 @@
     <section class="mb-5">
       <h2>Información sobre sensores</h2>
       <ul class="responsive-table">
- 
         <!-- Iteración de los Arduinos -->
         {% for item in arduino_sensores %}
-        
+          <li class="table-row">
+            <!-- Solo mostrar ID y modelo de Arduino en la primera fila de sus sensores -->
+
+            <div class="col col-3">Modelo Arduino</div>
+            <div class="col col-3" data-label="Modelo Arduino">
+              {{ item.arduino.modelo_arduino }}
+            </div>
+            <div class="col col-2" data-label="Acciones">
+              <a href="{% url 'cambiar_estado_arduino' item.arduino.id_arduino %}" class="btn btn-warning">
+                <i class="fas fa-power-off"></i> 
+              </a>
+              <a href="{% url 'arduino' id_espacio item.arduino.id_arduino %}" class="btn btn-warning">
+                <i class="fas fa-edit"></i>
+              </a>
+            </div>
+          </li>
+    
+          <li class="table-header">
+            <div class="col col-3">Modelo Sensor</div>
+            <div class="col col-2">Estado</div>
+            <div class="col col-2">Acciones</div>
+          </li>
+    
           {% for sensor in item.sensores %}
-
-            <li class="table-row">
-              <!-- Solo mostrar ID y modelo de Arduino en la primera fila de sus sensores -->
-              {% if forloop.first %}
-                <div class="col col-2">ID Arduino</div>
-
-                <div class="col col-2" data-label="ID Arduino" rowspan="{{ item.sensores|length }}">
-                  {{ item.arduino.id_arduino }}
-                </div>
-                <div class="col col-3">Modelo Arduino</div>
-
-                <div class="col col-3" data-label="Modelo Arduino" rowspan="{{ item.sensores|length }}">
-                  {{ item.arduino.modelo_arduino }}
-                </div>
-                <div class="col col-2" data-label="Acciones">
-                  <a href="{% url 'cambiar_estado_arduino' item.arduino.id_arduino %}" class="btn btn-warning">
-                    <i class="fas fa-power-off"></i> 
-                  </a>
-                  <a href="{% url 'arduino' id_espacio item.arduino.id_arduino%}" style="margin: 15px;" class="btn btn-warning">
-                    <i class="fas fa-edit"></i></a>
-                  </a>
-                </div>
-              {% endif %}
-            </li>
-            <li class="table-header">
-
-              <div class="col col-2">ID Sensor</div>
-              <div class="col col-3">Modelo Sensor</div>
-              <div class="col col-2">Estado</div>
-              <div class="col col-2">Acciones</div>
-            </li>
             <li class="table-row">
               <!-- Datos del Sensor -->
-              <div class="col col-2" data-label="ID Sensor">{{ sensor.id_sensor }}</div>
               <div class="col col-3" data-label="Modelo Sensor">{{ sensor.id_modelo_sensor.nombre_sensor }}</div>
               <div class="col col-2" data-label="Estado">
                 {% if sensor.estado == 1 %}
-                        Activo
-                      {% else %}
-                        Inactivo
-                      {% endif %}
+                  Activo
+                {% else %}
+                  Inactivo
+                {% endif %}
               </div>
               <div class="col col-2" data-label="Acciones">
-                <!-- Botones de acción -->
+                <!-- Botón para cambiar estado del sensor -->
                 <a href="{% url 'cambiar_estado_sensor' sensor.id_sensor %}" class="btn btn-danger">
                   <i class="bi bi-arrow-repeat"></i>
                 </a>
+
               </div>
+            </li>
+          {% empty %}
+            <li class="table-row">
+              <div class="col" colspan="4">No hay sensores registrados para este Arduino.</div>
             </li>
           {% endfor %}
         {% empty %}
-          <!-- Mensaje si no hay Arduinos ni Sensores -->
           <li class="table-row">
-            <div class="col" colspan="6">No hay sensores registrados para los Arduinos de este espacio.</div>
+            <div class="col" colspan="6">No hay sensores ni Arduinos registrados en este espacio.</div>
           </li>
         {% endfor %}
       </ul>

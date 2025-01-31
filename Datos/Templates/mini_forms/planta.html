@@ -20,41 +20,49 @@
         {% block content %}
         <section class="mb-5">
             <div class="card shadow-sm p-4">
-                <h2>Formulario planta</h2>
+                <h2>{% if planta %}Editar{% else %}Crear{% endif %} Planta</h2>
                 <form id="plantaForm" method="POST">
                     {% csrf_token %}
                     <div class="row">
                         
-                        <select class="form-select" id="id_espacio" name="id_espacio" aria-label="Seleccione una espacio">
-                            <option selected disabled>Seleccione un tipo de planta</option>
-                        {% for p in tipo_p %}        
-                            <option values = "{{p.id_tipo_planta}}">{{p.nombre_comun}}</option>
-                        {% empty %}
-                            <option disabled>No hay tipos de plantas registradas</option>
-                        {% endfor %}
-                        </select>
-            
-                        <div class="col-6">
-                            <label class="text-normal text-dark form-label">Descripcion</label><br>
-                            <textarea id="descripcion_planta" name="descripcion_planta" rows="4" required></textarea>
+                        <div class="col-12">
+                            <label for="id_tipo_planta" class="form-label">Seleccione un tipo de planta</label>
+                            <select class="form-select" id="id_tipo_planta" name="id_espacio" aria-label="Seleccione un tipo de planta">
+                                <option disabled {% if not planta %}selected{% endif %}>Seleccione un tipo de planta</option>
+                                {% for p in tipo_p %}        
+                                    <option value="{{ p.id_tipo_planta }}" {% if planta and p.id_tipo_planta == planta.tipo_planta.id_tipo_planta %}selected{% endif %}>
+                                        {{ p.nombre_comun }}
+                                    </option>
+                                {% empty %}
+                                    <option disabled>No hay tipos de plantas registradas</option>
+                                {% endfor %}
+                            </select>
                         </div>
-            
+                
                         <div class="col-6">
-                            <label class="text-normal text-dark form-label">observaciones</label><br>
-                            <textarea id="observaciones_planta" name="observaciones_planta" rows="4" required></textarea>
+                            <label class="text-normal text-dark form-label">Descripción</label><br>
+                            <textarea id="descripcion_planta" name="descripcion_planta" rows="4" required>{{ planta.descripcion_planta|default:' ' }}</textarea>
                         </div>
-            
+                
                         <div class="col-6">
-                            <label class="text-normal text-dark form-label">Fecha de extraccion</label>
-                            <input type="date" name="fecha_extraccion" class="form-control" required id="fecha_extraccion">
+                            <label class="text-normal text-dark form-label">Observaciones</label><br>
+                            <textarea id="observaciones_planta" name="observaciones_planta" rows="4" required>
+                                {{ planta.observaciones_planta|default:'' }}
+                            </textarea>
                         </div>
-            
                         <div class="col-6">
                             <label class="text-normal text-dark form-label">Fecha de siembra</label>
-                            <input type="date" name="fecha_siembra" class="form-control" required id="fecha_siembra">
+                            <input type="date" name="fecha_siembra" class="form-control" required id="fecha_siembra" 
+                                value="{{ planta.fecha_siembra|default:''|date:'Y-m-d' }}">
+                        </div>
+
+                        <div class="col-6">
+                            <label class="text-normal text-dark form-label">Fecha de extracción</label>
+                            <input type="date" name="fecha_extraccion" class="form-control" required id="fecha_extraccion" 
+                                value="{{ planta.fecha_extraccion|default:''|date:'Y-m-d' }}">
                         </div>
                     </div>
-                        <button style="margin-top: 15px;" type="submit">Enviar</button>
+                    <button style="margin-top: 15px;" type="submit">{% if planta %}Editar{% else %}Crear{% endif %}</button>
                 </form>
             </div>
         </section>

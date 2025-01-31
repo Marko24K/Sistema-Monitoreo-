@@ -24,47 +24,69 @@
       <div class="card shadow-sm p-4">
         {% csrf_token %}
         <div class="row" style="text-align: center">
-          <div class="col-6">
-            <div class="p-6">
-              <h3>Imagen de la parcela</h3>
-              <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
-                {% if dato.imagen_espacio %}
-                    <img id="imagen-actual" src="" alt="Imagen del espacio" class="img-fluid">
-                {% else %}
-                    <p>No hay imagen registrada.</p>
-                    <img id="imagen-actual" src="/static/img/img_planta.png" alt="Imagen predeterminada" class="img-fluid">
-                {% endif %}
-              </div>            
-            </div>
-          </div>
   
-          <div class="col-6">
-            <!-- Columna para el resto del formulario -->
-            <h3>Datos del plantaciones</h3>
+          <h2 class="text-center">Registros de la Planta</h2>
+
+          <div class="mb-4">
+            {% for p in planta  %}
+              <h4>Planta: {{ p.descripcion_planta }}</h4>
+              <p><strong>observaciones</strong> {{ p.observaciones_planta }}</p>
+              <p><strong>fecha siembra</strong> {{ p.fecha_siembra }}</p>
+              <p><strong>fecha extraccion</strong> {{ p.fecha_extraccion }}</p>
+              
           </div>
+          {% endfor %}
+      <h3 class="text-center">Registros Asociados</h3>
+
+          {% if registro %}
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th>N°</th>
+                      <th>Número de Planta</th>
+                      <th>Altura</th>
+                      <th>Largo</th>
+                      <th>Ancho</th>
+                      <th>Grosor</th>
+                      <th>Vigor</th>
+                      <th>Turgencia</th>
+                      <th>Vitalidad</th>
+                      <th>Plagas/Enfermedades</th>
+                      <th>Descripción</th>
+                      <th>Observaciones</th>
+                      <th>fecha registro</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for r in registro %}
+                  <tr>
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ r.numero_planta }}</td>
+                      <td>{{ r.altura }} m</td>
+                      <td>{{ r.largo }} m</td>
+                      <td>{{ r.ancho }} m</td>
+                      <td>{{ r.grosor }} cm</td>
+                      <td>{{ r.vigor }}</td>
+                      <td>{{ r.turgencia }}</td>
+                      <td>{{ r.vitalidad }}</td>
+                      <td>{{ r.plaga_enfermedad|yesno:"No,Si" }}</td>
+                      <td>{{ r.descripcion_plaga_enfermedad }}</td>
+                      <td>{{ r.observaciones_registro }}</td>
+                      <td>{{ r.fecha_registro }}</td>
+
+
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          {% else %}
+          <p class="text-center">No hay registros para esta planta.</p>
+          {% endif %}
   
-          <div class="row justify-content-md-center" style="margin-top: 20px;">
-            <a class="btn btn-success col-6" style="margin:20px" href="{% url 'registro_planta' %}" class="btn btn-info">Registrar una Plantación</a>
-          </div>
         </div>
       </div>
     </section>
   
-    <section class="mb-5">
-      <h2>Información sobre sensores</h2>
-      <ul class="responsive-table">
-        <li class="table-header">
-          <div class="col col-1">ID arduino</div>
-          <div class="col col-4">Acciones</div>
-        </li>
-        
-        
-        <li class="table-row">
-            <div class="col col-1" data-label="ID"></div>
-            <div class="col col-4" data-label="Acciones"></div>
-        </li>
-      </ul>
-    </section>
       <!-- Modal y overlay No borrar-->
       <div class="overlay" id="overlay" aria-hidden="true"></div>
       <div id="modalContainer" aria-hidden="true"></div>
