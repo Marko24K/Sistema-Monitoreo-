@@ -18,10 +18,40 @@ from django.conf import settings
 from .serializer import RegistroSensorSerializer
 
 #-----------------------mini forms-----------------------
-def arduino(request,id_espacio):
-    if request.method =='POST':
-        return redirect('vistas_datos/vista_espacios.html')
-    return render(request, 'mini_forms/arduino.html')
+def arduino(request,id_espacio,id_arduino = None):
+    espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
+    arduino = None
+
+    if id_arduino:
+        arduino = get_object_or_404(Arduino, id_arduino=id_arduino)
+
+    if request.method == 'POST':
+        modelo_arduino = request.POST.get('modelo_arduino')
+        estado = request.POST.get('options')  # 1 o 0
+        if estado is None:
+            return HttpResponse("Debe seleccionar el estado del Arduino", status=400)
+
+        estado = int(estado)
+
+        if arduino:
+            # Editar Arduino existente
+            arduino.modelo_arduino = modelo_arduino
+            arduino.estado = estado
+            arduino.save()
+        else:
+            # Crear nuevo Arduino
+            arduino = Arduino.objects.create(
+                id_espacio=espacio,
+                modelo_arduino=modelo_arduino,
+                estado=estado
+            )
+
+        return redirect('detalle_espacio', id_espacio=espacio.id_espacio)
+
+    return render(request, 'mini_forms/arduino.html', {
+        'espacio': espacio,
+        'arduino': arduino
+    })
 
 def division_espacio(request, id_espacio, id_division=None):
     espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
@@ -65,50 +95,43 @@ def division_espacio(request, id_espacio, id_division=None):
         'division': division
     })
 
-"""
-def modelo_sensor(request):
+
+def modelo_sensor(request, id_espacio):
+    espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
+    # Filtrar los arduinos que pertenecen a este espacio
+    arduinos = Arduino.objects.filter(id_espacio=espacio)
+
     if request.method == 'POST':
-    nombre_sensor = request.POST['nombre_sensor']
-    descripcion_sensor = request.POST['Descripcion_sensor']
-    id_arduino = request.POST.get('id_arduino')  # ID del Arduino al que se va a enlazar
-    estado = 1 if request.POST['options'] == '1' else 0  # 1 para activo, 0 para inactivo
-    if not nombre_sensor or not descripcion_sensor or not id_arduino:
-                return HttpResponse("Todos los campos son obligatorios.", status=400)
+        nombre_sensor = request.POST.get('nombre_sensor')
+        descripcion = request.POST.get('Descripcion_sensor')
+        estado = request.POST.get('options')
+        id_arduino = request.POST.get('id_arduino')
 
-            try:
-                # Obtener el Arduino al que se va a enlazar
-                arduino = Arduino.objects.get(id_arduino=id_arduino)
-            except Arduino.DoesNotExist:
-                return HttpResponse("Arduino no encontrado.", status=404)
+        if not nombre_sensor or not descripcion or estado is None or not id_arduino:
+            return HttpResponse("Todos los campos son obligatorios", status=400)
 
-            # Crear el modelo de sensor y enlazarlo al Arduino
-            modelo_sensor = ModeloSensor.objects.create(
-                nombre_sensor=nombre_sensor,
-                descripcion=descripcion_sensor
-            )
+        estado = int(estado)
+        arduino = get_object_or_404(Arduino, id_arduino=id_arduino)
 
-            # Enlazar el sensor al Arduino (suponiendo que hay una tabla Sensor para eso)
-            Sensor.objects.create(
-                id_arduino=arduino,
-                id_modelo_sensor=modelo_sensor,
-                estado = estado
-            )
+        # Crear modelo de sensor
+        modelo_sensor = ModeloSensor.objects.create(
+            nombre_sensor=nombre_sensor,
+            descripcion=descripcion
+        )
 
-            # Redirigir de vuelta a la vista de sensores
-            return redirect('vista_sensores', id_arduino=arduino.id_arduino)
+        # Crear sensor y enlazarlo con Arduino
+        sensor = Sensor.objects.create(
+            id_arduino=arduino,
+            id_modelo_sensor=modelo_sensor,
+            estado=estado
+        )
 
-        # Si no es un POST, renderizar el formulario vacío
-        id_arduino = request.GET.get('id_arduino')  # Obtener el ID del Arduino desde el GET
-        if not id_arduino:
-            return HttpResponse("ID del Arduino no proporcionado.", status=400)
+        return redirect('detalle_espacio', id_espacio=espacio.id_espacio)
 
-        try:
-            arduino = Arduino.objects.get(id_arduino=id_arduino)
-        except Arduino.DoesNotExist:
-            return HttpResponse("Arduino no encontrado.", status=404)
-
-        return render(request, 'mini_forms/modelo_sensor.html', {'arduino': arduino, 'id_arduino': id_arduino})
-    return render(request, 'mini_forms/modelo_sensor.html')"""
+    return render(request, 'mini_forms/modelo_sensor.html', {
+        'espacio': espacio,
+        'arduinos': arduinos
+    })
 
 def planta(request):
     if request.method =='POST':

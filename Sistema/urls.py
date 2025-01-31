@@ -28,10 +28,11 @@ urlpatterns = [
     path('tipo_planta/', views.tipo_planta, name='tipo_planta'),
     
     #mini_forms
-    path('arduino/', views.arduino, name='arduino'),
+    path('arduino/<int:id_espacio>/', views.arduino, name='arduino'),
+    path('arduino/<int:id_espacio>/<int:id_arduino>/', views.arduino, name='arduino'),
     path('division_espacio/<int:id_espacio>/', views.division_espacio, name='division_espacio'), #crear
-    path('division_espacio/<int:id_espacio>/<int:id_division_espacio>', views.division_espacio, name='division_espacio'),
-    #path('modelo_sensor/', views.modelo_sensor, name='modelo_sensor'),
+    path('division_espacio/<int:id_espacio>/<int:id_division_espacio>', views.division_espacio, name='editar_division_espacio'),
+    path('modelo_sensor/<int:id_espacio>/', views.modelo_sensor, name='modelo_sensor'),
     path('planta/', views.planta, name='planta'),
     path('sensor/', views.sensor, name='sensor'),
     path('tipo_dato/', views.tipo_dato, name='tipo_dato'),
