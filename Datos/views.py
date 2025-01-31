@@ -152,15 +152,6 @@ def cambiar_estado_sensor(request, id_sensor):
     sensor.save()
     return redirect('detalle_espacio', id_espacio=sensor.id_arduino.id_espacio.id_espacio)
 
-def listado_arduinos_sensores(request):
-    arduinos = Arduino.objects.prefetch_related('sensor_set').all()
-    registros = list(RegistroSensor.objects.values('valor', 'fecha_registro'))
-        # Convertir fecha a string con un formato legible
-    for registro in registros:
-        registro['fecha_registro'] = registro['fecha_registro'].strftime('%d-%m-%Y %H:%M:%S')
-
-    return render(request, 'vistas_datos/listado_arduino_sensores.html', {'arduinos': arduinos, 'registros': registros})
-
 def cambiar_estado_arduino(request, id_arduino):
     arduino = get_object_or_404(Arduino, id_arduino=id_arduino)
 
@@ -289,7 +280,6 @@ def editar_espacio(request, id_espacio):
 
     return render(request, 'forms/registro_espacio.html', {'espacio': espacio, 'localidad': localidad ,'tipo_espacio':tipo_espacio})
 
-
 def detalle_espacio(request, id_espacio):
     # Obtener el espacio correspondiente
     dato = get_object_or_404(Espacio, id_espacio=id_espacio)
@@ -392,11 +382,6 @@ def registro_planta(request, id_espacio):
         'division': division,
         'plantacion': plantacion
     })
-
-
-
-
-
 # Vista para mostrar los sensores y sus datos
 def datos_por_sensor(request):
     sensores = Sensor.objects.all()  # Obtenemos todos los sensores
@@ -405,7 +390,6 @@ def datos_por_sensor(request):
         'sensores': sensores,
     }
     return render(request, 'vistas_datos/datos_por_sensor.html', context)
-
 # Vista para obtener los datos de un sensor
 def obtener_datos_sensor(request):
     sensor_id = request.GET.get('sensor_id')  # Obtener el ID del sensor seleccionado desde el GET
@@ -547,99 +531,63 @@ def guardar_datos_sensor(request):
             return JsonResponse({'error': f'Error inesperado en el servidor: {str(e)}'}, status=500)
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)
+
 def datos(request):
     valores = RegistroSensor.objects.all()
     registros = RegistroSensor.objects.values('fecha_registro', 'valor')  # Obtiene solo los campos necesarios
     return render(request, '.html', {'registros': registros})
-    
-def detalle_dato(request):
-    dato = request.GET.get('dato', None)
-    if dato not in ['Temperatura', 'Humedad','Humedad_suelo','CO2','TDS']:
-        return JsonResponse({'error': 'Tipo de dato inválido.'}, status=400)
 
-    tipo_dato = get_object_or_404(TipoDato, nombre_dato=dato)
-    datos_sensores = RegistroSensor.objects.filter(id_tipo_dato=tipo_dato).order_by('-fecha_registro')[:10]
-
-    serializer = RegistroSensorSerializer(datos_sensores, many=True)
-    # Recolecta los datos para el gráfico
-    chart_data = []
-    for data_point in datos_sensores:
-        chart_data.append({
-            'fecha': data_point.fecha_registro.strftime('%Y-%m-%d %H:%M:%S'),
-            'valor': float(data_point.valor),  # Convertir Decimal a float
-        })
-
-    # Si la solicitud es AJAX, devolveremos los datos en formato JSON
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return JsonResponse({
-            'chart_data': [{
-                'fecha': data['fecha_registro'],
-                'valor': data['valor'],
-            } for data in serializer.data],  # Usamos los datos serializados para el gráfico
-            'table_data': serializer.data,  # Usamos los datos serializados para la tabla
-        })
-
-    return render(request, 'ver_mas.html', {
-        'dato': dato,
-        'unidad': tipo_dato.unidad_medida,
-        'chart_data': json.dumps([{
-            'fecha': data['fecha_registro'],
-            'valor': data['valor'],
-        } for data in serializer.data]),  #  datos serializados para el gráfico
-        'recent_data': serializer.data,  # Enviar los datos serializados a la plantilla
-    })
-#pruebas
+#seccion del home
 def obtener_estadisticas(id_tipo_dato):
-    
-    return RegistroSensor.objects.filter(id_tipo_dato_id=id_tipo_dato).aggregate(
+    stats = RegistroSensor.objects.filter(id_tipo_dato_id=id_tipo_dato).aggregate(
         max_value=Max('valor'),
         min_value=Min('valor'),
         avg_value=Avg('valor')
     )
 
-def visualizar_datos(request):
-    # Obtener todos los tipos de datos
-    tipos_dato = TipoDato.objects.all()
-    estadisticas = {}
+    max_fecha = RegistroSensor.objects.filter(id_tipo_dato_id=id_tipo_dato, valor=stats['max_value']) \
+        .order_by('-fecha_registro').values_list('fecha_registro', flat=True).first()
+    
+    min_fecha = RegistroSensor.objects.filter(id_tipo_dato_id=id_tipo_dato, valor=stats['min_value']) \
+        .order_by('-fecha_registro').values_list('fecha_registro', flat=True).first()
 
-    for tipo in tipos_dato:
-        registros = RegistroSensor.objects.filter(id_tipo_dato=tipo).order_by("fecha_registro")
+    # Formatear fechas si existen
+    max_fecha = max_fecha.strftime('%d/%m/%Y %H:%M') if max_fecha else None
+    min_fecha = min_fecha.strftime('%d/%m/%Y %H:%M') if min_fecha else None
 
-        etiquetas = [registro.fecha_registro.strftime("%Y-%m-%d %H:%M") for registro in registros]
-        valores = [float(registro.valor) for registro in registros]  # Convertir a float
-
-        # Guardar en el diccionario con el nombre del tipo de dato
-        estadisticas[tipo.nombre_dato] = {"etiquetas": etiquetas, "valores": valores}
-
-    return render(request, "home.html", {"estadisticas": estadisticas})
+    return {
+        'max_value': stats['max_value'],
+        'min_value': stats['min_value'],
+        'avg_value': stats['avg_value'],
+        'max_fecha': max_fecha,
+        'min_fecha': min_fecha
+    }
 
 def home(request):
-    # Obtener todos los tipos de datos
-    tipos_dato = TipoDato.objects.values('id_tipo_dato', 'nombre_dato')
+    tipos_dato = TipoDato.objects.values('id_tipo_dato', 'nombre_dato','unidad_medida')
 
-    # Generar estadísticas para cada tipo de dato
     estadisticas = {}
     for tipo in tipos_dato:
         id_tipo = tipo['id_tipo_dato']
         nombre = tipo['nombre_dato']
+        medida = tipo['unidad_medida']
 
-        # Obtener estadísticas y datos recientes
         stats = obtener_estadisticas(id_tipo)
         datos_recientes = RegistroSensor.objects.filter(id_tipo_dato_id=id_tipo).order_by('-fecha_registro')[:10]
 
-        # Serializar los datos recientes
         datos_serializer = RegistroSensorSerializer(datos_recientes, many=True)
 
-        # Guardar en el diccionario
         estadisticas[nombre] = {
+            'medida':tipo['unidad_medida'],
             'max': stats['max_value'],
             'min': stats['min_value'],
             'avg': stats['avg_value'],
+            'fecha_max': stats['max_fecha'],
+            'fecha_min': stats['min_fecha'],
             'datos_recientes': datos_serializer.data,
         }
 
     return render(request, 'home.html', {'estadisticas': estadisticas})
-
 @api_view(['GET'])
 def datos_recientes(request):
     # Obtener todos los tipos de datos
@@ -667,3 +615,13 @@ def datos_recientes(request):
         }
 
     return JsonResponse({'estadisticas': estadisticas})
+
+#pruebas
+def listado_arduinos_sensores(request):
+    arduinos = Arduino.objects.prefetch_related('sensor_set').all()
+    registros = list(RegistroSensor.objects.values('valor', 'fecha_registro'))
+        # Convertir fecha a string con un formato legible
+    for registro in registros:
+        registro['fecha_registro'] = registro['fecha_registro'].strftime('%d-%m-%Y %H:%M:%S')
+
+    return render(request, 'vistas_datos/listado_arduino_sensores.html', {'arduinos': arduinos, 'registros': registros})

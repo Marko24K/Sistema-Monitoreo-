@@ -12,8 +12,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <script src="{% static 'js/script.js' %}"></script>
-
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 
@@ -34,21 +34,13 @@
                                         <div class="stat-card">
                                             <h2 class="text-danger">{{ nombre_dato }}</h2>
                                             <hr>
-                                            <p><strong>Máximo:</strong> <span id="max-{{ forloop.counter }}">{{ data.max }}</span></p>
-                                            <p><strong>Fecha:</strong> <span id="max-date-{{ forloop.counter }}">
-                                                {% for registro in data.datos_recientes %}
-                                                    {{ registro.fecha_registro }}
-                                                {% endfor %}
-                                            </span></p>
+                                            <p><strong>Máximo:</strong> <span id="max-{{ forloop.counter }}">{{ data.max }} - {{data.medida}}</span></p>
+                                            <p><strong>Fecha:</strong> <span id="max-date-{{ forloop.counter }}">{{ data.fecha_max }}</span></p>
                                             <hr>
-                                            <p><strong>Mínimo:</strong> <span id="min-{{ forloop.counter }}">{{ data.min }}</span></p>
-                                            <p><strong>Fecha:</strong> <span id="min-date-{{ forloop.counter }}">
-                                                {% for registro in data.datos_recientes %}
-                                                    {{ registro.fecha_registro }}
-                                                {% endfor %}
-                                            </span></p>
+                                            <p><strong>Mínimo:</strong> <span id="min-{{ forloop.counter }}">{{ data.min }} - {{data.medida}}</span></p>
+                                            <p><strong>Fecha:</strong> <span id="min-date-{{ forloop.counter }}">{{ data.fecha_min }}</span></p>
                                             <hr>
-                                            <p><strong>Promedio:</strong> <span id="avg-{{ forloop.counter }}">{{ data.avg|floatformat:2 }}</span></p>
+                                            <p><strong>Promedio:</strong> <span id="avg-{{ forloop.counter }}">{{ data.avg|floatformat:2 }} - {{data.medida}}</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -56,7 +48,11 @@
                             <div class="col-lg-6 mb-4">
                                 <div class="card shadow-sm h-100">
                                     <div class="card-body">
-                                        <!-- Espacio para más contenido -->
+                                        <h2 class="text-danger">{{ nombre_dato }}</h2>
+                                        <canvas id="chart-{{ forloop.counter }}" width="400" height="200"
+                                            data-labels='[{% for registro in data.datos_recientes %}"{{ registro.fecha_registro }}"{% if not forloop.last %}, {% endif %}{% endfor %}]'
+                                            data-values='[{% for registro in data.datos_recientes %}{{ registro.valor }}{% if not forloop.last %}, {% endif %}{% endfor %}]'>
+                                        </canvas>
                                     </div>
                                 </div>
                             </div>
@@ -76,28 +72,10 @@
                 </button>
             </div>
         </section>
-        
 
         <section class="mb-5">
-            <div class="row">
-                {% for tipo, datos in estadisticas.items %}
-                    <div class="col-lg-6 mb-4">
-                        <div class="card shadow-sm h-100">
-                            <script id="estadisticas-data" type="application/json">
-                                {{ estadisticas|safe }}
-                            </script>
-                            <div class="card-body">
-                                <!-- Incluir los datos en un script oculto -->
-                                <div>                            
-                                    <h3>{{ tipo }}</h3>
-                                    <canvas id="chart_{{ tipo|slugify }}"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </section>            
+            
+        </section>                 
         {% endblock %}
     </main>  
         
