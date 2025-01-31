@@ -74,12 +74,15 @@
 
             <div class="row justify-content-md-center" style="margin-top: 20px;">
               <!-- enlace parar ir de registro de nuevo arduino -->
-              <a href="{% url 'arduino'%}" style="margin: 15px;" class="btn btn-success col-3">
+              <a href="{% url 'arduino' id_espacio %}" style="margin: 15px;" class="btn btn-success col-3">
                 Registrar nuevo arduino
+              </a>
+              <a href="{% url 'modelo_sensor' id_espacio %}" style="margin: 15px;" class="btn btn-success col-3">
+                Añadir un sensor
               </a>
               {% if dato.id_tipo_espacio.nombre_tipo_espacio != 'Humedal' %}
               <!-- enlace a división de espacio -->
-              <a href="{% url 'division_espacio' id_espacio%}" style="margin: 15px;" class="btn btn-success col-3">
+              <a href="{% url 'division_espacio' id_espacio %}" style="margin: 15px;" class="btn btn-success col-3">
                 Añadir división de espacio
               </a>
               <!-- Enlace para redirigir a la página de agregar una plantacion -->
@@ -180,9 +183,14 @@
                 <div class="col col-3" data-label="Modelo Arduino" rowspan="{{ item.sensores|length }}">
                   {{ item.arduino.modelo_arduino }}
                 </div>
-                <a href="{% url 'cambiar_estado_arduino' item.arduino.id_arduino %}" class="btn btn-warning">
-                  <i class="fas fa-power-off"></i> 
-              </a>
+                <div class="col col-2" data-label="Acciones">
+                  <a href="{% url 'cambiar_estado_arduino' item.arduino.id_arduino %}" class="btn btn-warning">
+                    <i class="fas fa-power-off"></i> 
+                  </a>
+                  <a href="{% url 'arduino' id_espacio item.arduino.id_arduino%}" style="margin: 15px;" class="btn btn-warning">
+                    <i class="fas fa-edit"></i></a>
+                  </a>
+                </div>
               {% endif %}
             </li>
             <li class="table-header">

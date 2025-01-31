@@ -24,26 +24,27 @@
                 <form id="arduinoForm" method="POST">
                     {% csrf_token %}
                     <!-- Campo oculto para el id_espacio -->
-                    <input type="hidden" id="id_espacio" name = "id_espacio" value="{{espacio.id_espacio}}">
-            
-                    <div class="col 6">
+                    <input type="hidden" id="id_espacio" name="id_espacio" value="{{ espacio.id_espacio }}">
+
+                    <div class="col-6">
                         <select style="margin-bottom: 5%;" class="form-select" id="modelo_arduino" name="modelo_arduino" aria-label="Seleccione un arduino">
-                            <option selected disabled>Seleccione un arduino</option>
-                            <option value="Mega">Mega</option>
-                            <option value="Uno">Uno</option>
-                            <option value="Nano">Nano</option>
-                            <option value="Esp32">Esp32</option>
+                            <option disabled {% if not arduino %}selected{% endif %}>Seleccione un arduino</option>
+                            <option value="Mega" {% if arduino and arduino.modelo_arduino == "Mega" %}selected{% endif %}>Mega</option>
+                            <option value="Uno" {% if arduino and arduino.modelo_arduino == "Uno" %}selected{% endif %}>Uno</option>
+                            <option value="Nano" {% if arduino and arduino.modelo_arduino == "Nano" %}selected{% endif %}>Nano</option>
+                            <option value="Esp32" {% if arduino and arduino.modelo_arduino == "Esp32" %}selected{% endif %}>Esp32</option>
                         </select>
-                        <input type="radio" class="btn-check" name="options" id="option1" values ="1" autocomplete="off" >
+
+                        <input type="radio" class="btn-check" name="options" id="option1" value="1" {% if arduino and arduino.estado == 1 %}checked{% endif %}>
                         <label class="btn btn-outline-success" for="option1">Arduino activo</label>
-            
-                        <input type="radio" class="btn-check" name="options" values="0" id="option2" autocomplete="off">
+
+                        <input type="radio" class="btn-check" name="options" id="option2" value="0" {% if arduino and arduino.estado == 0 %}checked{% endif %}>
                         <label class="btn btn-outline-danger" for="option2">Arduino inactivo</label>
                     </div>
-                    <button class="btn btn-outline-primary" style="margin: 10px;" type="submit">Enviar</button>
+                    <button class="btn btn-outline-primary" style="margin: 10px;" type="submit">Guardar</button>
                 </form>
             </div>
-        </div>
+        </section>
         {% endblock %}
     </main>
     {% include 'footer.html' %}
