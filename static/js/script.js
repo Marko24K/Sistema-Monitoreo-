@@ -14,7 +14,9 @@ $(document).ready(function() {
                     data: values,
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    fill: true, // Para rellenar el área debajo de la línea
+                    tension: 0.5,  // Ajusta la curvatura de la línea (0 = recta, 1 = muy curva)
                 }]
             },
             options: {

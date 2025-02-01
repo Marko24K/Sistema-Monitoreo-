@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.utils import timezone
 from datetime import datetime
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import os
 from PIL import Image
 import qrcode
@@ -95,15 +95,8 @@ def division_espacio(request, id_espacio, id_division_espacio=None):
         'division': division
     })
 
-
-def modelo_sensor(request, id_espacio, id_modelo_sensor=None):
-    modelo_sensor = None
-    sensor = None
-
-    if id_modelo_sensor:
-        modelo_sensor = get_object_or_404(ModeloSensor, id_modelo_sensor=id_modelo_sensor)
-        sensor = Sensor.objects.filter(id_modelo_sensor=modelo_sensor).first()
-    
+def modelo_sensor(request, id_espacio):
+    espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
     # Filtrar los arduinos que pertenecen a este espacio
     arduinos = Arduino.objects.filter(id_espacio=id_espacio)
 
@@ -630,6 +623,7 @@ def home(request):
 
         stats = obtener_estadisticas(id_tipo)
         datos_recientes = RegistroSensor.objects.filter(id_tipo_dato_id=id_tipo).order_by('-fecha_registro')[:10]
+        arduinos = Arduino.objects.prefetch_related('sensor_set').all()
 
         datos_serializer = RegistroSensorSerializer(datos_recientes, many=True)
 
@@ -643,7 +637,7 @@ def home(request):
             'datos_recientes': datos_serializer.data,
         }
 
-    return render(request, 'home.html', {'estadisticas': estadisticas})
+    return render(request, 'home.html', {'estadisticas': estadisticas,'arduinos': arduinos})
 @api_view(['GET'])
 def datos_recientes(request):
     # Obtener todos los tipos de datos

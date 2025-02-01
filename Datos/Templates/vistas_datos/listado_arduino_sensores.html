@@ -34,6 +34,7 @@
             <tbody>
                 {% for arduino in arduinos %}
                 <tr>
+                    <!--{% for arduino in arduinos %}{{ arduino.modelo_arduino }}{% endfor %}-->
                     <td>{{ arduino.id_arduino }}</td>
                     <td>{{ arduino.modelo_arduino }}</td>
                     <td>{% if arduino.estado == 1 %}
