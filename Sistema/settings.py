@@ -81,9 +81,9 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'BIOMET',
+        'NAME': 'Humedal',
         'USER':'postgres',
-        'PASSWORD': 'admin',
+        'PASSWORD': 'refrigerador',
         'HOST': 'localhost',
         'PORT': '5432'
     },
@@ -91,7 +91,15 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'humedal_espejo',
         'USER': 'postgres',
-        'PASSWORD': 'admin',
+        'PASSWORD': 'refrigerador',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    },
+    'delayed': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'humedal_delayed',
+        'USER': 'postgres',
+        'PASSWORD': 'refrigerador',
         'HOST': 'localhost',
         'PORT': '5432',
     }

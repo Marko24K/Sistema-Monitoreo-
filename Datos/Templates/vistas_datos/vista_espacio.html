@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-    {% load static %}
+{% load static %}
+
 <head>
-    <meta charset="UTF-8">
-    <title>Espacio</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Espacio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'css/estilo_tabla.css' %}">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/estilo_tabla.css' %}">
 
-    <script src="{% static 'js/vista_imagen.js'%}"></script>
-    <script src="{% static 'js/form_emergente.js' %}"></script>
+  <script src="{% static 'js/vista_imagen.js'%}"></script>
+  <script src="{% static 'js/form_emergente.js' %}"></script>
 </head>
+
 <body>
   {% include 'header.html' %}
   <main class="container my-4">
@@ -27,50 +29,72 @@
         <div class="row" style="text-align: center">
           <div class="col-6">
             <div class="p-6">
-              <h3>Imagen del espacio</h3>
+              {% if dato.id_tipo_espacio.nombre_tipo_espacio == 'parcela' %}
+              <h3 style="color: #6DBE45;">Imagen de la {{dato.id_tipo_espacio.nombre_tipo_espacio}}</h3>
+              {% else %}
+              <h3 style="color: #6DBE45;">Imagen del {{dato.id_tipo_espacio.nombre_tipo_espacio}}</h3>
+              {% endif %}
+
               <!-- Parte de vista_espacio -->
-              <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
+              <div class="contenedor-imagen mx-auto" id="imagen-contenedor"
+                style="width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
                 {% if dato.imagen_espacio %}
-                    <img id="imagen-actual" src="{{dato.imagen_espacio.url}}" alt="Imagen del espacio" class="img-fluid">
+                <img id="imagen-actual" src="{{dato.imagen_espacio.url}}" alt="Imagen del espacio" class="img-fluid"
+                  style="width: 100%; max-width: 400px; height: auto; object-fit: contain; border-radius: 15px;">
                 {% else %}
-                  <p>No hay imagen registrada.</p>
-                  <img id="imagen-actual" src="/static/img/img_parcela.png" alt="Imagen predeterminada" class="img-fluid">
+                <p>No hay imagen registrada.</p>
+                <img id="imagen-actual" src="/static/img/img_parcela.png" alt="Imagen predeterminada" class="img-fluid"
+                  style="width: 100%; max-width: 400px; height: auto; object-fit: contain; border-radius: 15px;">
                 {% endif %}
-              </div>            
+              </div>
             </div>
           </div>
           <div class="col-6">
             <!-- Columna para el resto del formulario -->
-            <h3>Datos del espacio</h3>
+            {% if dato.id_tipo_espacio.nombre_tipo_espacio == 'parcela' %}
+            <h3 style="color: #6DBE45;"> Datos de la {{dato.id_tipo_espacio.nombre_tipo_espacio}}</h3>
+            {%else%}
+            <h3 style="color: #6DBE45;">Datos del {{dato.id_tipo_espacio.nombre_tipo_espacio}}</h3>
+            {%endif%}
+
             <!-- localidad_parcela -->
-            <label for="val_localidad_p" class="form-label"><strong>Localidad de la parcela</strong></label>
-            <div style="background-color:cyan;border-radius: 15px;">
-              {{ dato.id_localidad_id.nombre_localidad }}
+            
+            <!-- Localidad -->
+            <label for="val_localidad_p" class="form-label d-block text-start"><strong>Localidad</strong></label>
+            <div
+              style="background-color:white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc;">
+              {{ dato.id_localidad.nombre_localidad }}
             </div>
-               <!-- Campo oculto donde se va a asignar el valor de id_espacio mediante JavaScript -->
-              <input type="hidden" id="id_espacio_form" name="id_espacio" value="{{ dato.id_espacio }}">
-            <!-- Nombre parcela -->
-            <label for="val_nombre_p" class="form-label"><strong>Nombre parcela</strong></label>
-            <div style="background-color:cyan;border-radius: 15px;">
+
+            <!-- Campo oculto donde se va a asignar el valor de id_espacio mediante JavaScript -->
+            <input type="hidden" id="id_espacio_form" name="id_espacio" value="{{ dato.id_espacio }}">
+
+            <!-- Nombre -->
+            <label for="val_nombre_p" class="form-label d-block text-start"><strong>Nombre</strong></label>
+            <div
+              style="background-color:white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc;">
               {{ dato.nombre_espacio }}
             </div>
-                              
-            <!-- Direccion parcela -->
-            <label for="val_direccion_p" class="form-label"><strong>Dirección de la parcela</strong></label>
-            <div style="background-color:cyan;border-radius: 15px;">
+
+            <!-- Dirección -->
+            <label for="val_direccion_p" class="form-label d-block text-start"><strong>Dirección</strong></label>
+            <div
+              style="background-color:white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc;">
               {{ dato.direccion_espacio }}
             </div>
-            
-            <!-- UTM -->
-            <label for="val_direccion_p" class="form-label"><strong>UTM</strong></label>
-            <div style="background-color:cyan;border-radius: 15px;">
+
+            <!-- Ubicación UTM -->
+            <label for="val_direccion_p" class="form-label d-block text-start"><strong>Ubicación UTM</strong></label>
+            <div
+              style="background-color:white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc;">
               {{ dato.utm }}
             </div>
-          </div>
-            
 
-            <div class="row justify-content-md-center" style="margin-top: 20px;">
-            
+          </div>
+
+
+          <div class="row justify-content-md-center" style="margin-top: 20px;">
+
 
             <div class="row justify-content-md-center" style="margin-top: 20px;">
               <!-- enlace parar ir de registro de nuevo arduino -->
@@ -89,17 +113,18 @@
               <a href="{% url 'planta'%}" style="margin: 15px;" class="btn btn-success col-3">
                 Añadir una nueva plantacion
               </a>
-              
-            </div> 
+
+            </div>
             <!-- Enlace para redirigir a la página de registro de plantación -->
-            <a href="{% url 'registro_planta' id_espacio %}" class="btn btn-success col-3">Realizar registro de plantación</a>
+            <a href="{% url 'registro_planta' id_espacio %}" class="btn btn-success col-3">Realizar registro de
+              plantación</a>
 
             {% endif %}
           </div>
         </div>
       </div>
     </section>
-  
+
     <!-- Informacion sobre las divisiones (solo si no es humedal) -->
     {% if dato.id_tipo_espacio.nombre_tipo_espacio != 'Humedal' %}
     <section class="mb-5">
@@ -110,118 +135,123 @@
           <div class="col col-4">Identificador</div>
           <div class="col col-6">Acciones</div>
         </li>
-        
+
         {% for d in division %}
-          <li class="table-row">
-            <div class="col col-3" data-label="Tipo división">{{ d.tipo_division }}</div>
-            <div class="col col-4" data-label="Identificador">{{ d.identificador }}</div>
-            <div class="col col-6" data-label="Acciones">
-              <a href="{% url 'division_espacio' id_espacio d.id_division_espacio%}"  class="btn btn-warning">
-                <i class="fas fa-edit"></i></a>
-            </div>
-          </li>
+        <li class="table-row">
+          <div class="col col-3" data-label="Tipo división">{{ d.tipo_division }}</div>
+          <div class="col col-4" data-label="Identificador">{{ d.identificador }}</div>
+          <div class="col col-6" data-label="Acciones">
+            <a href="{% url 'division_espacio' id_espacio d.id_division_espacio%}" class="btn btn-warning">
+              <i class="fas fa-edit"></i></a>
+          </div>
+        </li>
         {% empty %}
-          <li class="table-row"><div class="col" colspan="6">No divisiones registradas</div></li>
+        <li class="table-row">
+          <div class="col" colspan="6">No divisiones registradas</div>
+        </li>
         {% endfor %}
       </ul>
     </section>
     {% endif %}
-  
+
     <!-- Información sobre las plantas (solo si no es humedal) -->
     {% if dato.id_tipo_espacio.nombre_tipo_espacio != 'Humedal' %}
     <section class="mb-5">
       <h2>Información sobre las plantas</h2>
       <ul class="responsive-table">
-          <li class="table-header">
-              <div class="col col-2">Fecha siembra</div>
-              <div class="col col-3">Fecha cosecha</div>
-              <div class="col col-4">Descripción planta</div>
-              <div class="col col-6">Acciones</div>
-          </li>
-          
-          {% for planta in plantas %}
-              <li class="table-row">
-                  <div class="col col-2" data-label="fecha_siembra">{{ planta.fecha_siembra |date:"Y-m-d"}}</div>
-                  <div class="col col-3" data-label="fecha_extraccion">{{ planta.fecha_extraccion |date:"Y-m-d"}}</div>
-                  <div class="col col-4" data-label="planta.descripcion_planta">{{ planta.descripcion_planta }}</div>
-                  <div class="col col-6" data-label="Acciones">
-                     <a href="{% url 'vista_plantacion' planta.id_planta%}" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                     <a href="{% url 'planta' planta.id_planta %}"><i class="fas fa-edit"></i></a>
-                  </div>
-              </li>
-          {% empty %}
-              <li class="table-row"><div class="col" colspan="6">No plantas registradas en esta división.</div></li>
-          {% endfor %}
+        <li class="table-header">
+          <div class="col col-2">Fecha siembra</div>
+          <div class="col col-3">Fecha cosecha</div>
+          <div class="col col-4">Descripción planta</div>
+          <div class="col col-6">Acciones</div>
+        </li>
+
+        {% for planta in plantas %}
+        <li class="table-row">
+          <div class="col col-2" data-label="fecha_siembra">{{ planta.fecha_siembra |date:"Y-m-d"}}</div>
+          <div class="col col-3" data-label="fecha_extraccion">{{ planta.fecha_extraccion |date:"Y-m-d"}}</div>
+          <div class="col col-4" data-label="planta.descripcion_planta">{{ planta.descripcion_planta }}</div>
+          <div class="col col-6" data-label="Acciones">
+            <a href="{% url 'vista_plantacion' planta.id_planta%}" class="btn btn-info"><i class="fas fa-eye"></i></a>
+            <a href="{% url 'planta' planta.id_planta %}"><i class="fas fa-edit"></i></a>
+          </div>
+        </li>
+        {% empty %}
+        <li class="table-row">
+          <div class="col" colspan="6">No plantas registradas en esta división.</div>
+        </li>
+        {% endfor %}
       </ul>
-  </section>
+    </section>
     {% endif %}
-  
+
     <section class="mb-5">
       <h2>Información sobre sensores</h2>
       <ul class="responsive-table">
         <!-- Iteración de los Arduinos -->
         {% for item in arduino_sensores %}
-          <li class="table-row">
-            <!-- Solo mostrar ID y modelo de Arduino en la primera fila de sus sensores -->
+        <li class="table-row">
+          <!-- Solo mostrar ID y modelo de Arduino en la primera fila de sus sensores -->
 
-            <div class="col col-3">Modelo Arduino</div>
-            <div class="col col-3" data-label="Modelo Arduino">
-              {{ item.arduino.modelo_arduino }}
-            </div>
-            <div class="col col-2" data-label="Acciones">
-              <a href="{% url 'cambiar_estado_arduino' item.arduino.id_arduino %}" class="btn btn-warning">
-                <i class="fas fa-power-off"></i> 
-              </a>
-              <a href="{% url 'arduino' id_espacio item.arduino.id_arduino %}" class="btn btn-warning">
-                <i class="fas fa-edit"></i>
-              </a>
-            </div>
-          </li>
-    
-          <li class="table-header">
-            <div class="col col-3">Modelo Sensor</div>
-            <div class="col col-2">Estado</div>
-            <div class="col col-2">Acciones</div>
-          </li>
-    
-          {% for sensor in item.sensores %}
-            <li class="table-row">
-              <!-- Datos del Sensor -->
-              <div class="col col-3" data-label="Modelo Sensor">{{ sensor.id_modelo_sensor.nombre_sensor }}</div>
-              <div class="col col-2" data-label="Estado">
-                {% if sensor.estado == 1 %}
-                  Activo
-                {% else %}
-                  Inactivo
-                {% endif %}
-              </div>
-              <div class="col col-2" data-label="Acciones">
-                <!-- Botón para cambiar estado del sensor -->
-                <a href="{% url 'cambiar_estado_sensor' sensor.id_sensor %}" class="btn btn-danger">
-                  <i class="bi bi-arrow-repeat"></i>
-                </a>
+          <div class="col col-3">Modelo Arduino</div>
+          <div class="col col-3" data-label="Modelo Arduino">
+            {{ item.arduino.modelo_arduino }}
+          </div>
+          <div class="col col-2" data-label="Acciones">
+            <a href="{% url 'cambiar_estado_arduino' item.arduino.id_arduino %}" class="btn btn-warning">
+              <i class="fas fa-power-off"></i>
+            </a>
+            <a href="{% url 'arduino' id_espacio item.arduino.id_arduino %}" class="btn btn-warning">
+              <i class="fas fa-edit"></i>
+            </a>
+          </div>
+        </li>
 
-              </div>
-            </li>
-          {% empty %}
-            <li class="table-row">
-              <div class="col" colspan="4">No hay sensores registrados para este Arduino.</div>
-            </li>
-          {% endfor %}
+        <li class="table-header">
+          <div class="col col-3">Modelo Sensor</div>
+          <div class="col col-2">Estado</div>
+          <div class="col col-2">Desactivar sensor</div>
+        </li>
+
+        {% for sensor in item.sensores %}
+        <li class="table-row">
+          <!-- Datos del Sensor -->
+          <div class="col col-3" data-label="Modelo Sensor">{{ sensor.id_modelo_sensor.nombre_sensor }}</div>
+          <div class="col col-2" data-label="Estado">
+            {% if sensor.estado == 1 %}
+            Activo
+            {% else %}
+            Inactivo
+            {% endif %}
+          </div>
+          <div class="col col-2" data-label="Acciones">
+            <!-- Botón para cambiar estado del sensor -->
+            <a href="{% url 'cambiar_estado_sensor' sensor.id_sensor %}" class="btn btn-danger">
+              <i class="bi bi-arrow-repeat"></i>
+            </a>
+
+          </div>
+        </li>
         {% empty %}
-          <li class="table-row">
-            <div class="col" colspan="6">No hay sensores ni Arduinos registrados en este espacio.</div>
-          </li>
+        <li class="table-row">
+          <div class="col" colspan="4">No hay sensores registrados para este Arduino.</div>
+        </li>
+        {% endfor %}
+        {% empty %}
+        <li class="table-row">
+          <div class="col" colspan="6">No hay sensores ni Arduinos registrados en este espacio.</div>
+        </li>
         {% endfor %}
       </ul>
     </section>
-      <!-- Modal y overlay No borrar-->
-      <div class="overlay" id="overlay" aria-hidden="true"></div>
-      <div id="modalContainer" aria-hidden="true"></div>
+    <!-- Modal y overlay No borrar-->
+    <div class="overlay" id="overlay" aria-hidden="true"></div>
+    <div id="modalContainer" aria-hidden="true"></div>
     {% endblock %}
   </main>
 
   {% include 'footer.html' %}
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

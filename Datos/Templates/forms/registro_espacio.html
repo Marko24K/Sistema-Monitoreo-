@@ -22,11 +22,22 @@
                 <form id="form_espacio" enctype="multipart/form-data" method="POST">
                     {% csrf_token %}
                     <div class="row text-center">
+                        <!-- Imagen de la espacio -->
+                        <div class="col-lg-6 mb-4">
+                            <h3>Imagen del lugar</h3>
+                            <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
+                                {% if espacio.imagen_espacio %}
+                                    <img src="{{ espacio.imagen_espacio.url }}" alt="Imagen del espacio" class="img-fluid">
+                                {% else %}
+                                    <p>No hay imagen registrada.</p>
+                                {% endif %}
+                            </div>
+                        </div>
                         <!-- Datos de la espacio -->
                         <div class="col-lg-6 mb-4">
-                            <h3>Datos de la espacio</h3>
+                            <h3>Editar datos</h3>
                             <div class="mb-3">
-                                <label for="val_localidad_p" class="form-label">Localidad donde está ubicado el espacio</label>
+                                <label for="val_localidad_p" class="form-label">Localidad donde está ubicado</label>
                                 <select class="form-select" id="val_localidad_p" name="val_localidad_p" aria-label="Provincia/comuna donde está ubicada el espacio">
                                     <option selected disabled>Seleccione la localidad</option>
                                     {% for l in localidad %}
@@ -38,20 +49,20 @@
 
                             </div>
                             <div class="mb-3">
-                                <label for="val_nombre_p" class="form-label">Nombre espacio</label>
+                                <label for="val_nombre_p" class="form-label">Nombre de lugar</label>
                                 <input type="text" class="form-control" id="val_nombre_p" name="val_nombre_p" 
                                        required maxlength="50" value="{{ espacio.nombre_espacio }}" 
                                        placeholder="Ej: Invernadero sede de Ingenieria UPLA" 
                                        pattern="^[A-Za-z]+(?: [A-Za-z]+)*$" title="Solo se permiten caracteres alfabéticos">
                             </div>
                             <div class="mb-3">
-                                <label for="val_direccion_p" class="form-label">Dirección donde se encuentra el espacio</label>
+                                <label for="val_direccion_p" class="form-label">Dirección</label>
                                 <input type="text" class="form-control" id="val_direccion_p" name="val_direccion_p" 
                                        required maxlength="50" value="{{ espacio.direccion_espacio }}" 
                                        placeholder="EJ: Subida Leopoldo Carvallo 270, Valparaíso">
                             </div>
                             <div class="mb-3">
-                                <label for="utm" class="form-label">Ingrese las coordenadas según UTM</label>
+                                <label for="utm" class="form-label">Ubicación UTM</label>
                                 <input type="text" class="form-control" id="utm" name="utm" 
                                        required maxlength="50" value="{{ espacio.utm }}" 
                                        placeholder="Ej: Zona 14N 500000mE 4649776mN">
@@ -73,22 +84,15 @@
                             <input type="file" id="input-imagen" name="input-imagen" accept="image/*" class="form-control mt-3">
                         </div>
     
-                        <!-- Imagen de la espacio -->
-                        <div class="col-lg-6 mb-4">
-                            <h3>Imagen de la espacio</h3>
-                            <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
-                                {% if espacio.imagen_espacio %}
-                                    <img src="{{ espacio.imagen_espacio.url }}" alt="Imagen del espacio" class="img-fluid">
-                                {% else %}
-                                    <p>No hay imagen registrada.</p>
-                                {% endif %}
-                            </div>
-                        </div>
+                        
     
                         <!-- Botón de registro -->
                         <div class="col-12 text-center">
-                            <button class="btn btn-primary mt-3 px-5" type="submit">Confirmar</button>
+                            <button class="btn mt-3 px-5" type="submit" style="background-color: #6DBE45; border-color: #6DBE45;">
+                                Confirmar
+                            </button>
                         </div>
+                        
                     </div>
                 </form>
             </div>

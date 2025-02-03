@@ -1,11 +1,11 @@
 <style>
     .header {
-        background: var(--primary-color);
+        background: #87E46D;
         position: relative;
         overflow: hidden;
         padding: var(--spacing-lg) 0;
     }
-    
+
     .header::after {
         content: "";
         position: absolute;
@@ -16,50 +16,51 @@
         background: rgba(0, 0, 0, 0.1);
         z-index: 1;
     }
-    
+
     .header .container {
         position: relative;
         z-index: 2;
         text-align: center;
     }
-    
+
     .header img {
         transition: transform var(--transition-speed);
         width: 100px;
         margin-bottom: var(--spacing-sm);
     }
-    
+
     .header img:hover {
         transform: scale(1.05);
     }
-    
+
     .header h1 {
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
         color: var(--light-text-color);
     }
+
     .header p {
         font-size: 1.25rem;
         opacity: 0.9;
         color: #000;
     }
-    
+
     @media (max-width: 992px) {
         .header h1 {
             font-size: 2rem;
         }
-    
+
         .header p {
             font-size: 1rem;
         }
     }
-    
+
     @media (max-width: 576px) {
         .header h1 {
             font-size: 1.75rem;
         }
-    
+
         .header p {
             font-size: 0.9rem;
         }
@@ -71,18 +72,20 @@
     <div class="container">
         <div class="container">
             <img src="{% static 'img/logoupla.png' %}" alt="Logo UPLA" width="100" class="mb-3">
-            <h1>Monitoreo de Humedal</h1>
-            <p>Sistema de Control y Gestión de Calidad del Agua</p>
+            <h1>Modulo de laboratorio LAPTES</h1>
+            <p>Sistema de Control y Gestión de variables ambientales</p>
 
             <!-- Barra de navegación -->
-            <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--bs-primary);">
-                <a class="navbar-brand text-light fw-bold" href="{% url 'home' %}" 
-                   style="font-family: 'Arial', sans-serif; font-size: 1.5rem; padding-left: 1rem;">
+            <nav class="navbar navbar-expand-lg border border-success bg-white rounded-pill ">
+                <a class="navbar-brand fw-bold" href="{% url 'home' %}"
+                    style="font-family: 'Arial', sans-serif; font-size: 1.5rem; padding-left: 1rem; color: black;">
                     Inicio
                 </a>
 
+
                 <!-- Botón de menú en pantallas pequeñas -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -90,20 +93,22 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mx-auto">
                         <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'tipo_planta' %}active{% endif %}" href="{% url 'tipo_planta' %}">Tipo Planta</a>
+                            <a class="nav-link {% if request.resolver_match.url_name == 'vista_espacios' %}active{% endif %}"
+                                href="{% url 'vista_espacios' %}">Ubicaciones</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'registro_parcela' %}active{% endif %}" href="{% url 'registro_parcela' %}">Registro Espacio</a>
+                            <a class="nav-link {% if request.resolver_match.url_name == 'tipo_planta' %}active{% endif %}"
+                                href="{% url 'tipo_planta' %}">Añadir nuevas plantas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                            <a class="nav-link {% if request.resolver_match.url_name == 'registro_parcela' %}active{% endif %}"
+                                href="{% url 'registro_parcela' %}">Registrar nueva ubicación</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'vista_espacios' %}active{% endif %}" href="{% url 'vista_espacios' %}">vista espacios</a>
-                        </li>
+                        
+
                     </ul>
                 </div>
             </nav>
-        </div>            
+        </div>
     </div>
 </header>
