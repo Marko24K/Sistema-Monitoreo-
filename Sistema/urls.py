@@ -60,4 +60,7 @@ urlpatterns = [
     path('guardar_datos_sensor/', views.guardar_datos_sensor, name='guardar_datos_sensor'),
     path('datos_recientes/', views.datos_recientes, name='datos_recientes'),
 
+    path('vista_humedales/', views.vista_humedales, name='vista_humedales'),
+    path('registro_humedal/<int:id_humedal>/', views.editar_humedal, name='editar_humedal'),
+    path('vista_un_humedal/<int:id_humedal>/', views.ver_humedal, name='ver_humedal')
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -104,6 +104,10 @@
                             <a class="nav-link {% if request.resolver_match.url_name == 'registro_parcela' %}active{% endif %}"
                                 href="{% url 'registro_parcela' %}">Registrar nueva ubicación</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'vista_humedales' %}active{% endif %}"
+                                href="{% url 'vista_humedales' %}">vista humedales</a>
+                        </li>
                         
 
                     </ul>

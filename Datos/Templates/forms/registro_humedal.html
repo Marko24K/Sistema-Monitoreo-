@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar espacios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/estilo_form.css' %}">
+</head>
+<body>
+    {% include 'header.html' %}
+
+    <!-- AGREGAR -->
+    <main class="container my-4">
+        {% block content %}
+        <section class="mb-5">
+            <div class="card shadow-sm p-4">
+                <form id="form_espacio" enctype="multipart/form-data" method="POST">
+                    {% csrf_token %}
+                    <div class="row text-center">
+                        <!-- Imagen de la espacio -->
+                        <div class="col-lg-6 mb-4">
+                            <h3>Imagen del lugar</h3>
+                            <div class="contenedor-imagen mx-auto" id="imagen-contenedor">
+                                {% if humedal.imagen_humedal %}
+                                    <img src="{{ humedal.imagen_humedal.url }}" alt="Imagen del humedal" class="img-fluid">
+                                {% else %}
+                                    <p>No hay imagen registrada.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Datos de la espacio -->
+                        <div class="col-lg-6 mb-4">
+                            <h3>Editar datos</h3>
+                            <div class="mb-3">
+                                <label for="val_localidad_p" class="form-label">Localidad donde está ubicado</label>
+                                <select class="form-select" id="val_localidad_p" name="val_localidad_p" aria-label="Provincia/comuna donde está ubicada el espacio">
+                                    <option selected disabled>Seleccione la localidad</option>
+                                    {% for l in localidad %}
+                                        <option value="{{ l.id_localidad }}" {% if l.id_localidad == humedal.id_localidad.id_localidad %} selected {% endif %}>{{ l.nombre_localidad }}</option>
+                                    {% empty %}
+                                        <option disabled>No hay localidades registradas</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+                            <div class="mb-3">
+                                <label for="val_nombre_p" class="form-label">Nombre del humedal</label>
+                                <input type="text" class="form-control" id="val_nombre_p" name="val_nombre_p" 
+                                       required maxlength="50" value="{{ humedal.nombre_humedal }}" 
+                                       placeholder="Ej: Invernadero sede de Ingenieria UPLA" 
+                                       pattern="^[A-Za-z]+(?: [A-Za-z]+)*$" title="Solo se permiten caracteres alfabéticos">
+                            </div>
+                            <div class="mb-3">
+                                <label for="val_direccion_p" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" id="val_direccion_p" name="val_direccion_p" 
+                                       required maxlength="50" value="{{ humedal.direccion }}" 
+                                       placeholder="EJ: Subida Leopoldo Carvallo 270, Valparaíso">
+                            </div>
+                            <div class="mb-3">
+                                <label for="utm" class="form-label">Ubicación UTM Norte</label>
+                                <input type="text" class="form-control" id="utm_norte" name="utm_norte" 
+                                       required maxlength="50" value="{{ humedal.utm_norte }}" 
+                                       placeholder="Ej: Zona 14N 500000mE 4649776mN">
+                            </div>
+                            <div class="mb-3">
+                                <label for="utm" class="form-label">Ubicación UTM Este</label>
+                                <input type="text" class="form-control" id="utm_este" name="utm_este" 
+                                       required maxlength="50" value="{{ humedal.utm_este }}" 
+                                       placeholder="Ej: Zona 14N 500000mE 4649776mN">
+                            </div>
+    
+                            
+    
+                            <label for="input-imagen" class="form-label">Imagen de espacio</label>
+                            <input type="file" id="input-imagen" name="input-imagen" accept="image/*" class="form-control mt-3">
+                        </div>
+    
+                        
+    
+                        <!-- Botón de registro -->
+                        <div class="col-12 text-center">
+                            <button class="btn mt-3 px-5" type="submit" style="background-color: #6DBE45; border-color: #6DBE45;">
+                                Confirmar
+                            </button>
+                        </div>
+                        
+                    </div>
+                </form>
+            </div>
+        </section>
+        {% endblock %}
+    </main>
+    
+    {% include 'footer.html' %}
+
+    <script src="{% static 'js/img_show.js'%}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

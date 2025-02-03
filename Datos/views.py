@@ -9,7 +9,7 @@ from django.contrib import messages
 import traceback
 from django.shortcuts import  redirect, render, get_object_or_404
 from Sistema.settings import BACKUP_DIR
-from .models import Arduino, RegistroSensor, Sensor, TipoDato, Espacio, TipoPlanta,Planta, ModeloSensor,RegistroPlanta, DivisionEspacio, Localidad,TipoEspacio
+from .models import Arduino, RegistroSensor, Sensor, TipoDato, Espacio, TipoPlanta,Planta, ModeloSensor,RegistroPlanta, DivisionEspacio, Localidad,TipoEspacio, TablaHumedal, Arduino2, TipoDato2, Sensor2, RegistroSensor2
 from django.http import Http404, HttpResponse, JsonResponse
 from django.db.models import Avg, Max, Min
 import json
@@ -675,3 +675,43 @@ def listado_arduinos_sensores(request):
         registro['fecha_registro'] = registro['fecha_registro'].strftime('%d-%m-%Y %H:%M:%S')
 
     return render(request, 'vistas_datos/listado_arduino_sensores.html', {'arduinos': arduinos, 'registros': registros})
+
+
+
+def vista_humedales(request):
+    h =  TablaHumedal.objects.all()
+    
+    return render(request, 'vistas_datos/vista_humedales.html', {'h': h})
+
+def editar_humedal(request, id_humedal):
+    humedal = get_object_or_404(TablaHumedal, id_humedal=id_humedal)
+    localidad = Localidad.objects.all()
+
+    if request.method == 'POST':
+        humedal.id_localidad = Localidad.objects.get(id_localidad=request.POST['val_localidad_p'])
+        humedal.nombre_humedal = request.POST['val_nombre_p']
+        humedal.direccion = request.POST['val_direccion_p']
+        humedal.utm_norte = request.POST['utm_norte']
+        humedal.utm_este = request.POST['utm_este']
+
+        # Verificar si se ha subido una nueva imagen
+        if 'input-imagen' in request.FILES:
+            # Eliminar la imagen anterior si existe
+            if humedal.imagen_humedal:
+                try:
+                    if os.path.exists(humedal.imagen_humedal.path):
+                        os.remove(humedahumedall.imagen_humedal.path)
+                except Exception as e:
+                    print(f"Error al intentar eliminar la imagen anterior: {e}")
+            
+            # Asignar la nueva imagen
+            humedal.imagen_humedal = request.FILES['input-imagen']
+        humedal.save()
+        messages.success(request, "El humedal ha sido editado exitosamente.")
+        return redirect('vista_humedales')
+
+    return render(request, 'forms/registro_humedal.html', {'humedal': humedal, 'localidad': localidad})
+
+def ver_humedal (request,id_humedal):
+    humedal = get_object_or_404(TablaHumedal, id_humedal=id_humedal)
+    return render(request, 'vistas_datos/vista_un_humedal.html',{'humedal':humedal})

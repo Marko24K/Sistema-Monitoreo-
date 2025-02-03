@@ -191,3 +191,65 @@ class RegistroSensor(models.Model):
 
     class Meta:
         db_table = 'registro_sensor'
+
+
+
+
+
+class TablaHumedal(models.Model):
+    id_humedal = models.AutoField(primary_key=True)
+    id_localidad = models.ForeignKey(Localidad, on_delete=models.CASCADE) 
+    nombre_humedal = models.CharField(max_length=100) 
+    direccion = models.CharField(max_length=100) 
+    utm_norte = models.CharField(max_length=100) 
+    utm_este = models.CharField(max_length=100) 
+    uuid_espacio = models.UUIDField(default=uuid.uuid4 , editable=False, unique=True)
+    imagen_humedal = models.ImageField(upload_to='imagenes_humedales/', null=True, blank=True)
+    class Meta:
+        db_table = 'tabla_humedal'
+
+class Arduino2(models.Model):
+    id_arduino = models.AutoField(primary_key=True)
+    id_humedal = models.ForeignKey(TablaHumedal, on_delete=models.CASCADE)
+    modelo_arduino = models.CharField(max_length=50)
+    estado = models.IntegerField()
+    uuid_arduino=models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+
+    class Meta:
+        db_table = 'arduino2'
+
+
+class ModeloSensor2(models.Model):
+    id_modelo_sensor = models.AutoField(primary_key=True)
+    nombre_sensor = models.CharField(max_length=50)
+    descripcion = models.TextField()
+
+    class Meta:
+        db_table = 'modelo_sensor2'
+
+class Sensor2(models.Model):
+    id_sensor = models.AutoField(primary_key=True)
+    id_arduino = models.ForeignKey(Arduino2, on_delete=models.CASCADE)
+    id_modelo_sensor = models.ForeignKey(ModeloSensor2, on_delete=models.CASCADE)
+    estado = models.IntegerField()
+
+    class Meta:
+        db_table = 'sensor2'
+
+class TipoDato2(models.Model):
+    id_tipo_dato = models.AutoField(primary_key=True)
+    nombre_dato = models.CharField(max_length=50)
+    unidad_medida = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = 'tipo_dato2'
+
+class RegistroSensor2(models.Model):
+    id_registro_sensor = models.AutoField(primary_key=True)
+    id_sensor = models.ForeignKey(Sensor2, on_delete=models.CASCADE)
+    id_tipo_dato = models.ForeignKey(TipoDato2, on_delete=models.CASCADE)
+    valor = models.DecimalField(max_digits=5, decimal_places=2)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'registro_sensor2'
