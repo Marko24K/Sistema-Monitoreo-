@@ -1,6 +1,6 @@
 <style>
     .header {
-        background: #87E46D;
+        background: #0099CC;
         position: relative;
         overflow: hidden;
         padding: var(--spacing-lg) 0;
@@ -25,8 +25,9 @@
 
     .header img {
         transition: transform var(--transition-speed);
-        width: 100px;
         margin-bottom: var(--spacing-sm);
+        background-color: white;
+        border-radius: 10px;
     }
 
     .header img:hover {
@@ -71,7 +72,15 @@
 <header class="header">
     <div class="container">
         <div class="container">
-            <img src="{% static 'img/logoupla.png' %}" alt="Logo UPLA" width="100" class="mb-3">
+            <div class="row">
+                <div class="col d-flex justify-content-center">
+                    <img src="{% static 'img/logoupla.png' %}" alt="Logo UPLA" width="200" class="mb-3">
+                </div>
+                <div class="col d-flex justify-content-center">
+                    <img src="{% static 'img/icon.png' %}" alt="Logo UPLA" width="70" class="mb-3">
+                </div>
+            </div>
+           
             <h1>Modulo de laboratorio LAPTES</h1>
             <p>Sistema de Control y Gestión de variables ambientales</p>
 
@@ -108,7 +117,7 @@
                             <a class="nav-link {% if request.resolver_match.url_name == 'vista_humedales' %}active{% endif %}"
                                 href="{% url 'vista_humedales' %}">vista humedales</a>
                         </li>
-                        
+
 
                     </ul>
                 </div>

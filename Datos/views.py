@@ -16,6 +16,7 @@ import json
 from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
+from django.urls import reverse
 
 #-----------------------mini forms-----------------------
 def arduino(request,id_espacio,id_arduino = None):
@@ -714,4 +715,123 @@ def editar_humedal(request, id_humedal):
 
 def ver_humedal (request,id_humedal):
     humedal = get_object_or_404(TablaHumedal, id_humedal=id_humedal)
-    return render(request, 'vistas_datos/vista_un_humedal.html',{'humedal':humedal})
+    # Obtener los sensores relacionados con esos arduinos
+    arduinos = Arduino2.objects.filter(id_humedal=humedal)
+
+    
+    return render(request, 'vistas_datos/vista_un_humedal.html',{'humedal':humedal,'arduinos':arduinos})
+
+def crear_humedal(request):
+    imagen = request.FILES.get('input-imagen', None)
+    localidad = Localidad.objects.all()
+    if request.method == 'POST':
+        localidad_obj = Localidad.objects.get(id_localidad=request.POST['val_localidad_p'])
+        if imagen:
+            TablaHumedal.objects.create(
+                nombre_humedal = request.POST['nombre_humedal'],
+                id_localidad=localidad_obj,
+                direccion = request.POST['direccion'],
+                utm_norte = request.POST['utm_norte'],
+                utm_este = request.POST['utm_este'],
+                imagen_humedal = request.FILES['input-imagen'],
+            )
+        else:
+            TablaHumedal.objects.create(
+                nombre_humedal = request.POST['nombre_humedal'],
+                id_localidad=localidad_obj,
+                direccion = request.POST['direccion'],
+                utm_norte = request.POST['utm_norte'],
+                utm_este = request.POST['utm_este'],
+                imagen_humedal = None,
+            )
+            
+    return render(request, 'forms/nuevo_humedal.html',{'localidad': localidad})
+
+def on_off(request, id_humedal, id_arduino):
+    humedal = get_object_or_404(TablaHumedal, id_humedal=id_humedal)
+    arduino = get_object_or_404(Arduino2, id_arduino=id_arduino)
+    arduinos = Arduino2.objects.filter(id_humedal=humedal)
+    if arduino.estado == 1:
+        arduino.estado = 0
+        arduino.save()  
+    else:
+        arduino.estado = 1
+        arduino.save()  
+
+    return render(request, 'vistas_datos/vista_un_humedal.html',{'humedal':humedal,'arduinos':arduinos})
+
+from django.db.models import Max
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Max
+from .models import Arduino2, TablaHumedal
+
+def crear_arduino2(request, id_humedal):
+    humedal = get_object_or_404(TablaHumedal, id_humedal=id_humedal)
+
+    if request.method == 'POST':
+        modelo = request.POST.get('modelo_arduino')
+
+        if modelo:
+            max_id = Arduino2.objects.aggregate(Max('id_arduino'))['id_arduino__max'] or 0
+            nuevo_id = max_id + 1  # Asegurar que el próximo ID sea único
+
+            Arduino2.objects.create(
+                id_arduino=nuevo_id,
+                id_humedal=humedal,
+                modelo_arduino=modelo,
+                estado=1
+            )
+
+            # Redirige a la vista 'vista_un_humedal' después de crear el Arduino
+            return redirect(reverse('ver_humedal', args=[id_humedal]))
+
+
+    return render(request, 'forms/nuevo_arduino2.html', {'humedal': humedal})
+
+from django.shortcuts import render, get_object_or_404
+from .models import TablaHumedal, Sensor, RegistroSensor
+
+from django.shortcuts import render, get_object_or_404
+from django.utils.dateparse import parse_datetime
+from .models import TablaHumedal, Arduino2, Sensor2, RegistroSensor2
+
+def ver_datos_humedal(request, id_humedal):
+    humedal = get_object_or_404(TablaHumedal, id_humedal=id_humedal)
+    arduinos = Arduino2.objects.filter(id_humedal=humedal)
+
+    # Obtener las fechas ingresadas por el usuario (si existen)
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    # Convertir las fechas a datetime si no están vacías
+    if fecha_inicio:
+        fecha_inicio = parse_datetime(fecha_inicio + " 00:00:00")  # Asegurarse de que tenga la hora 00:00:00
+    if fecha_fin:
+        fecha_fin = parse_datetime(fecha_fin + " 23:59:59")  # Hasta el final del día
+
+    datos_sensores = {}
+
+    for arduino in arduinos:
+        sensores = Sensor2.objects.filter(id_arduino=arduino)
+        for sensor in sensores:
+            registros = RegistroSensor2.objects.filter(id_sensor=sensor)
+
+            # Aplicar filtro por rango de fechas
+            if fecha_inicio and fecha_fin:
+                registros = registros.filter(fecha_registro__range=[fecha_inicio, fecha_fin])
+            elif fecha_inicio:
+                registros = registros.filter(fecha_registro__gte=fecha_inicio)
+            elif fecha_fin:
+                registros = registros.filter(fecha_registro__lte=fecha_fin)
+
+            registros = registros.order_by('-fecha_registro')  # Orden descendente
+            datos_sensores[sensor] = registros
+            
+    return render(request, 'vistas_datos/vista_datos_humedal.html', {
+        'humedal': humedal,
+        'datos_sensores': datos_sensores,
+        'fecha_inicio': request.GET.get('fecha_inicio', ''),
+        'fecha_fin': request.GET.get('fecha_fin', ''),
+    })
+

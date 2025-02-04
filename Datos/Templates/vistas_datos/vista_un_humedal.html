@@ -103,6 +103,53 @@
 
                 </div>
         </section>
+        <section class="mb-5">
+            <h2>
+                Arduinos presentes en el humedal 
+                <a href="{% url 'crear_arduino2' humedal.id_humedal %}" class="btn btn-info" style="float: right;">Añadir Arduino</a>
+            </h2>
+            
+            <ul class="responsive-table">
+                <li class="table-header">
+                    <div class="col col-3">ID</div>
+                    <div class="col col-3">Modelo de arduino</div>
+                    <div class="col col-4">Estado</div>
+                    <div class="col col-6">Encender o apagar</div>
+                </li>
+
+                {% for a in arduinos %}
+                <li class="table-row">
+                    <div class="col col-3" data-label="Tipo división">{{ a.id_arduino }}</div>
+                    <div class="col col-3" data-label="Tipo división">{{ a.modelo_arduino }}</div>
+                    {% if a.estado == 1%}
+                    <div class="col col-4" data-label="Identificador">Encendido</div>
+
+                    {%else%}
+                    <div class="col col-4" data-label="Identificador">Apagado</div>
+                    {% endif %}
+                    <div class="col col-6" data-label="Acciones">
+                        <div class="col">
+                            {% if a.estado == 0%}
+                            <a href="{% url 'on_off' humedal.id_humedal a.id_arduino %}" class="btn btn-danger">
+                                <i class="fas fa-power-off"></i>
+                            </a>
+                            {%else%}
+                            <a href="{% url 'on_off' humedal.id_humedal a.id_arduino %}" class="btn btn-success">
+                                <i class="fas fa-power-off"></i>
+                            </a>
+                            {%endif%}
+
+                            
+                        </div>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="table-row">
+                    <div class="col" colspan="6">No hay arduinos registrados para este humedal</div>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
         {% endblock %}
     </main>
 

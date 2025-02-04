@@ -60,7 +60,16 @@ urlpatterns = [
     path('guardar_datos_sensor/', views.guardar_datos_sensor, name='guardar_datos_sensor'),
     path('datos_recientes/', views.datos_recientes, name='datos_recientes'),
 
+    #humedales
     path('vista_humedales/', views.vista_humedales, name='vista_humedales'),
     path('registro_humedal/<int:id_humedal>/', views.editar_humedal, name='editar_humedal'),
-    path('vista_un_humedal/<int:id_humedal>/', views.ver_humedal, name='ver_humedal')
+    path('vista_un_humedal/<int:id_humedal>/', views.ver_humedal, name='ver_humedal'),
+    path('nuevo_humedal', views.crear_humedal, name='crear_humedal'),
+    path('vista_un_humedal/<int:id_humedal>/<int:id_arduino>',views.on_off,name='on_off'),
+
+    #arduinos2
+    path('nuevo_arduino2/<int:id_humedal>',views.crear_arduino2, name='crear_arduino2'),
+
+    #datos humedales
+    path('vista_datos_humedal/<int:id_humedal>',views.ver_datos_humedal, name='ver_datos_humedal')
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

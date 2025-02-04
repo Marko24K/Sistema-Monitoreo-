@@ -31,6 +31,7 @@
                     <th>UTM este</th>
                     <th>Imagen</th>
                     <th>Ver/Editar</th>
+                    <th>Ver datos</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,6 +63,13 @@
                             </a>
                         </div>
                     </td>
+                    <td>
+                        <div class="col">
+                            <a href="{% url 'ver_datos_humedal' humedal.id_humedal %}"class="btn btn-dark">
+                                Ver datos
+                            </a>
+                        </div>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -71,8 +79,8 @@
             </tbody>
         </table>
         <div class="row justify-content-center">
-            <a class="btn btn-success col-6" style="margin:20px" href="{% url 'tipo_planta' %}"
-                class="btn btn-info">Registrar una Nueva planta</a>
+            <a class="btn btn-success col-6" style="margin:20px" href="{% url 'crear_humedal' %}"
+                class="btn btn-info">Agregar nuevo humedal</a>
         </div>
         {% endblock %}
     </main>

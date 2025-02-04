@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Plantas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilo_tabla.css' %}">
+
+    <script src="{% static 'js/vista_imagen.js'%}"></script>
+    <script src="{% static 'js/form_emergente.js' %}"></script>
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <main class="container my-4">
+        {% block content %}
+        <h1>Datos del Humedal: {{ humedal.nombre_humedal }}</h1>
+        <form method="GET">
+            <label for="fecha_inicio">Fecha inicio:</label>
+            <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio }}">
+
+            <label for="fecha_fin">Fecha fin:</label>
+            <input type="date" id="fecha_fin" name="fecha_fin" value="{{ fecha_fin }}">
+
+            <button type="submit">Filtrar</button>
+        </form>
+        {% if datos_sensores %}
+        {% for sensor, registros in datos_sensores.items %}
+        <h2>Sensor: {{ sensor.id_modelo_sensor.nombre_sensor }}</h2>
+        <table class="table">
+            <tr>
+                <th>Hora</th>
+                <th>Fecha</th>
+                <th>Tipo de Dato</th>
+                <th>Valor</th>
+            </tr>
+            {% for registro in registros %}
+            <tr>
+                <td>{{ registro.fecha_registro|date:"H:i" }}</td>
+                <td>{{ registro.fecha_registro|date:"d/m/Y" }}</td>
+                <td>{{ registro.id_tipo_dato.nombre_dato }} ({{ registro.id_tipo_dato.unidad_medida }})</td>
+                <td>{{ registro.valor }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No hay registros en este rango de fechas</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endfor %}
+        {% else %}
+        <p>No hay sensores registrados en este humedal.</p>
+        {% endif %}
+        {% endblock %}
+    </main>
+
+    {% include 'footer.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
