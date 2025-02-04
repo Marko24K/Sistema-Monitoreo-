@@ -17,7 +17,7 @@ from rest_framework.decorators import api_view
 from django.conf import settings
 from .serializer import RegistroSensorSerializer
 from django.urls import reverse
-
+from collections import defaultdict
 #-----------------------mini forms-----------------------
 def arduino(request,id_espacio,id_arduino = None):
     espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
@@ -789,12 +789,12 @@ def crear_arduino2(request, id_humedal):
 
     return render(request, 'forms/nuevo_arduino2.html', {'humedal': humedal})
 
-from django.shortcuts import render, get_object_or_404
-from .models import TablaHumedal, Sensor, RegistroSensor
+
+
+
 
 from django.shortcuts import render, get_object_or_404
 from django.utils.dateparse import parse_datetime
-from .models import TablaHumedal, Arduino2, Sensor2, RegistroSensor2
 
 def ver_datos_humedal(request, id_humedal):
     humedal = get_object_or_404(TablaHumedal, id_humedal=id_humedal)
@@ -826,8 +826,16 @@ def ver_datos_humedal(request, id_humedal):
                 registros = registros.filter(fecha_registro__lte=fecha_fin)
 
             registros = registros.order_by('-fecha_registro')  # Orden descendente
-            datos_sensores[sensor] = registros
-            
+
+            # Agrupar registros por tipo de dato
+            for registro in registros:
+                tipo_dato = registro.id_tipo_dato
+                if sensor not in datos_sensores:
+                    datos_sensores[sensor] = {}
+                if tipo_dato not in datos_sensores[sensor]:
+                    datos_sensores[sensor][tipo_dato] = []
+                datos_sensores[sensor][tipo_dato].append(registro)
+
     return render(request, 'vistas_datos/vista_datos_humedal.html', {
         'humedal': humedal,
         'datos_sensores': datos_sensores,
