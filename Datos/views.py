@@ -9,7 +9,7 @@ from django.contrib import messages
 import traceback
 from django.shortcuts import  redirect, render, get_object_or_404
 from Sistema.settings import BACKUP_DIR
-from .models import Arduino, RegistroSensor, Sensor, TipoDato, Espacio, TipoPlanta,Planta, ModeloSensor,RegistroPlanta, DivisionEspacio, Localidad,TipoEspacio, TablaHumedal, Arduino2, TipoDato2, Sensor2, RegistroSensor2
+from .models import Arduino, RegistroSensor, Sensor, TipoDato, Espacio, TipoPlanta,Planta, ModeloSensor,RegistroPlanta, DivisionEspacio, Localidad,TipoEspacio, TablaHumedal, Arduino2, TipoDato2, Sensor2, RegistroSensor2, ModeloSensor2
 from django.http import Http404, HttpResponse, JsonResponse
 from django.db.models import Avg, Max, Min
 import json
@@ -842,4 +842,41 @@ def ver_datos_humedal(request, id_humedal):
         'fecha_inicio': request.GET.get('fecha_inicio', ''),
         'fecha_fin': request.GET.get('fecha_fin', ''),
     })
+
+def ver_arduino2 (request,id_arduino):
+    arduino = get_object_or_404(Arduino2, id_arduino=id_arduino)
+    sensores = Sensor2.objects.filter(id_arduino=arduino)
+
+    
+    return render(request, 'vistas_datos/vista_un_arduino.html',{'arduino':arduino,'sensores':sensores})
+
+from django.db.models import Max
+
+def crear_sensor2(request, id_arduino):
+    arduino = get_object_or_404(Arduino2, id_arduino=id_arduino)
+
+    if request.method == 'POST':
+        id_modelo_sensor = request.POST.get('modelo_sensor')
+
+        if id_modelo_sensor:
+            # Obtener el ID más alto de los sensores existentes y sumarle 1
+            #max_id = Sensor2.objects.aggregate(Max('id_sensor')).get('id__max', 0)
+            #nuevo_id = max_id + 1
+
+            max_id = Sensor2.objects.aggregate(Max('id_sensor'))['id_sensor__max'] or 0
+            nuevo_id = max_id + 1  # Asegurar que el próximo ID sea único
+            # Crear un nuevo sensor asociado al Arduino, utilizando el ID generado manualmente
+            sensor = Sensor2(
+                id_sensor=nuevo_id,  # Establecer el ID manualmente
+                id_arduino=arduino,
+                id_modelo_sensor_id=id_modelo_sensor,
+                estado=1
+            )
+            sensor.save()
+
+            # Redirigir a la vista donde se pueda ver el Arduino y sus sensores
+            return redirect(reverse('ver_arduino2', args=[id_arduino]))
+
+    modelos_sensores = ModeloSensor2.objects.all()  # Obtén todos los modelos de sensores para mostrarlos en el formulario
+    return render(request, 'forms/nuevo_sensor2.html', {'arduino': arduino, 'modelos_sensores': modelos_sensores})
 

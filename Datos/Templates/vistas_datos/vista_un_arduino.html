@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Espacio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilo_tabla.css' %}">
+
+    <script src="{% static 'js/vista_imagen.js'%}"></script>
+    <script src="{% static 'js/form_emergente.js' %}"></script>
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <main class="container my-4">
+        {% block content %}
+        <!--muestra de datos-->
+        <section class="mb-5">
+            <div class="card shadow-sm p-4">
+                {% csrf_token %}
+
+                <div class="row" style="text-align: center">
+                    <div class="col-6">
+                        <!-- Columna para el resto del formulario -->
+
+                        <h3 style="color: #6DBE45;"> Datos del arduino </h3>
+
+
+                     
+
+                        <!-- Nombre -->
+                        <label for="val_nombre_p" class="form-label d-block text-start"><strong>Modelo del arduino</strong></label>
+                        <div
+                            style="background-color:white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc;">
+                            {{ arduino.modelo_arduino }}
+                        </div>
+
+                        <!-- Dirección -->
+                        <label for="val_direccion_p"
+                            class="form-label d-block text-start"><strong>Estado</strong></label>
+                            {%if arduino.estado == 0%}
+                            <div
+                            style="background-color:white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc;">
+                            Apagado
+                        </div>
+                        {%else%}
+                        <div
+                            style="background-color:white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc;">
+                            Encendido
+                        </div>
+                        {%endif%}
+                        
+
+                        
+
+                    </div>
+
+                </div>
+        </section>
+        <section class="mb-5">
+            <h2>
+                Sensores conectados al arduino
+                <a href="{% url 'crear_sensor2' arduino.id_arduino %}" class="btn btn-info" style="float: right;">Añadir Sensor</a>
+            </h2>
+            
+            <ul class="responsive-table">
+                <li class="table-header">
+                    <div class="col col-3">ID</div>
+                    <div class="col col-3">Modelo de sensor</div>
+                    <div class="col col-4">Estado</div>
+
+                </li>
+
+                {% for a in sensores %}
+                <li class="table-row">
+                    <div class="col col-3" data-label="Tipo división">{{ a.id_sensor }}</div>
+                    <div class="col col-3" data-label="Tipo división">{{ a.id_modelo_sensor.nombre_sensor }}</div>
+                    {% if a.estado == 1%}
+                    <div class="col col-4" data-label="Identificador">Encendido</div>
+
+                    {%else%}
+                    <div class="col col-4" data-label="Identificador">Apagado</div>
+                    {% endif %}
+                    
+                    </div>
+                    
+                </div>
+                </li>
+                {% empty %}
+                <li class="table-row">
+                    <div class="col" colspan="6">No hay sensores registrados para este humedal</div>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        
+        {% endblock %}
+    </main>
+
+    {% include 'footer.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -47,7 +47,7 @@
                             <img id="imagen-actual" src="{{humedal.imagen_humedal.url}}" alt="Imagen del humedal"
                                 class="img-fluid" style="width: 150px; height: 100px; object-fit: contain;">
                             {% else %}
-                            <p>No hay imagen registrada.</p>
+                            
                             <img id="imagen-actual" src="/static/img/img_parcela.png" alt="Imagen predeterminada"
                                 class="img-fluid" style="width: 150px; height: 100px; object-fit: contain;">
                             {% endif %}
@@ -79,8 +79,8 @@
             </tbody>
         </table>
         <div class="row justify-content-center">
-            <a class="btn btn-success col-6" style="margin:20px" href="{% url 'crear_humedal' %}"
-                class="btn btn-info">Agregar nuevo humedal</a>
+            <a class="btn btn-primary col-6" style="margin:20px" href="{% url 'crear_humedal' %}"
+                class="btn btn-primary">Agregar nuevo humedal</a>
         </div>
         {% endblock %}
     </main>

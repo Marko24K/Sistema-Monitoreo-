@@ -16,18 +16,42 @@
 
     <script src="{% static 'js/vista_imagen.js'%}"></script>
     <script src="{% static 'js/form_emergente.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
         .table {
             table-layout: fixed;
             width: 100%;
             margin-bottom: 50px;
         }
-        .table th, .table td {
-            width: 33.33%; /* Ajusta según el número de columnas */
+
+        .table th,
+        .table td {
+            width: 33.33%;
+            /* Ajusta según el número de columnas */
             text-align: center;
-            white-space: nowrap; /* Evita saltos de línea */
+            white-space: nowrap;
+            /* Evita saltos de línea */
             overflow: hidden;
-            text-overflow: ellipsis; /* Muestra "..." si el texto es muy largo */
+            text-overflow: ellipsis;
+            /* Muestra "..." si el texto es muy largo */
+        }
+    </style>
+    <style>
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .chart-container canvas {
+            max-width: 60%;
+            /* Ajusta el tamaño */
+            max-height: 200px;
+            /* Reduce la altura */
         }
     </style>
 </head>
@@ -42,7 +66,8 @@
             <div class="row g-3">
                 <div class="col-md-4">
                     <label for="fecha_inicio" class="form-label fw-bold">Fecha Inicio:</label>
-                    <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio }}" class="form-control">
+                    <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio }}"
+                        class="form-control">
                 </div>
                 <div class="col-md-4">
                     <label for="fecha_fin" class="form-label fw-bold">Fecha Fin:</label>
@@ -55,43 +80,122 @@
                 </div>
             </div>
         </form>
-        
-        
 
-        {% for sensor, tipos_datos in datos_sensores.items %}
-        <h2> {{ sensor.id_sensor }}) Sensor: {{sensor.id_modelo_sensor.nombre_sensor}}</h2>
 
-        {% for tipo_dato, registros in tipos_datos.items %}
-        <h3>{{ tipo_dato.nombre_dato }} ({{ tipo_dato.unidad_medida }})</h3>
-        <table class="table">
-            <thead>
-                <tr>                  
-                    <th>Valor</th>
-                  
-                    <th>Hora</th>
-                    <th>Fecha</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for registro in registros %}
-                <tr>
-                    <td>{{ registro.valor }}{{ registro.id_tipo_dato.unidad_medida }}</td>
-                 
+<div class="accordion" id="sensorAccordion">
+    {% for sensor, tipos_datos in datos_sensores.items %}
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-{{ sensor.id_sensor }}">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ sensor.id_sensor }}" aria-expanded="true" aria-controls="collapse-{{ sensor.id_sensor }}">
+                {{ sensor.id_sensor }}) Sensor: {{ sensor.id_modelo_sensor.nombre_sensor }} (Arduino N°{{sensor.id_arduino.id_arduino}})
+            </button>
+        </h2>
+        <div id="collapse-{{ sensor.id_sensor }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ sensor.id_sensor }}" data-bs-parent="#sensorAccordion">
+            <div class="accordion-body">
+                {% for tipo_dato, registros in tipos_datos.items %}
+                <h3>{{ tipo_dato.nombre_dato }} ({{ tipo_dato.unidad_medida }})</h3>
 
-                    <td>{{ registro.fecha_registro|date:"H:i" }}</td>
-                    <td>{{ registro.fecha_registro|date:"d/m/Y" }}</td>
-                    
-                </tr>
+                <table class="table sensor-table" data-sensor="{{ sensor.id_sensor }}" data-tipo="{{ tipo_dato.nombre_dato }}"
+                    data-unidad="{{ tipo_dato.unidad_medida }}">
+                    <thead>
+                        <tr>
+                            <th>Valor</th>
+                            <th>Hora</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for registro in registros %}
+                        <tr>
+                            <td>{{ registro.valor }}</td>
+                            <td>{{ registro.fecha_registro|date:"H:i" }}</td>
+                            <td>{{ registro.fecha_registro|date:"d/m/Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Contenedor de gráfico único para esta tabla -->
+                <section class="mb-4 p-3 border rounded bg-light">
+                    <div class="chart-container">
+                        <canvas id="chart-{{ sensor.id_sensor }}-{{ tipo_dato.nombre_dato }}"></canvas>
+                    </div>
+                </section>
                 {% endfor %}
-            </tbody>
-        </table>
-        {% endfor %}
-        {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
         {% endblock %}
     </main>
 
     {% include 'footer.html' %}
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tables = document.querySelectorAll(".sensor-table");
+
+            tables.forEach((table) => {
+                const idSensor = table.dataset.sensor;
+                const tipoDato = table.dataset.tipo;
+                const unidadMedida = table.dataset.unidad;
+
+                const rows = table.querySelectorAll("tbody tr");
+                const data = [];
+
+                rows.forEach((row) => {
+                    const valor = parseFloat(row.querySelector("td:nth-child(1)").textContent.trim());
+                    const hora = row.querySelector("td:nth-child(2)").textContent.trim();
+                    const fecha = row.querySelector("td:nth-child(3)").textContent.trim();
+
+                    data.push({
+                        fecha_hora: `${fecha} ${hora}`,
+                        valor: valor
+                    });
+                });
+
+                if (data.length > 0) {
+                    // Extraer los datos para el gráfico
+                    const labels = data.map(item => item.fecha_hora);
+                    const dataValues = data.map(item => item.valor);
+
+                    // Obtener el canvas específico para este sensor/tipo de dato
+                    const canvas = document.getElementById(`chart-${idSensor}-${tipoDato}`);
+                    if (canvas) {
+                        const ctx = canvas.getContext("2d");
+                        new Chart(ctx, {
+                            type: "line",
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: `${tipoDato} (${unidadMedida}) - Sensor ${idSensor}`,
+                                    data: dataValues,
+                                    backgroundColor: "rgba(75, 192, 192, 0.2)",
+                                    borderColor: "rgba(75, 192, 192, 1)",
+                                    borderWidth: 2,
+                                }],
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    x: { title: { display: true, text: "Fecha y Hora" } },
+                                    y: { title: { display: true, text: unidadMedida } }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+
+
 </body>
 
 </html>

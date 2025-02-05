@@ -69,7 +69,11 @@ urlpatterns = [
 
     #arduinos2
     path('nuevo_arduino2/<int:id_humedal>',views.crear_arduino2, name='crear_arduino2'),
+    path('vista_un_arduino,/<int:id_arduino>',views.ver_arduino2, name='ver_arduino2'),
 
+    #sensores2
+    path('crear_sensor/<int:id_arduino>/', views.crear_sensor2, name='crear_sensor2'),
     #datos humedales
     path('vista_datos_humedal/<int:id_humedal>',views.ver_datos_humedal, name='ver_datos_humedal')
+
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
