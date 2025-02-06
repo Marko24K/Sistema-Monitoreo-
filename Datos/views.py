@@ -796,6 +796,10 @@ def crear_arduino2(request, id_humedal):
 from django.shortcuts import render, get_object_or_404
 from django.utils.dateparse import parse_datetime
 
+from django.shortcuts import get_object_or_404, render
+from django.utils.dateparse import parse_datetime
+from .models import TablaHumedal, Arduino2, Sensor2, RegistroSensor2
+
 def ver_datos_humedal(request, id_humedal):
     humedal = get_object_or_404(TablaHumedal, id_humedal=id_humedal)
     arduinos = Arduino2.objects.filter(id_humedal=humedal)
@@ -811,6 +815,7 @@ def ver_datos_humedal(request, id_humedal):
         fecha_fin = parse_datetime(fecha_fin + " 23:59:59")  # Hasta el final del día
 
     datos_sensores = {}
+    valores_extremos = {}  # Diccionario para almacenar valores máximos y mínimos
 
     for arduino in arduinos:
         sensores = Sensor2.objects.filter(id_arduino=arduino)
@@ -836,9 +841,22 @@ def ver_datos_humedal(request, id_humedal):
                     datos_sensores[sensor][tipo_dato] = []
                 datos_sensores[sensor][tipo_dato].append(registro)
 
+                # Calcular valores máximos y mínimos
+                if tipo_dato not in valores_extremos:
+                    valores_extremos[tipo_dato] = {
+                        'maximo': registro.valor,
+                        'minimo': registro.valor
+                    }
+                else:
+                    if registro.valor > valores_extremos[tipo_dato]['maximo']:
+                        valores_extremos[tipo_dato]['maximo'] = registro.valor
+                    if registro.valor < valores_extremos[tipo_dato]['minimo']:
+                        valores_extremos[tipo_dato]['minimo'] = registro.valor
+
     return render(request, 'vistas_datos/vista_datos_humedal.html', {
         'humedal': humedal,
         'datos_sensores': datos_sensores,
+        'valores_extremos': valores_extremos,  # Pasar los valores extremos al contexto
         'fecha_inicio': request.GET.get('fecha_inicio', ''),
         'fecha_fin': request.GET.get('fecha_fin', ''),
     })

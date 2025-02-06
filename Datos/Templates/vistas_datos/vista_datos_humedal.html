@@ -80,7 +80,29 @@
                 </div>
             </div>
         </form>
-
+        <section class="mb-4 p-3 border rounded bg-light">
+            <h2>Resumen </h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tipo de Medición</th>
+                        <th>Máximo</th>
+                        <th>Mínimo</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tipo_dato, valores in valores_extremos.items %}
+                    <tr>
+                        <td>{{ tipo_dato.nombre_dato }}</td>
+                        <td>{{ valores.maximo }} {{tipo_dato.unidad_medida}}</td>
+                        <td>{{ valores.minimo }} {{tipo_dato.unidad_medida}}</td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
 
 <div class="accordion" id="sensorAccordion">
     {% for sensor, tipos_datos in datos_sensores.items %}
