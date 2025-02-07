@@ -18,6 +18,17 @@ from django.conf import settings
 from .serializer import RegistroSensorSerializer
 from django.urls import reverse
 from collections import defaultdict
+from django.shortcuts import render, get_object_or_404
+from django.utils.dateparse import parse_datetime
+
+from django.shortcuts import get_object_or_404, render
+from django.utils.dateparse import parse_datetime
+from .models import TablaHumedal, Arduino2, Sensor2, RegistroSensor2
+from django.db.models import Max
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Max
+from .models import Arduino2, TablaHumedal
 #-----------------------mini forms-----------------------
 def arduino(request,id_espacio,id_arduino = None):
     espacio = get_object_or_404(Espacio, id_espacio=id_espacio)
@@ -760,11 +771,7 @@ def on_off(request, id_humedal, id_arduino):
 
     return render(request, 'vistas_datos/vista_un_humedal.html',{'humedal':humedal,'arduinos':arduinos})
 
-from django.db.models import Max
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Max
-from .models import Arduino2, TablaHumedal
 
 def crear_arduino2(request, id_humedal):
     humedal = get_object_or_404(TablaHumedal, id_humedal=id_humedal)
@@ -793,12 +800,7 @@ def crear_arduino2(request, id_humedal):
 
 
 
-from django.shortcuts import render, get_object_or_404
-from django.utils.dateparse import parse_datetime
 
-from django.shortcuts import get_object_or_404, render
-from django.utils.dateparse import parse_datetime
-from .models import TablaHumedal, Arduino2, Sensor2, RegistroSensor2
 
 def ver_datos_humedal(request, id_humedal):
     humedal = get_object_or_404(TablaHumedal, id_humedal=id_humedal)

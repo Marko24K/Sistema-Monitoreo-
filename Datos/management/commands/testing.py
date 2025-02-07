@@ -76,9 +76,9 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         from Datos.models import (
             Country, Region, SubRegion, City, Localidad,
-            Parcela, DivisionParcela, TipoPlanta, Planta,
-            RegistroPlanta, Arduino, ModeloSensor, TipoDato,
-            Sensor, RegistroSensor
+            TipoEspacio, Espacio, DivisionEspacio, TipoPlanta, Planta,
+            RegistroPlanta, Arduino, ModeloSensor, Sensor, TipoDato,
+            RegistroSensor, TablaHumedal, Arduino2, ModeloSensor2, Sensor2, TipoDato2, RegistroSensor2
         )
 
         target_db_name = 'humedal_espejo'
@@ -99,9 +99,9 @@ class Command(BaseCommand):
             try:
                 tables = [
                     "country", "region", "sub_region", "city", "localidad",
-                    "parcela", "division_parcela", "tipo_planta", "planta",
-                    "registro_planta", "arduino", "modelo_sensor", "tipo_dato",
-                    "sensor", "registro_sensor"
+                    "tipo_espacio", "espacio", "division_espacio", "tipo_planta", "planta",
+                    "registro_planta", "arduino", "modelo_sensor", "sensor", "tipo_dato",
+                    "registro_sensor", "tabla_humedal", "arduino2", "modelo_sensor2", "sensor2", "tipo_dato2", "registro_sensor2"
                 ]
                 for table in tables:
                     target_db.cursor().execute(f"TRUNCATE TABLE {table} RESTART IDENTITY CASCADE;")
@@ -112,30 +112,28 @@ class Command(BaseCommand):
         # Copiar datos
         models_and_queries = [
             (Country, "SELECT * FROM country;"),
-            
             (Region, "SELECT id_region, id_country_id, name, name_ascii, slug, geoname_id, alternate_names, display_name, geoname_code FROM region;"),
-
             (SubRegion, "SELECT id_sub_region, id_country_id, id_region_id, name, name_ascii, slug, geoname_id, alternate_names, display_name, geoname_code FROM sub_region;"),
-
             (City, "SELECT id_city, id_region_id, id_country_id, id_sub_region_id, name, name_ascii, slug, geoname_id, alternate_names, display_name, latitude, longitude, population, featured_code, search_names, timezone FROM city;"),
-            
-            (Localidad, "SELECT id_localidad, id_city_id, estado_localidad, fecha_creado, fecha_editado FROM localidad;"),
-
-            (Parcela, "SELECT id_parcela, id_localidad_id, nombre_parcela, direccion_parcela, zona, hemisferio, easting, northing, uuid_parcela, imagen_parcela FROM parcela;"),
-
-            (DivisionParcela, "SELECT id_division_parcela, id_parcela_id, tipo_division, identificador, division_parcela.codigoQR FROM division_parcela;"),
-            
+            (Localidad, "SELECT id_localidad, id_city_id, nombre_localidad, estado_localidad, fecha_creado, fecha_editado FROM localidad;"),
+            (TipoEspacio, "SELECT * FROM tipo_espacio;"),
+            (Espacio, "SELECT id_espacio, id_localidad_id, id_tipo_espacio_id, nombre_espacio, direccion_espacio, utm, uuid_espacio, imagen_espacio, codigoqr FROM espacio;"),
+            (DivisionEspacio, "SELECT id_division_espacio, id_espacio_id, tipo_division, identificador FROM division_espacio;"),
             (TipoPlanta, "SELECT * FROM tipo_planta;"),
-
-            (Planta, "SELECT id_planta, planta.id_tipo_planta_id,descripcion_planta,observaciones_planta, fecha_siembra,fecha_extraccion FROM planta;"),
-
-            (RegistroPlanta, "SELECT id_registro_planta, id_division_parcela_id, id_planta_id, numero_planta, altura, largo, ancho, grosor, vigor, turgencia, vitalidad, plaga_enfermedad, descripcion_plaga_enfermedad, observaciones_registro, fecha_registro, imagen_registro_planta FROM registro_planta;"),
-
-            (Arduino,  "SELECT id_arduino, arduino.id_parcela_id, modelo_arduino,  estado FROM arduino;"),
+            (Planta, "SELECT id_planta, id_tipo_planta_id, descripcion_planta, observaciones_planta, fecha_siembra, fecha_extraccion FROM planta;"),
+            (RegistroPlanta, "SELECT id_registro_planta, id_division_espacio_id, id_planta_id, numero_planta, altura, largo, ancho, grosor, vigor, turgencia, vitalidad, plaga_enfermedad, descripcion_plaga_enfermedad, observaciones_registro, fecha_registro, imagen_registro_planta FROM registro_planta;"),
+            (Arduino, "SELECT id_arduino, id_espacio_id, modelo_arduino, estado, uuid_arduino FROM arduino;"),
             (ModeloSensor, "SELECT * FROM modelo_sensor;"),
-            (TipoDato, "SELECT * FROM tipo_dato;"),
             (Sensor, "SELECT * FROM sensor;"),
-            (RegistroSensor, "SELECT id_registro_sensor, registro_sensor.id_sensor_id, registro_sensor.id_tipo_dato_id,valor, fecha_registro FROM registro_sensor;")
+            (TipoDato, "SELECT * FROM tipo_dato;"),
+            (RegistroSensor, "SELECT id_registro_sensor, id_sensor_id, id_tipo_dato_id, valor, fecha_registro FROM registro_sensor;"),
+             (TablaHumedal, "SELECT id_humedal, id_localidad_id, nombre_humedal, direccion, utm_norte, utm_este, uuid_espacio, imagen_humedal FROM tabla_humedal;"),
+            (Arduino2, "SELECT id_arduino, id_humedal_id, modelo_arduino, estado, uuid_arduino FROM arduino2;"),
+            (ModeloSensor2, "SELECT id_modelo_sensor, nombre_sensor, descripcion FROM modelo_sensor2;"),
+            (Sensor2, "SELECT id_sensor, id_arduino_id, id_modelo_sensor_id, estado FROM sensor2;"),
+            (TipoDato2, "SELECT id_tipo_dato, nombre_dato, unidad_medida FROM tipo_dato2;"),
+            (RegistroSensor2, "SELECT id_registro_sensor, id_sensor_id, id_tipo_dato_id, valor, fecha_registro FROM registro_sensor2;")
+        
         ]
 
         for model, query in models_and_queries:
