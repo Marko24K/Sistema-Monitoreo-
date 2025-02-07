@@ -19,7 +19,7 @@ class Command(BaseCommand):
             host=default_db.settings_dict['HOST'],
             port=default_db.settings_dict['PORT']
         )
-        conn.autocommit = True  # Necesario para crear bases de datos
+        conn.autocommit = True  
         cursor = conn.cursor()
 
         try:

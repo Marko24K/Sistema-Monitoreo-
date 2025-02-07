@@ -726,7 +726,7 @@ def editar_humedal(request, id_humedal):
 
 def ver_humedal (request,id_humedal):
     humedal = get_object_or_404(TablaHumedal, id_humedal=id_humedal)
-    # Obtener los sensores relacionados con esos arduinos
+   
     arduinos = Arduino2.objects.filter(id_humedal=humedal)
 
     
@@ -781,7 +781,7 @@ def crear_arduino2(request, id_humedal):
 
         if modelo:
             max_id = Arduino2.objects.aggregate(Max('id_arduino'))['id_arduino__max'] or 0
-            nuevo_id = max_id + 1  # Asegurar que el próximo ID sea único
+            nuevo_id = max_id + 1  
 
             Arduino2.objects.create(
                 id_arduino=nuevo_id,
@@ -790,7 +790,7 @@ def crear_arduino2(request, id_humedal):
                 estado=1
             )
 
-            # Redirige a la vista 'vista_un_humedal' después de crear el Arduino
+           
             return redirect(reverse('ver_humedal', args=[id_humedal]))
 
 
@@ -832,7 +832,7 @@ def ver_datos_humedal(request, id_humedal):
 
             registros = registros.order_by('-fecha_registro')  # Orden descendente
 
-            # Agrupar registros por tipo de dato
+            # 
             for registro in registros:
                 tipo_dato = registro.id_tipo_dato
                 if sensor not in datos_sensores:
@@ -841,7 +841,7 @@ def ver_datos_humedal(request, id_humedal):
                     datos_sensores[sensor][tipo_dato] = []
                 datos_sensores[sensor][tipo_dato].append(registro)
 
-                # Calcular valores máximos, mínimos, promedio y desviación estándar
+                # valores máximos, mínimos, promedio y desviación estándar
                 if tipo_dato not in valores_extremos:
                     valores_extremos[tipo_dato] = {
                         'maximo': registro.valor,
@@ -853,10 +853,9 @@ def ver_datos_humedal(request, id_humedal):
                         valores_extremos[tipo_dato]['maximo'] = registro.valor
                     if registro.valor < valores_extremos[tipo_dato]['minimo']:
                         valores_extremos[tipo_dato]['minimo'] = registro.valor
-                    valores_extremos[tipo_dato]['valores'].append(registro.valor)  # Agregar el valor a la lista
+                    valores_extremos[tipo_dato]['valores'].append(registro.valor)  
 
-    # Calcular promedio y desviación estándar sin usar numpy
-    # Calcular promedio y desviación estándar sin usar numpy
+
     for tipo_dato, valores in valores_extremos.items():
         if 'valores' in valores:
             valores_lista = valores['valores']
@@ -894,24 +893,20 @@ def crear_sensor2(request, id_arduino):
         id_modelo_sensor = request.POST.get('modelo_sensor')
 
         if id_modelo_sensor:
-            # Obtener el ID más alto de los sensores existentes y sumarle 1
-            #max_id = Sensor2.objects.aggregate(Max('id_sensor')).get('id__max', 0)
-            #nuevo_id = max_id + 1
 
             max_id = Sensor2.objects.aggregate(Max('id_sensor'))['id_sensor__max'] or 0
-            nuevo_id = max_id + 1  # Asegurar que el próximo ID sea único
-            # Crear un nuevo sensor asociado al Arduino, utilizando el ID generado manualmente
+            nuevo_id = max_id + 1  
             sensor = Sensor2(
-                id_sensor=nuevo_id,  # Establecer el ID manualmente
+                id_sensor=nuevo_id,  
                 id_arduino=arduino,
                 id_modelo_sensor_id=id_modelo_sensor,
                 estado=1
             )
             sensor.save()
 
-            # Redirigir a la vista donde se pueda ver el Arduino y sus sensores
+            
             return redirect(reverse('ver_arduino2', args=[id_arduino]))
 
-    modelos_sensores = ModeloSensor2.objects.all()  # Obtén todos los modelos de sensores para mostrarlos en el formulario
+    modelos_sensores = ModeloSensor2.objects.all()  
     return render(request, 'forms/nuevo_sensor2.html', {'arduino': arduino, 'modelos_sensores': modelos_sensores})
 
