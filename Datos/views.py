@@ -800,8 +800,6 @@ def crear_arduino2(request, id_humedal):
 
 
 
-
-
 def ver_datos_humedal(request, id_humedal):
     humedal = get_object_or_404(TablaHumedal, id_humedal=id_humedal)
     arduinos = Arduino2.objects.filter(id_humedal=humedal)
@@ -817,7 +815,7 @@ def ver_datos_humedal(request, id_humedal):
         fecha_fin = parse_datetime(fecha_fin + " 23:59:59")  # Hasta el final del día
 
     datos_sensores = {}
-    valores_extremos = {}  # Diccionario para almacenar valores máximos y mínimos
+    valores_extremos = {}  # Diccionario para almacenar valores máximos, mínimos, promedio y desviación estándar
 
     for arduino in arduinos:
         sensores = Sensor2.objects.filter(id_arduino=arduino)
@@ -843,17 +841,34 @@ def ver_datos_humedal(request, id_humedal):
                     datos_sensores[sensor][tipo_dato] = []
                 datos_sensores[sensor][tipo_dato].append(registro)
 
-                # Calcular valores máximos y mínimos
+                # Calcular valores máximos, mínimos, promedio y desviación estándar
                 if tipo_dato not in valores_extremos:
                     valores_extremos[tipo_dato] = {
                         'maximo': registro.valor,
-                        'minimo': registro.valor
+                        'minimo': registro.valor,
+                        'valores': [registro.valor]  # Lista para almacenar todos los valores
                     }
                 else:
                     if registro.valor > valores_extremos[tipo_dato]['maximo']:
                         valores_extremos[tipo_dato]['maximo'] = registro.valor
                     if registro.valor < valores_extremos[tipo_dato]['minimo']:
                         valores_extremos[tipo_dato]['minimo'] = registro.valor
+                    valores_extremos[tipo_dato]['valores'].append(registro.valor)  # Agregar el valor a la lista
+
+    # Calcular promedio y desviación estándar sin usar numpy
+    # Calcular promedio y desviación estándar sin usar numpy
+    for tipo_dato, valores in valores_extremos.items():
+        if 'valores' in valores:
+            valores_lista = valores['valores']
+            n = len(valores_lista)
+            if n > 0:
+                # Calcular promedio
+                valores['promedio'] = sum(float(valor) for valor in valores_lista) / n
+                
+                # Calcular desviación estándar
+                mean = valores['promedio']
+                variance = sum((float(x) - mean) ** 2 for x in valores_lista) / n
+                valores['desviacion_estandar'] = variance ** 0.5  # Raíz cuadrada de la varianza
 
     return render(request, 'vistas_datos/vista_datos_humedal.html', {
         'humedal': humedal,
