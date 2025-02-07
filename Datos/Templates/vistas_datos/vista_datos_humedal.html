@@ -82,23 +82,29 @@
         </form>
         <section class="mb-4 p-3 border rounded bg-light">
             <h2>Resumen </h2>
+            <section class="mb-4 p-3 border rounded bg-light">
+                La siguiente tabla muestra un pequeño resumen de los datos del humedal: {{humedal.nombre_humedal}}. <br> Mostrando la información más relevante registrada por los sensores respectivos a este lugar.
+            </section>
+
             <table class="table">
                 <thead>
                     <tr>
                         <th>Tipo de Medición</th>
+                        <th>Promedio</th>  
                         <th>Máximo</th>
                         <th>Mínimo</th>
-                        <th>Promedio</th>  <!-- Nueva columna para el promedio -->
-                        <th>Desviación Estándar</th>  <!-- Nueva columna para la desviación estándar -->
+                        
+                        <th>Desviación Estándar</th>  
                     </tr>
                 </thead>
                 <tbody>
                     {% for tipo_dato, valores in valores_extremos.items %}
                     <tr>
                         <td>{{ tipo_dato.nombre_dato }}</td>
+                        <td>{{ valores.promedio|floatformat:2}} {{ tipo_dato.unidad_medida }}</td>  
                         <td>{{ valores.maximo }} {{ tipo_dato.unidad_medida }}</td>
                         <td>{{ valores.minimo }} {{ tipo_dato.unidad_medida }}</td>
-                        <td>{{ valores.promedio|floatformat:2}} {{ tipo_dato.unidad_medida }}</td>  
+                        
                         <td>{{ valores.desviacion_estandar|floatformat:2}} </td>  
                     </tr>
                     {% endfor %}

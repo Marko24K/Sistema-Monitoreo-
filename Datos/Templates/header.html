@@ -1,6 +1,6 @@
 <style>
     .header {
-        background: #0099CC;
+        background: #b2dfee;
         position: relative;
         overflow: hidden;
         padding: var(--spacing-lg) 0;
@@ -26,8 +26,8 @@
     .header img {
         transition: transform var(--transition-speed);
         margin-bottom: var(--spacing-sm);
-        background-color: white;
-        border-radius: 10px;
+
+
     }
 
     .header img:hover {
@@ -69,59 +69,50 @@
 </style>
 
 {% load static %}
+
 <header class="header">
-    <div class="container">
-        <div class="container">
-            <div class="row">
-                <div class="col d-flex justify-content-center">
-                    <img src="{% static 'img/logoupla.png' %}" alt="Logo UPLA" width="200" class="mb-3">
-                </div>
-                <div class="col d-flex justify-content-center">
-                    <img src="{% static 'img/icon.png' %}" alt="Logo UPLA" width="70" class="mb-3">
-                </div>
-            </div>
-           
-            <h1>Modulo de laboratorio LAPTES</h1>
-            <p>Sistema de Control y Gestión de variables ambientales</p>
-
-            <!-- Barra de navegación -->
-            <nav class="navbar navbar-expand-lg border border-success bg-white rounded-pill ">
-                <a class="navbar-brand fw-bold" href="{% url 'home' %}"
-                    style="font-family: 'Arial', sans-serif; font-size: 1.5rem; padding-left: 1rem; color: black;">
-                    Inicio
-                </a>
-
-
-                <!-- Botón de menú en pantallas pequeñas -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <!-- Elementos del menú -->
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav mx-auto">
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'vista_espacios' %}active{% endif %}"
-                                href="{% url 'vista_espacios' %}">Ubicaciones</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'tipo_planta' %}active{% endif %}"
-                                href="{% url 'tipo_planta' %}">Añadir nuevas plantas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'registro_parcela' %}active{% endif %}"
-                                href="{% url 'registro_parcela' %}">Registrar nueva ubicación</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'vista_humedales' %}active{% endif %}"
-                                href="{% url 'vista_humedales' %}">Sección humedales</a>
-                        </li>
-
-
-                    </ul>
-                </div>
-            </nav>
+    <div class="container text-center">
+        <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+            <img src="{% static 'img/logo.png' %}" alt="Logo UPLA" height="100">
+            <img src="{% static 'img/logoGrande.png' %}" alt="Logo UPLA" height="100">
         </div>
+
+        <h1 class="fw-bold">Módulo de laboratorio LAPTES</h1>
+        <p>Sistema de Control y Gestión de variables ambientales</p>
+
+
+        <nav class="navbar navbar-expand-lg border border-success bg-white">
+            <a class="navbar-brand fw-bold" href="{% url 'home' %}"
+                style="font-family: 'Arial', sans-serif; font-size: 1.5rem; padding-left: 1rem; color: black;">
+                Inicio
+            </a>
+
+          
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'vista_espacios' %}active exaggerated{% endif %}"
+                            href="{% url 'vista_espacios' %}">Ubicaciones</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'tipo_planta' %}active exaggerated{% endif %}"
+                            href="{% url 'tipo_planta' %}">Añadir nuevas plantas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'registro_parcela' %}active exaggerated{% endif %}"
+                            href="{% url 'registro_parcela' %}">Registrar nueva ubicación</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'vista_humedales' %}active exaggerated{% endif %}"
+                            href="{% url 'vista_humedales' %}">Sección humedales</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
     </div>
 </header>
